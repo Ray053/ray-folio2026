@@ -61,6 +61,12 @@ export function HeroSection() {
   const textRef    = useRef<HTMLDivElement>(null)
   const [cam, setCam] = useState(false)
   const [inView, setInView] = useState(true)
+  const [lowPower, setLowPower] = useState(false)
+
+  // Detect mobile / touch devices to reduce 3D cost
+  useEffect(() => {
+    setLowPower(window.matchMedia('(max-width: 768px), (pointer: coarse)').matches)
+  }, [])
 
   // Pause the R3F render loop when the hero scrolls out of view
   useEffect(() => {
@@ -137,10 +143,10 @@ export function HeroSection() {
           willChange: 'transform',
         }}
       >
-        <NoiseBlobScene active={cam} inView={inView} />
+        <NoiseBlobScene active={cam} inView={inView} lowPower={lowPower} />
       </div>
 
-      <ParticleCursor />
+      {!lowPower && <ParticleCursor />}
 
       {/* Text — separate ref for scroll animation */}
       <div

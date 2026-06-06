@@ -234,6 +234,7 @@ export function NoiseBlob({
   offset = [0, 0],
   scaleFactor = 1,
   frozenRef,
+  detail = 5,
 }: {
   spawnRef?: React.MutableRefObject<SpawnFn | undefined>
   posRef?: React.MutableRefObject<THREE.Vector3>
@@ -241,6 +242,7 @@ export function NoiseBlob({
   offset?: [number, number]
   scaleFactor?: number
   frozenRef?: React.MutableRefObject<boolean>
+  detail?: number
 }) {
   const meshRef     = useRef<THREE.Mesh>(null)
   const materialRef = useRef<THREE.ShaderMaterial>(null)
@@ -335,7 +337,7 @@ export function NoiseBlob({
 
   return (
     <mesh ref={meshRef} onPointerMove={onPointerMove}>
-      <icosahedronGeometry args={[1.4, 5]} />
+      <icosahedronGeometry args={[1.4, detail]} />
       <shaderMaterial
         ref={materialRef}
         vertexShader={vertexShader}

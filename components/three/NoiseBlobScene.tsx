@@ -57,7 +57,15 @@ function GestureController({
   return null
 }
 
-export function NoiseBlobScene({ active = false, inView = true }: { active?: boolean; inView?: boolean }) {
+export function NoiseBlobScene({
+  active = false,
+  inView = true,
+  lowPower = false,
+}: {
+  active?: boolean
+  inView?: boolean
+  lowPower?: boolean
+}) {
   const spawnRef = useRef<SpawnFn | undefined>(undefined)
   const posRef   = useRef(new THREE.Vector3(0, 0, 0))
   const frozenRef = useRef(false)
@@ -86,8 +94,8 @@ export function NoiseBlobScene({ active = false, inView = true }: { active?: boo
   return (
     <Canvas
       camera={{ position: [0, 0, 6], fov: 40 }}
-      gl={{ antialias: true, alpha: true, premultipliedAlpha: false }}
-      dpr={[1, 2]}
+      gl={{ antialias: !lowPower, alpha: true, premultipliedAlpha: false }}
+      dpr={lowPower ? 1 : [1, 2]}
       frameloop={inView ? 'always' : 'never'}
       style={{ background: 'transparent' }}
     >
@@ -103,6 +111,7 @@ export function NoiseBlobScene({ active = false, inView = true }: { active?: boo
           offset={b.offset}
           scaleFactor={b.scale}
           frozenRef={frozenRef}
+          detail={lowPower ? 3 : 5}
         />
       ))}
     </Canvas>
