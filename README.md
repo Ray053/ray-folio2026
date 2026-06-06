@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio 2026
 
-## Getting Started
+UX designer portfolio with a liquid-metal 3D hero, webcam hand-tracking, and CMS-driven content. Built with Next.js 16 and Payload CMS.
 
-First, run the development server:
+🔗 **Live:** _coming soon_
+
+---
+
+## ✨ Features
+
+- **R3F hero** — animated iridescent noise-blob (custom GLSL shaders) with particle cursor and impact splinters
+- **Webcam hand interaction** — MediaPipe hand tracking: the blob follows your hand, a **fist freezes the flow**, and a **pinch splits it into up to five blobs**
+- **Scroll storytelling** — Lenis smooth scroll + GSAP/ScrollTrigger: parallax, text colour-fill reveals, a continuous trajectory ball linking sections, and velocity-reactive marquees
+- **UX work** — full-width accordion with a cursor-following cover preview; bento layout on the dedicated work page
+- **Dance page** — Instagram-style bento grid, hover-to-play video
+- **CMS-driven** — Payload CMS manages projects, dance videos, and site info (bio, photo, contacts, CV)
+- **i18n** — Traditional Chinese / English via next-intl (`/` and `/en`)
+- **Light / Dark mode**, theme-aware logo & favicon, full `prefers-reduced-motion` support
+- **Performance** — R3F render loop pauses when the hero scrolls out of view
+
+---
+
+## 🧱 Tech Stack
+
+| Layer | Tech |
+|-------|------|
+| Framework | Next.js 16 (App Router) |
+| CMS | Payload CMS v3 (same Next.js app) |
+| Database | MongoDB Atlas |
+| 3D | React Three Fiber + Three.js |
+| Motion | GSAP + ScrollTrigger, Lenis |
+| Hand tracking | MediaPipe Tasks Vision |
+| Styling | Tailwind CSS v4 + CSS custom properties |
+| i18n | next-intl |
+| Storage | Vercel Blob (production media) |
+| Deploy | Vercel |
+| Language | TypeScript |
+
+---
+
+## 🚀 Getting Started
 
 ```bash
+# 1. Install
+npm install
+
+# 2. Configure environment
+cp .env.example .env.local
+# then fill in DATABASE_URI and PAYLOAD_SECRET
+
+# 3. Run
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- App: <http://localhost:3000>
+- Admin (Payload CMS): <http://localhost:3000/admin>
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Required | Notes |
+|----------|----------|-------|
+| `DATABASE_URI` | ✅ | MongoDB Atlas connection string |
+| `PAYLOAD_SECRET` | ✅ | 32+ char random string (`openssl rand -hex 32`) |
+| `BLOB_READ_WRITE_TOKEN` | prod | Vercel Blob token; omit locally to use disk storage |
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📜 Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build |
+| `npm run start` | Run the production build |
+| `npm run lint` | ESLint |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📁 Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+app/
+  (frontend)/[locale]/   → Home, About, Work, Dance pages
+  (payload)/             → Payload admin + REST API
+components/
+  three/                 → R3F (noise blob, splinters, trail, hand morph)
+  sections/              → page sections
+  ui/                    → reusable UI + interactions
+  layout/                → Navbar, Footer
+lib/                     → Payload helpers, hand gestures, motion tokens
+payload/                 → collections & globals
+messages/                → next-intl translations
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## ☁️ Deployment
+
+Deployed on Vercel. Media is stored in Vercel Blob; MongoDB Atlas hosts the database. Pushing to `main` triggers GitHub Actions (typecheck + lint + build) and a Vercel deploy.
