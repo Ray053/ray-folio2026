@@ -2,7 +2,7 @@
 
 UX designer portfolio with a liquid-metal 3D hero, webcam hand-tracking, and CMS-driven content. Built with Next.js 16 and Payload CMS.
 
-🔗 **Live:** _coming soon_
+🔗 **Live:** <https://ray-folio2026.vercel.app>
 
 ---
 
