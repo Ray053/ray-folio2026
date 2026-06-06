@@ -1,0 +1,42 @@
+{
+  "nav": {
+    "work": "Work",
+    "about": "About",
+    "downloadCV": "Download CV"
+  },
+  "workPage": {
+    "eyebrow": "All Projects",
+    "heading": "UX Work",
+    "description": "From research to final product, each project is a journey in problem-solving."
+  },
+  "hero": {
+    "role": "UX Designer",
+    "tagline": "Designing experiences that connect people and technology."
+  },
+  "projects": {
+    "eyebrow": "Selected Work",
+    "heading": "UX Projects"
+  },
+  "danceTeaser": {
+    "eyebrow": "Also",
+    "heading": "I dance.",
+    "description": "Street dance keeps me moving. Here's a small window into that side of me.",
+    "cta": "See all videos"
+  },
+  "about": {
+    "eyebrow": "About",
+    "role": "UX Designer based in Taiwan.",
+    "bio1": "I design digital experiences with a focus on clarity, empathy, and craft. My work lives at the intersection of research-driven thinking and visual precision—turning complex problems into interfaces that feel natural.",
+    "bio2": "When I'm not designing, you'll find me on the dance floor. Street dance has taught me rhythm, improvisation, and how to read a room. Those skills translate more than you'd think.",
+    "contactHeading": "Get in touch",
+    "downloadCV": "Download CV"
+  },
+  "dancePage": {
+    "eyebrow": "Side project",
+    "heading": "Dance",
+    "description": "Street dance clips. Raw, unpolished, just for the love of it."
+  },
+  "footer": {
+    "rights": "All rights reserved"
+  }
+}

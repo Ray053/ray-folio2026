@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/PersonalFile/porfolio2026/**)",
+      "Bash(cp portfolio-react/.gitignore portfolioReact/)",
+      "Bash(cp portfolio-react/AGENTS.md portfolioReact/)",
+      "Bash(cp portfolio-react/eslint.config.mjs portfolioReact/)",
+      "Bash(cp portfolio-react/next-env.d.ts portfolioReact/)",
+      "Bash(npm install *)",
+      "Bash(timeout 30 npm run dev)",
+      "Bash(node *)",
+      "Bash(npx tsc *)",
+      "Bash(NEXT_DISABLE_TURBOPACK=1 npm run dev)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/admin)",
+      "Read(//tmp/**)",
+      "PowerShell(taskkill *)",
+      "Bash(npx next *)",
+      "Bash(npx payload *)",
+      "Bash(npm run *)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(echo \"Server starting with PID $!\")",
+      "Bash(npx --yes screenshot-website --help)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001)",
+      "Bash(curl -s http://localhost:3001)",
+      "Bash(powershell.exe -Command \"Start-Process msedge 'http://localhost:3001'; Start-Sleep 5\")",
+      "Bash(powershell.exe -Command ' *)",
+      "Bash(curl -s -o /dev/null -w \"/ → %{http_code}\\\\n\" http://localhost:3000)",
+      "Bash(curl -s -o /dev/null -w \"/en → %{http_code}\\\\n\" http://localhost:3000/en)",
+      "Bash(curl -s -o /dev/null -w \"/about → %{http_code}\\\\n\" http://localhost:3000/about)",
+      "Bash(curl -s -o /dev/null -w \"/en/about → %{http_code}\\\\n\" http://localhost:3000/en/about)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/en)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/about)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/dance)",
+      "Bash(curl -sv http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/en/about)",
+      "Bash(ffmpeg.exe -version)",
+      "Bash(where.exe ffmpeg *)",
+      "Bash(curl -s \"http://localhost:3000/api/projects?limit=5&depth=1\")",
+      "Bash(python3 -c ' *)"
+    ]
+  }
+}

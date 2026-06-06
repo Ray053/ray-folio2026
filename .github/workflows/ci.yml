@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+        env:
+          # Dummy values so the build can compile without real secrets.
+          # Pages fetch CMS data at request time, not build time.
+          DATABASE_URI: ${{ secrets.DATABASE_URI || 'mongodb://localhost:27017/ci' }}
+          PAYLOAD_SECRET: ci-dummy-secret-key-min-32-characters-long

@@ -1,0 +1,251 @@
+@import "tailwindcss";
+
+/* Dark mode via .dark class */
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* ─── Neutral ─────────────────────────────────── */
+  --color-gray-0:   #FFFFFF;
+  --color-gray-50:  #FAFAFA;
+  --color-gray-100: #F5F5F5;
+  --color-gray-200: #E5E5E5;
+  --color-gray-300: #D4D4D4;
+  --color-gray-400: #A3A3A3;
+  --color-gray-500: #737373;
+  --color-gray-600: #525252;
+  --color-gray-700: #404040;
+  --color-gray-800: #262626;
+  --color-gray-900: #171717;
+  --color-gray-950: #0A0A0A;
+
+  /* ─── Blue-Gray Accent ────────────────────────── */
+  --color-blue-100: #E8EDF2;
+  --color-blue-200: #C2D0DE;
+  --color-blue-300: #8AAABF;
+  --color-blue-400: #5C82A0;
+  --color-blue-500: #3D6480;
+  --color-blue-600: #254A64;
+  --color-blue-700: #122333;
+
+  /* ─── Typography ──────────────────────────────── */
+  --font-sans:       var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display-zh: var(--font-tasa), var(--font-syne), ui-sans-serif;
+  --font-display-en: var(--font-syne), ui-sans-serif;
+  --font-mono:       var(--font-geist-mono), ui-monospace, monospace;
+
+  /* ─── Border Radius ───────────────────────────── */
+  --radius-sm:   2px;
+  --radius-md:   6px;
+  --radius-lg:   12px;
+  --radius-xl:   20px;
+  --radius-full: 9999px;
+
+  /* ─── Shadows ─────────────────────────────────── */
+  --shadow-sm:     0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.12);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,0.16);
+  --shadow-accent: 0 0 24px rgba(92,130,160,0.3);
+}
+
+/* ─── Semantic tokens — Light Mode ───────────────── */
+:root {
+  --color-background: #FFFFFF;
+  --color-surface:    #FAFAFA;
+  --color-surface-2:  #F5F5F5;
+  --color-border:     #E5E5E5;
+
+  --color-text-primary:   #0A0A0A;
+  --color-text-secondary: #737373;
+  --color-text-muted:     #A3A3A3;
+
+  --color-accent:       #5C82A0;
+  --color-accent-hover: #3D6480;
+  --color-link:         #5C82A0;
+  --color-link-hover:   #3D6480;
+
+  --color-shadow-accent: rgba(92,130,160,0.25);
+}
+
+/* ─── Semantic tokens — Dark Mode ────────────────── */
+.dark {
+  --color-background: #0A0A0A;
+  --color-surface:    #171717;
+  --color-surface-2:  #262626;
+  --color-border:     #262626;
+
+  --color-text-primary:   #FAFAFA;
+  --color-text-secondary: #A3A3A3;
+  --color-text-muted:     #525252;
+
+  --color-accent:       #8AAABF;
+  --color-accent-hover: #5C82A0;
+  --color-link:         #8AAABF;
+  --color-link-hover:   #A0C4D8;
+
+  --color-shadow-accent: rgba(92,130,160,0.35);
+}
+
+/* ─── Base ────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Lenis smooth scroll ────────────────────────────── */
+html.lenis,
+html.lenis body { height: auto; }
+
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
+/* ─── Hero stage backdrop (backlight + horizon) ──────── */
+.hero-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    /* central backlight glow behind the figure */
+    radial-gradient(ellipse 65% 55% at 50% 40%,
+      color-mix(in srgb, var(--color-accent) 22%, transparent) 0%,
+      transparent 62%),
+    /* horizon spill — wide low glow */
+    radial-gradient(ellipse 130% 38% at 50% 66%,
+      color-mix(in srgb, var(--color-accent) 16%, transparent) 0%,
+      transparent 68%),
+    /* ground darkening toward the bottom */
+    linear-gradient(to bottom,
+      transparent 48%,
+      color-mix(in srgb, var(--color-text-primary) 6%, transparent) 100%);
+  animation: stage-pulse 9s ease-in-out infinite;
+}
+.hero-stage::after {
+  /* thin horizon light line */
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 64%;
+  height: 1px;
+  background: linear-gradient(to right,
+    transparent,
+    color-mix(in srgb, var(--color-accent) 55%, transparent) 50%,
+    transparent);
+  filter: blur(2px);
+  opacity: 0.7;
+}
+.dark .hero-stage {
+  background:
+    radial-gradient(ellipse 65% 55% at 50% 40%,
+      color-mix(in srgb, var(--color-accent) 28%, transparent) 0%,
+      transparent 62%),
+    radial-gradient(ellipse 130% 38% at 50% 66%,
+      color-mix(in srgb, var(--color-accent) 20%, transparent) 0%,
+      transparent 68%),
+    linear-gradient(to bottom,
+      transparent 46%,
+      rgba(0, 0, 0, 0.45) 100%);
+}
+
+@keyframes stage-pulse {
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 1; }
+}
+
+/* ─── Ambient glow (organic soft-light) ──────────────── */
+.ambient-glow {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.5;
+  will-change: transform;
+}
+.ambient-glow-a {
+  width: 46vw; height: 46vw;
+  top: -12vw; left: -8vw;
+  background: radial-gradient(circle, rgba(92,130,160,0.40), transparent 70%);
+  animation: drift-a 22s ease-in-out infinite;
+}
+.ambient-glow-b {
+  width: 38vw; height: 38vw;
+  bottom: -10vw; right: -6vw;
+  background: radial-gradient(circle, rgba(46,95,130,0.36), transparent 70%);
+  animation: drift-b 28s ease-in-out infinite;
+}
+.ambient-glow-c {
+  width: 30vw; height: 30vw;
+  top: 35%; left: 55%;
+  background: radial-gradient(circle, rgba(138,170,191,0.28), transparent 70%);
+  animation: drift-c 25s ease-in-out infinite;
+}
+.dark .ambient-glow { opacity: 0.42; }
+
+@keyframes drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(6vw, 4vw) scale(1.12); }
+}
+@keyframes drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-5vw, -3vw) scale(1.1); }
+}
+@keyframes drift-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-4vw, 5vw) scale(0.9); }
+}
+
+/* ─── Navbar responsive ──────────────────────────────── */
+.nav-links-desktop { display: flex; }
+.nav-hamburger     { display: none; }
+
+@media (max-width: 768px) {
+  .nav-links-desktop { display: none !important; }
+  .nav-hamburger     { display: flex !important; }
+}
+
+/* Logo name fades away when scrolled (condensed) */
+.nav-logo-name {
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 90px;
+  opacity: 1;
+  transition: max-width 0.35s ease, opacity 0.3s ease, margin-left 0.35s ease;
+}
+.nav-condensed .nav-logo-name {
+  max-width: 0;
+  opacity: 0;
+  margin-left: -10px;
+}
+
+/* Condensed navbar → collapse links into the hamburger at any width */
+.nav-condensed .nav-links-desktop { display: none !important; }
+.nav-condensed .nav-hamburger     { display: flex !important; }
+
+@keyframes soundbar {
+  from { transform: scaleY(0.3); }
+  to   { transform: scaleY(1.0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+  .ambient-glow { animation: none !important; }
+  .hero-stage { animation: none !important; }
+}

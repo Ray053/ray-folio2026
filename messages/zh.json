@@ -1,0 +1,42 @@
+{
+  "nav": {
+    "work": "作品",
+    "about": "關於",
+    "downloadCV": "下載 CV"
+  },
+  "workPage": {
+    "eyebrow": "所有作品",
+    "heading": "UX 專案",
+    "description": "從研究到最終成品，每個專案都是一次解決問題的旅程。"
+  },
+  "hero": {
+    "role": "UX 設計師",
+    "tagline": "設計連結人與科技的體驗。"
+  },
+  "projects": {
+    "eyebrow": "精選作品",
+    "heading": "UX 專案"
+  },
+  "danceTeaser": {
+    "eyebrow": "另外",
+    "heading": "我跳舞。",
+    "description": "街舞讓我保持律動。這是我的另一面。",
+    "cta": "查看所有影片"
+  },
+  "about": {
+    "eyebrow": "關於",
+    "role": "台灣的 UX 設計師。",
+    "bio1": "我設計數位體驗，著重清晰度、同理心與精確的視覺呈現。我的工作介於研究思維與視覺設計之間，將複雜問題轉化為自然直覺的介面。",
+    "bio2": "不設計的時候，你可以在舞池找到我。街舞教會了我節奏感、即興能力以及如何感受周圍的氛圍，這些技能比你想像的更容易遷移到設計中。",
+    "contactHeading": "聯絡我",
+    "downloadCV": "下載 CV"
+  },
+  "dancePage": {
+    "eyebrow": "副業",
+    "heading": "舞蹈",
+    "description": "街舞片段。純粹、真實，就是熱愛。"
+  },
+  "footer": {
+    "rights": "版權所有"
+  }
+}
