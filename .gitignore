@@ -45,3 +45,6 @@ next-env.d.ts
 
 # large local reference assets
 FUSE_1080p.mp4
+
+# but keep the example (no secrets)
+!.env.example
