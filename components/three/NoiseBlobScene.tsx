@@ -93,7 +93,7 @@ export function NoiseBlobScene({
 
   return (
     <Canvas
-      camera={{ position: [0, 0, 6], fov: 40 }}
+      camera={{ position: [0, 0, lowPower ? 8 : 6], fov: 40 }}
       gl={{ antialias: !lowPower, alpha: true, premultipliedAlpha: false }}
       dpr={lowPower ? 1 : [1, 2]}
       frameloop={inView ? 'always' : 'never'}

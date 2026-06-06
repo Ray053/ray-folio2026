@@ -50,6 +50,28 @@ export function LoadingScreen() {
     gsap.set(svgEl, { opacity: 0 })
     document.body.style.overflow = 'hidden'
 
+    // ── Lightweight path for mobile / touch / reduced-motion ───────
+    // The per-particle radial-gradient canvas is too heavy on phones, so just
+    // fade the logo in and fly it to the navbar.
+    const simple = window.matchMedia(
+      '(max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce)'
+    ).matches
+    if (simple) {
+      gsap.set(svgEl, { opacity: 1 })
+      const tl = gsap.timeline()
+      tl.fromTo(paths,
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out', delay: 0.2 })
+        .to({}, { duration: 0.3 })
+        .add(() => flyToNavbar())
+      return () => {
+        tl.kill()
+        document.body.style.overflow = ''
+        const navLogo = document.querySelector('[data-logo-target]') as HTMLElement | null
+        if (navLogo) gsap.set(navLogo, { opacity: 1 })
+      }
+    }
+
     // ── Sample target points inside the logo shape ─────────────
     const p2d = LOGO_PATHS.map(d => new Path2D(d))
     const scale = SVG_SIZE / VB
