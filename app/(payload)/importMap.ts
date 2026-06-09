@@ -8,6 +8,7 @@ import {
   Logo as Logo_default,
   DefaultNav as DefaultNav_default,
 } from '@payloadcms/next/rsc'
+import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_default } from '@payloadcms/storage-vercel-blob/client'
 
 /** @type import('payload').ImportMap */
 export const importMap = {
@@ -19,4 +20,5 @@ export const importMap = {
   "@payloadcms/next/rsc#DocumentHeader": DocumentHeader_default,
   "@payloadcms/next/rsc#Logo": Logo_default,
   "@payloadcms/next/rsc#DefaultNav": DefaultNav_default,
+  "@payloadcms/storage-vercel-blob/client#VercelBlobClientUploadHandler": VercelBlobClientUploadHandler_default,
 }

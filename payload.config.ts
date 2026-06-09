@@ -47,6 +47,10 @@ export default buildConfig({
             enabled: true,
             collections: { media: true },
             token: process.env.BLOB_READ_WRITE_TOKEN,
+            // Upload straight from the browser to Blob, bypassing Vercel's
+            // ~4.5MB serverless body limit. The client handler is registered
+            // in app/(payload)/importMap.ts so the admin still renders.
+            clientUploads: true,
           }),
         ]
       : []),
