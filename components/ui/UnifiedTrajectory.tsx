@@ -62,11 +62,11 @@ export function UnifiedTrajectory({ children }: { children: React.ReactNode }) {
         <svg width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0 }}>
           <defs>
             <linearGradient id="uni-trail" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%"   stopColor="#5C82A0" />
-              <stop offset="30%"  stopColor="#8AAABF" />
-              <stop offset="55%"  stopColor="#b69ad8" />
-              <stop offset="80%"  stopColor="#d88ab0" />
-              <stop offset="100%" stopColor="#8ad8d0" />
+              <stop offset="0%"   stopColor="#001B3D" />
+              <stop offset="30%"  stopColor="#0060DF" />
+              <stop offset="55%"  stopColor="#0A84FF" />
+              <stop offset="80%"  stopColor="#5AB0FF" />
+              <stop offset="100%" stopColor="#EAF4FF" />
             </linearGradient>
           </defs>
           <path
@@ -82,8 +82,8 @@ export function UnifiedTrajectory({ children }: { children: React.ReactNode }) {
             position: 'absolute', top: 0, left: 0,
             width: '20px', height: '20px', marginLeft: '-10px', marginTop: '-10px',
             borderRadius: '9999px',
-            background: 'conic-gradient(from 120deg, #5C82A0, #8AAABF, #b69ad8, #d88ab0, #8ad8d0, #5C82A0)',
-            boxShadow: '0 0 20px 5px rgba(140,185,210,0.5), 0 0 6px 2px rgba(216,232,240,0.85)',
+            background: 'conic-gradient(from 120deg, #001B3D, #0060DF, #0A84FF, #5AB0FF, #EAF4FF, #001B3D)',
+            boxShadow: '0 0 20px 5px rgba(10,132,255,0.5), 0 0 6px 2px rgba(234,244,255,0.85)',
             willChange: 'transform',
           }}
         />

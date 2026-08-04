@@ -91,7 +91,7 @@ export function Navbar() {
             <a href="/cv.pdf" download style={{
               padding: '7px 16px', marginLeft: '4px', borderRadius: '9999px',
               border: '1px solid var(--color-accent)', fontSize: '14px',
-              fontWeight: 500, color: 'var(--color-accent)', textDecoration: 'none',
+              fontWeight: 500, color: 'var(--color-accent-hover)', textDecoration: 'none',
             }}>
               {t('downloadCV')}
             </a>

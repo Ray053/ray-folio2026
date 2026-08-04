@@ -32,7 +32,7 @@ function HeroText() {
           fontFamily: 'var(--font-syne), ui-sans-serif',
           fontSize: 'clamp(12px, 1.1vw, 14px)', fontWeight: 500,
           letterSpacing: '0.15em', textTransform: 'uppercase',
-          color: 'var(--color-accent)', margin: 0,
+          color: 'var(--color-accent-hover)', margin: 0,
         }}>
           {t('role')}
         </p>
