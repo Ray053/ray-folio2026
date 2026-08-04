@@ -30,7 +30,6 @@ export function ThemeToggle() {
         justifyContent: 'center',
         width: '40px',
         height: '40px',
-        background: 'transparent',   // overridden by .glass-pill; kept for the a11y solid fallback contrast
         color: 'var(--color-text-secondary)',
         cursor: 'pointer',
         transition: 'color 0.15s',
