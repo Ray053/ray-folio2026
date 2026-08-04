@@ -13,7 +13,7 @@ export function LangToggle() {
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '13px', fontWeight: 500 }}>
+    <div className="glass-pill" style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '13px', fontWeight: 500, padding: '8px 12px' }}>
       {routing.locales.map((l, i) => (
         <span key={l} style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
           {i > 0 && (

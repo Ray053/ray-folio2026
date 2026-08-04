@@ -23,28 +23,25 @@ export function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+      className="glass-pill"
       style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        width: '36px',
-        height: '36px',
-        borderRadius: '6px',
-        border: '1px solid var(--color-border)',
-        background: 'transparent',
+        width: '40px',
+        height: '40px',
+        background: 'transparent',   // overridden by .glass-pill; kept for the a11y solid fallback contrast
         color: 'var(--color-text-secondary)',
         cursor: 'pointer',
-        transition: 'color 0.15s, border-color 0.15s',
+        transition: 'color 0.15s',
       }}
       onMouseEnter={e => {
         const el = e.currentTarget
         el.style.color = 'var(--color-text-primary)'
-        el.style.borderColor = 'var(--color-accent)'
       }}
       onMouseLeave={e => {
         const el = e.currentTarget
         el.style.color = 'var(--color-text-secondary)'
-        el.style.borderColor = 'var(--color-border)'
       }}
     >
       {dark ? (
