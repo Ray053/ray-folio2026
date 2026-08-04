@@ -159,45 +159,38 @@ const fragmentShader = /* glsl */`
     float NdotL2 = max(dot(N, L2pos), 0.0);
     float NdotL3 = max(dot(N, L3pos), 0.0);
 
-    // ── Iridescent flowing palette (Fuse-style) ──────────────────
-    // Cosine gradient (Inigo Quilez) — smooth, vivid hue cycling
-    float t = clamp((vNoise + 1.0)*0.5, 0.0, 1.0);
+    // ── Pure-blue ramp (no hue cycling) ──────────────────────────
+    float t = clamp((vNoise + 1.0) * 0.5, 0.0, 1.0);
 
-    // Flow coordinate: more spatial variation → a full colour gradient over the blob
-    float flow = t * 1.1
-               + uTime * 0.06
-               + vWorldPos.y * 0.40
-               + vWorldPos.x * 0.28
-               + (1.0 - NdotV) * 0.30;
+    // bounded shading coordinate + gentle time shimmer (stays in blue)
+    float b = t * 0.70
+            + (vWorldPos.y * 0.15 + 0.5) * 0.25
+            + (1.0 - NdotV) * 0.20
+            + sin(uTime * 0.3 + vWorldPos.x * 2.0) * 0.05;
+    b = clamp(b, 0.0, 1.0);
 
-    // Vivid blue → violet → magenta → cyan iridescence (higher amplitude)
-    vec3 pa = vec3(0.50, 0.45, 0.55);
-    vec3 pb = vec3(0.50, 0.48, 0.50);   // bigger amplitude = more saturated
-    vec3 pc = vec3(1.00, 1.00, 1.00);
-    vec3 pd = vec3(0.12, 0.36, 0.66);
-    vec3 albedo = pa + pb * cos(6.28318 * (pc * flow + pd));
+    vec3 blueDeep = vec3(0.000, 0.106, 0.239);   // #001B3D
+    vec3 blueMid  = vec3(0.039, 0.518, 1.000);   // #0A84FF
+    vec3 blueLite = vec3(0.353, 0.690, 1.000);   // #5AB0FF
+    vec3 hiBlue   = vec3(0.918, 0.957, 1.000);   // #EAF4FF
 
-    vec3 albedoDeep = pa + pb * cos(6.28318 * (pc * (flow - 0.18) + pd));
-    albedo = mix(albedoDeep, albedo, smoothstep(0.0, 1.0, t));
+    vec3 albedo = mix(blueDeep, blueMid, smoothstep(0.0, 0.6, b));
+    albedo      = mix(albedo,  blueLite, smoothstep(0.55, 1.0, b));
 
-    // ── Diffuse — soft, colour stays vivid (less darkening) ──────
+    // ── Diffuse ──────────────────────────────────────────────────
     vec3 diffuse = albedo * (NdotL1*0.22 + NdotL2*0.12 + NdotL3*0.08);
 
-    // ── Specular — colourful sheen, not pure white ───────────────
+    // ── Specular — blue-white sheen ──────────────────────────────
     float s1 = spec(N, L1pos, V, 300.0) * NdotL1;
     float s2 = spec(N, L1pos, V,  56.0) * NdotL1 * 0.30;
     float s3 = spec(N, L2pos, V, 160.0) * NdotL2 * 0.55;
     float s4 = spec(N, L3pos, V,  90.0) * NdotL3 * 0.32;
+    vec3 sheen    = mix(blueLite, hiBlue, 0.5);
+    vec3 specular = hiBlue*(s1+s2) + sheen*(s3+s4);
 
-    // Highlights pick up a shifted palette hue → oil-slick sheen
-    vec3 sheen = pa + pb * cos(6.28318 * (pc * (flow + 0.30) + pd));
-    vec3 specWhite = mix(sheen, vec3(1.0), 0.5);
-    vec3 specular = specWhite*(s1+s2) + sheen*(s3 + s4);
-
-    // ── Fresnel rim — bright iridescent edge ─────────────────────
+    // ── Fresnel rim — bright blue-white glowing edge ─────────────
     float F = schlick(NdotV, 0.42);
-    vec3 rimHue = pa + pb * cos(6.28318 * (pc * (flow + 0.5) + pd));
-    vec3 fresnel = mix(rimHue, vec3(0.95, 0.97, 1.0), F) * F * 0.85;
+    vec3 fresnel = mix(blueLite, hiBlue, F) * F * 0.95;
 
     // ── Fake environment reflection ──────────────────────────────
     vec3 R    = reflect(-V, N);
@@ -208,16 +201,11 @@ const fragmentShader = /* glsl */`
     float ao = clamp(t*0.6 + 0.4, 0.0, 1.0);
 
     // ── Assemble ─────────────────────────────────────────────────
-    // Strong colour base everywhere (not just lit faces) + lighting on top
-    vec3 color = albedo * (0.55 + 0.45 * ao)   // vivid colour fills the whole blob
+    vec3 color = albedo * (0.55 + 0.45 * ao)
                + diffuse
                + specular
                + fresnel
                + albedo * env;
-
-    // Saturation lift
-    float luma = dot(color, vec3(0.299, 0.587, 0.114));
-    color = mix(vec3(luma), color, 1.18);
 
     color = pow(color, vec3(0.92));
 
