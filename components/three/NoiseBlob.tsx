@@ -1,5 +1,5 @@
 'use client'
-import { useRef, useMemo, useCallback } from 'react'
+import { useRef, useMemo, useCallback, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type { ThreeEvent } from '@react-three/fiber'
 import * as THREE from 'three'
@@ -67,6 +67,7 @@ const vertexShader = /* glsl */`
   varying vec3 vViewDir;
   varying vec3 vWorldPos;
   varying float vNoise;
+  varying float vLocalY;
 
   ${NOISE_FN}
 
@@ -102,6 +103,7 @@ const vertexShader = /* glsl */`
     vec3 displacedNormal = normalize(normal - grad * str * 0.8);
 
     vNoise    = n;
+    vLocalY   = position.y;
     vWorldPos = (modelMatrix * vec4(pos, 1.0)).xyz;
     vNormal   = normalize(normalMatrix * displacedNormal);
     vViewDir  = normalize(cameraPosition - vWorldPos);
@@ -113,11 +115,13 @@ const vertexShader = /* glsl */`
 const fragmentShader = /* glsl */`
   uniform float uTime;
   uniform vec2  uMouse;
+  uniform float uOpacity;
 
   varying vec3  vNormal;
   varying vec3  vViewDir;
   varying vec3  vWorldPos;
   varying float vNoise;
+  varying float vLocalY;
 
   // ── Schlick Fresnel ──────────────────────────────────────────
   float schlick(float cosTheta, float F0){
@@ -164,7 +168,7 @@ const fragmentShader = /* glsl */`
 
     // bounded shading coordinate + gentle time shimmer (stays in blue)
     float b = t * 0.70
-            + (vWorldPos.y * 0.15 + 0.5) * 0.25
+            + (vLocalY * 0.15 + 0.5) * 0.25
             + (1.0 - NdotV) * 0.20
             + sin(uTime * 0.3 + vWorldPos.x * 2.0) * 0.05;
     b = clamp(b, 0.0, 1.0);
@@ -209,7 +213,7 @@ const fragmentShader = /* glsl */`
 
     color = pow(color, vec3(0.92));
 
-    gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(color, uOpacity);
   }
 `
 
@@ -223,6 +227,7 @@ export function NoiseBlob({
   scaleFactor = 1,
   frozenRef,
   detail = 5,
+  opacity = 1,
 }: {
   spawnRef?: React.MutableRefObject<SpawnFn | undefined>
   posRef?: React.MutableRefObject<THREE.Vector3>
@@ -231,6 +236,7 @@ export function NoiseBlob({
   scaleFactor?: number
   frozenRef?: React.MutableRefObject<boolean>
   detail?: number
+  opacity?: number
 }) {
   const meshRef     = useRef<THREE.Mesh>(null)
   const materialRef = useRef<THREE.ShaderMaterial>(null)
@@ -273,7 +279,14 @@ export function NoiseBlob({
     uTime:     { value: 0 },
     uStrength: { value: 0.48 },
     uMouse:    { value: new THREE.Vector2(0, 0) },
+    uOpacity:  { value: 1 },
   }), [])
+
+  // Set opacity from prop on change only (per-frame writers, e.g. the journey
+  // controller, may drive uOpacity directly without fighting this).
+  useEffect(() => {
+    if (materialRef.current) materialRef.current.uniforms.uOpacity.value = opacity
+  }, [opacity])
 
   useFrame(({ pointer }, delta) => {
     // Flow time freezes when a fist is held
@@ -332,6 +345,8 @@ export function NoiseBlob({
         fragmentShader={fragmentShader}
         uniforms={uniforms}
         side={THREE.FrontSide}
+        transparent
+        depthWrite={false}
       />
     </mesh>
   )
