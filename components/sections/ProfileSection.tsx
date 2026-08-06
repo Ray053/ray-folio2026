@@ -64,9 +64,10 @@ export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
         <div className="profile-photo" style={{ position: 'sticky', top: '96px' }}>
           <div style={{
             aspectRatio: '4/5',
-            borderRadius: '16px',
+            borderRadius: 0,
             overflow: 'hidden',
-            border: '1px solid var(--color-border)',
+            border: '2px solid var(--color-ink)',
+            boxShadow: '8px 8px 0 var(--color-accent)',
             backgroundColor: 'var(--color-surface-2)',
             position: 'relative',
           }}>
@@ -97,11 +98,8 @@ export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
 
         {/* Right — intro text with scroll fill */}
         <div>
-          <p style={{
-            fontSize: '12px', fontWeight: 500, letterSpacing: '0.15em',
-            textTransform: 'uppercase', color: 'var(--color-accent)', marginBottom: '20px',
-          }}>
-            About Me
+          <p className="mono-label" style={{ marginBottom: '20px' }}>
+            {'// '}About Me
           </p>
           <p
             ref={textRef}
