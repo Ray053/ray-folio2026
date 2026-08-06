@@ -21,9 +21,9 @@ function HeroText() {
         Ray
       </h1>
 
-      <div className="glass" style={{
+      <div className="hard-block" style={{
         marginTop: '24px', maxWidth: '380px',
-        padding: '20px 22px',
+        padding: '20px 22px', borderRadius: 0,
         display: 'flex', flexDirection: 'column', gap: '12px',
       }}>
         <p style={{
@@ -43,14 +43,17 @@ function HeroText() {
         <a href="/cv.pdf" download style={{
           alignSelf: 'flex-start', marginTop: '4px',
           display: 'inline-flex', alignItems: 'center', gap: '10px',
-          padding: '10px 10px 10px 18px', borderRadius: '9999px',
+          padding: '10px 12px 10px 18px', borderRadius: 0,
+          border: '2px solid var(--color-ink)', boxShadow: '4px 4px 0 var(--color-ink)',
           background: 'var(--color-accent)', color: '#fff',
-          fontSize: '14px', fontWeight: 600, textDecoration: 'none',
+          fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
+          fontSize: '13px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
+          textDecoration: 'none',
         }}>
           {t('downloadCV')}
           <span style={{
-            width: '28px', height: '28px', borderRadius: '9999px',
-            background: 'rgba(255,255,255,0.22)',
+            width: '26px', height: '26px', borderRadius: 0,
+            background: 'var(--color-acid)', color: 'var(--color-ink)',
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
           }}>↗</span>
         </a>
