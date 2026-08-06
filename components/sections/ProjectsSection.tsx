@@ -21,9 +21,9 @@ export type ProjectItem = {
 }
 
 const PLACEHOLDER_PROJECTS: ProjectItem[] = [
-  { id: '1', slug: 'healthcare-app-redesign', title: 'Healthcare App Redesign', tags: ['UX Research', 'Product Design'], year: 2025, coverColor: '#1B3550' },
-  { id: '2', slug: 'e-commerce-checkout', title: 'E-Commerce Checkout Flow', tags: ['Interaction Design', 'Testing'], year: 2024, coverColor: '#122333' },
-  { id: '3', slug: 'design-system', title: 'Design System at Scale', tags: ['Design Systems', 'Components'], year: 2024, coverColor: '#254A64' },
+  { id: '1', slug: 'healthcare-app-redesign', title: 'Healthcare App Redesign', tags: ['UX Research', 'Product Design'], year: 2025, coverColor: '#0033FF' },
+  { id: '2', slug: 'e-commerce-checkout', title: 'E-Commerce Checkout Flow', tags: ['Interaction Design', 'Testing'], year: 2024, coverColor: '#001A80' },
+  { id: '3', slug: 'design-system', title: 'Design System at Scale', tags: ['Design Systems', 'Components'], year: 2024, coverColor: '#3D6BFF' },
 ]
 
 export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
@@ -103,16 +103,13 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
       }}>
         {/* Heading */}
         <div className="acc-head" style={{ marginBottom: 'clamp(32px, 5vw, 56px)' }}>
-          <p style={{
-            fontSize: '13px', fontWeight: 500, letterSpacing: '0.15em',
-            textTransform: 'uppercase', color: 'var(--color-accent)', marginBottom: '12px',
-          }}>
-            {t('eyebrow')}
+          <p className="mono-label" style={{ marginBottom: '12px' }}>
+            {'// '}{t('eyebrow')}
           </p>
           <h2 style={{
             fontFamily: 'var(--font-syne), ui-sans-serif',
             fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 700,
-            lineHeight: 1.1, letterSpacing: '-0.02em',
+            lineHeight: 1.1, letterSpacing: '-0.02em', textTransform: 'uppercase',
             color: 'var(--color-text-primary)', margin: 0,
           }}>
             {t('heading')}
@@ -122,7 +119,7 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
         {/* Accordion list */}
         <div
           className="acc-list"
-          style={{ borderTop: '1px solid var(--color-border)' }}
+          style={{ borderTop: '2px solid var(--color-ink)' }}
           onMouseLeave={() => setActive(null)}
         >
           {PROJECTS.map((p, i) => {
@@ -135,7 +132,7 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
                 onMouseEnter={() => { setActive(i); setCurrent(i) }}
                 onClick={() => router.push(`/work/${p.slug}`)}
                 style={{
-                  borderBottom: '1px solid var(--color-border)',
+                  borderBottom: '2px solid var(--color-ink)',
                   padding: isActive ? '36px 8px' : '24px 8px',
                   display: 'flex',
                   alignItems: 'center',
@@ -147,17 +144,14 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 'clamp(16px, 3vw, 40px)' }}>
-                  <span style={{
-                    fontFamily: 'var(--font-mono), monospace',
-                    fontSize: '13px', color: 'var(--color-text-muted)',
-                  }}>
-                    0{i + 1}
+                  <span className="mono-label" style={{ color: 'var(--color-accent)' }}>
+                    [0{i + 1}]
                   </span>
                   <h3 style={{
                     fontFamily: 'var(--font-syne), ui-sans-serif',
                     fontSize: 'clamp(26px, 4vw, 52px)',
                     fontWeight: 700, lineHeight: 1.05, letterSpacing: '-0.02em',
-                    margin: 0,
+                    margin: 0, textTransform: 'uppercase',
                     color: isActive ? 'var(--color-accent)' : 'var(--color-text-primary)',
                     transform: isActive ? 'translateX(12px)' : 'translateX(0)',
                     transition: 'color 0.3s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1)',
@@ -171,7 +165,7 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
                   <svg
                     width="22" height="22" viewBox="0 0 24 24" fill="none"
                     stroke={isActive ? 'var(--color-accent)' : 'var(--color-text-muted)'}
-                    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                    strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"
                     style={{
                       transform: isActive ? 'translateX(4px)' : 'translateX(0)',
                       transition: 'transform 0.3s ease, stroke 0.3s ease',
@@ -197,19 +191,19 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
             top: 0, left: 0,
             width: '260px',
             height: '170px',
-            borderRadius: '12px',
+            borderRadius: 0,
             overflow: 'hidden',
             pointerEvents: 'none',
             zIndex: 45,
             opacity: 0,
-            border: '1px solid color-mix(in srgb, var(--color-border) 60%, transparent)',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.28)',
+            border: '2px solid var(--color-ink)',
+            boxShadow: '6px 6px 0 var(--color-ink)',
             willChange: 'transform',
           }}
         >
           <div style={{
             position: 'absolute', inset: 0,
-            background: `radial-gradient(ellipse at 65% 35%, ${proj.coverColor}, #060d15)`,
+            background: proj.coverColor,
           }} />
           {proj.coverSrc && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -226,8 +220,8 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
           )}
           <div style={{
             position: 'absolute', bottom: 0, left: 0, right: 0,
-            padding: '14px 16px',
-            background: 'linear-gradient(to top, rgba(0,0,0,0.55), transparent)',
+            padding: '12px 14px',
+            background: 'var(--color-ink)',
           }}>
             <p style={{
               fontFamily: 'var(--font-syne), ui-sans-serif',
