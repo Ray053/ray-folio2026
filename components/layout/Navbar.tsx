@@ -3,7 +3,6 @@ import { useRef, useEffect, useState, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link, usePathname } from '@/i18n/navigation'
 import gsap from 'gsap'
-import { ThemeToggle } from './ThemeToggle'
 import { LangToggle } from './LangToggle'
 import { LogoIcon } from './LogoIcon'
 
@@ -63,7 +62,7 @@ export function Navbar() {
           pointerEvents: 'none',   // let the page under the gaps stay interactive
         }}
       >
-        <nav className="glass-pill" style={{
+        <nav className="hard-block" style={{
           pointerEvents: 'auto',
           width: 'max-content', maxWidth: '100%',
           margin: '14px auto 0',
@@ -89,14 +88,16 @@ export function Navbar() {
             <NavLink href="/work"  active={pathname === '/work'}>  {t('work')}  </NavLink>
             <NavLink href="/about" active={pathname === '/about'}> {t('about')} </NavLink>
             <a href="/cv.pdf" download style={{
-              padding: '7px 16px', marginLeft: '4px', borderRadius: '9999px',
-              border: '1px solid var(--color-accent)', fontSize: '14px',
-              fontWeight: 500, color: 'var(--color-accent-hover)', textDecoration: 'none',
+              padding: '8px 16px', marginLeft: '6px', borderRadius: 0,
+              border: '2px solid var(--color-ink)',
+              background: 'var(--color-accent)', boxShadow: '4px 4px 0 var(--color-ink)',
+              fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
+              fontSize: '13px', fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase',
+              color: '#fff', textDecoration: 'none',
             }}>
               {t('downloadCV')}
             </a>
             <LangToggle />
-            <ThemeToggle />
           </div>
 
           {/* Hamburger (mobile only) */}
@@ -160,7 +161,6 @@ export function Navbar() {
           style={{ display: 'flex', alignItems: 'center', gap: '16px', paddingTop: '32px' }}
         >
           <LangToggle />
-          <ThemeToggle />
         </div>
       </div>
     </>
