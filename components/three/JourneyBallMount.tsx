@@ -2,13 +2,14 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import dynamic from 'next/dynamic'
+import type { DanceVideo } from '@/lib/payload'
 
 const JourneyBall = dynamic(
   () => import('./JourneyBall').then(m => m.JourneyBall),
   { ssr: false }
 )
 
-export function JourneyBallMount() {
+export function JourneyBallMount({ danceItems = [] }: { danceItems?: DanceVideo[] }) {
   const [mounted, setMounted] = useState(false)
   const [lowPower, setLowPower] = useState(false)
   const [webgl, setWebgl] = useState(true)
@@ -26,5 +27,5 @@ export function JourneyBallMount() {
   // (PageTransition uses will-change:transform, which would otherwise make
   // position:fixed resolve against that full-height wrapper instead of the viewport).
   if (!mounted || !webgl) return null
-  return createPortal(<JourneyBall lowPower={lowPower} />, document.body)
+  return createPortal(<JourneyBall lowPower={lowPower} danceItems={danceItems} />, document.body)
 }
