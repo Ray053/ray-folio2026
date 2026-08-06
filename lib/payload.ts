@@ -21,7 +21,7 @@ export function lexicalToText(data: any): string {
     .trim()
 }
 
-const COLORS = ['#1B3550', '#122333', '#254A64', '#0D1B2A']
+const COLORS = ['#0033FF', '#001A80', '#3D6BFF', '#8AA5FF', '#00C2FF', '#DCE4FF']
 
 export type CMSProject = {
   id: string
