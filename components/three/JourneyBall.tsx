@@ -86,9 +86,9 @@ function Controller({ groupRef, pointsRef, reducedMotion }: {
     cur.current.x += (world.x - cur.current.x) * 0.15
     cur.current.y += (world.y - cur.current.y) * 0.15
     g.position.set(cur.current.x, cur.current.y, 0)
-    // Grow the ball back up as it becomes particles so the cloud spreads out
-    // and reads as distinct particles (not a dense solid blob).
-    g.scale.setScalar(lerp(ballScale(progress), 1.5, toDance))
+    // Settle to a compact particle ball at the dance centre — small enough
+    // to leave room for the video cards that orbit around it in Phase 2b.
+    g.scale.setScalar(lerp(ballScale(progress), 0.85, toDance))
 
     // Cross-fade mesh → particle ball across the dance morph.
     const morph = toDance
