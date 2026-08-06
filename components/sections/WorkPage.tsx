@@ -68,17 +68,14 @@ export function WorkPage({ projects }: { projects?: WorkItem[] }) {
         maxWidth: '1200px',
         margin: '0 auto',
       }}>
-        <p className="work-header" style={{
-          fontSize: '12px', fontWeight: 500, letterSpacing: '0.15em',
-          textTransform: 'uppercase', color: 'var(--color-text-muted)', marginBottom: '12px',
-        }}>
-          {t('eyebrow')}
+        <p className="work-header mono-label" style={{ marginBottom: '12px' }}>
+          {'// '}{t('eyebrow')}
         </p>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
           <h1 className="work-header" style={{
             fontFamily: 'var(--font-syne), ui-sans-serif',
             fontSize: 'clamp(40px, 5.5vw, 72px)', fontWeight: 700,
-            lineHeight: 1.0, letterSpacing: '-0.03em',
+            lineHeight: 1.0, letterSpacing: '-0.03em', textTransform: 'uppercase',
             color: 'var(--color-text-primary)', margin: 0,
           }}>
             {t('heading')}
@@ -92,7 +89,7 @@ export function WorkPage({ projects }: { projects?: WorkItem[] }) {
         </div>
       </div>
 
-      <div style={{ position: 'relative', zIndex: 1, height: '1px', backgroundColor: 'var(--color-border)', maxWidth: '1200px', margin: '0 auto' }} />
+      <div style={{ position: 'relative', zIndex: 1, height: '2px', backgroundColor: 'var(--color-ink)', maxWidth: '1200px', margin: '0 auto' }} />
 
       {/* Bento grid */}
       <div
@@ -105,11 +102,11 @@ export function WorkPage({ projects }: { projects?: WorkItem[] }) {
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
           gridTemplateRows: '300px 220px 300px',
-          gap: '12px',
+          gap: '22px',
         }}
       >
-        {ALL_PROJECTS.map(project => (
-          <WorkBentoCard key={project.id} project={project} />
+        {ALL_PROJECTS.map((project, i) => (
+          <WorkBentoCard key={project.id} project={project} index={i} />
         ))}
       </div>
 
