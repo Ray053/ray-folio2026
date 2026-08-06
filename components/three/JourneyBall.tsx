@@ -3,13 +3,15 @@ import { useRef, useEffect, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { NoiseBlob } from './NoiseBlob'
+import { ParticleBall } from './ParticleBall'
 import {
   screenToWorld, mix2, smoothstep, clamp01, ballScale, ballOpacity, JOURNEY, type Vec2,
 } from '@/lib/scrollJourney'
 
 // Reads scroll + DOM anchors each frame and drives the ball's position, scale, opacity.
-function Controller({ groupRef, reducedMotion }: {
+function Controller({ groupRef, pointsRef, reducedMotion }: {
   groupRef: React.RefObject<THREE.Group | null>
+  pointsRef: React.RefObject<THREE.Points | null>
   reducedMotion: boolean
 }) {
   const { size } = useThree()
@@ -65,12 +67,19 @@ function Controller({ groupRef, reducedMotion }: {
       trajPt = { x: layer.left + pt.x * layer.width, y: layer.top + pt.y * layer.height }
     }
 
-    // Blend anchors: hero → about (as #profile centre approaches viewport middle),
-    // about → trajectory (as the trajectory layer scrolls in).
+    // Blend anchors: hero → about → trajectory → dance-zone centre.
     const toAbout = profile ? smoothstep(vh * 0.9, vh * 0.5, profile.top + profile.height / 2) : 0
     const toTraj = layer ? smoothstep(vh * 0.6, vh * 0.1, layer.top) : 0
     let target = mix2(heroPt, aboutPt, toAbout)
     if (trajPt) target = mix2(target, trajPt, toTraj)
+
+    // Dance zone: continue into it and morph mesh → particles.
+    const dance = document.getElementById('dance-zone')?.getBoundingClientRect()
+    const danceCenter: Vec2 = dance
+      ? { x: vp.width / 2, y: dance.top + dance.height / 2 }
+      : target
+    const toDance = dance ? smoothstep(vh * 0.85, vh * 0.5, dance.top + dance.height / 2) : 0
+    target = mix2(target, danceCenter, toDance)
 
     // Screen → world, smoothed.
     const world = screenToWorld(target.x, target.y, vp, cam)
@@ -78,7 +87,17 @@ function Controller({ groupRef, reducedMotion }: {
     cur.current.y += (world.y - cur.current.y) * 0.15
     g.position.set(cur.current.x, cur.current.y, 0)
     g.scale.setScalar(ballScale(progress))
-    setOpacity(g, ballOpacity(progress))
+
+    // Cross-fade mesh → particle ball across the dance morph.
+    const morph = toDance
+    setOpacity(g, ballOpacity(progress) * (1 - morph))
+    const pts = pointsRef.current
+    const pMat = pts?.material as THREE.ShaderMaterial | undefined
+    if (pMat?.uniforms) {
+      pMat.uniforms.uOpacity.value = morph
+      pMat.uniforms.uExpand.value = morph
+    }
+    if (pts && !reducedMotion) pts.rotation.y += 0.0016
   })
 
   return null
@@ -86,6 +105,7 @@ function Controller({ groupRef, reducedMotion }: {
 
 export function JourneyBall({ lowPower }: { lowPower: boolean }) {
   const groupRef = useRef<THREE.Group>(null)
+  const pointsRef = useRef<THREE.Points>(null)
   const [reducedMotion, setReducedMotion] = useState(false)
   const [inRange, setInRange] = useState(true)
 
@@ -99,8 +119,10 @@ export function JourneyBall({ lowPower }: { lowPower: boolean }) {
   // Pause rendering once fully scrolled past the trajectory layer.
   useEffect(() => {
     const onScroll = () => {
+      const dance = document.getElementById('dance-zone')?.getBoundingClientRect()
       const layer = document.getElementById('journey-layer')?.getBoundingClientRect()
-      setInRange(!layer || layer.bottom > -200)
+      const bottom = dance ? dance.bottom : (layer ? layer.bottom : 1)
+      setInRange(bottom > -200)
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -120,8 +142,9 @@ export function JourneyBall({ lowPower }: { lowPower: boolean }) {
       >
         <group ref={groupRef}>
           <NoiseBlob active={false} scaleFactor={1} detail={lowPower ? 3 : 5} />
+          <ParticleBall pointsRef={pointsRef} count={lowPower ? 600 : 1400} />
         </group>
-        <Controller groupRef={groupRef} reducedMotion={reducedMotion} />
+        <Controller groupRef={groupRef} pointsRef={pointsRef} reducedMotion={reducedMotion} />
       </Canvas>
     </div>
   )

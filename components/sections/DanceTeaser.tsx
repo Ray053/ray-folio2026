@@ -42,9 +42,10 @@ export function DanceTeaser() {
   return (
     <section
       ref={sectionRef}
+      id="dance-zone"
       style={{
         padding: 'clamp(64px, 8vw, 112px) 24px',
-        backgroundColor: 'var(--color-surface)',
+        backgroundColor: 'transparent',
         borderTop: '2px solid var(--color-ink)',
       }}
     >
