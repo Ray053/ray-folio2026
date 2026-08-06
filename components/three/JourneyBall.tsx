@@ -5,7 +5,7 @@ import * as THREE from 'three'
 import { NoiseBlob } from './NoiseBlob'
 import { ParticleBall } from './ParticleBall'
 import {
-  screenToWorld, mix2, smoothstep, clamp01, ballScale, ballOpacity, JOURNEY, type Vec2,
+  screenToWorld, mix2, smoothstep, clamp01, lerp, ballScale, ballOpacity, JOURNEY, type Vec2,
 } from '@/lib/scrollJourney'
 
 // Reads scroll + DOM anchors each frame and drives the ball's position, scale, opacity.
@@ -86,7 +86,9 @@ function Controller({ groupRef, pointsRef, reducedMotion }: {
     cur.current.x += (world.x - cur.current.x) * 0.15
     cur.current.y += (world.y - cur.current.y) * 0.15
     g.position.set(cur.current.x, cur.current.y, 0)
-    g.scale.setScalar(ballScale(progress))
+    // Grow the ball back up as it becomes particles so the cloud spreads out
+    // and reads as distinct particles (not a dense solid blob).
+    g.scale.setScalar(lerp(ballScale(progress), 1.5, toDance))
 
     // Cross-fade mesh → particle ball across the dance morph.
     const morph = toDance

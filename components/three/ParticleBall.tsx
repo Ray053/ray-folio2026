@@ -53,7 +53,7 @@ export function ParticleBall({
   const material = useMemo(() => new THREE.ShaderMaterial({
     vertexShader, fragmentShader,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-    uniforms: { uOpacity: { value: 0 }, uExpand: { value: 0 }, uSize: { value: 3.2 } },
+    uniforms: { uOpacity: { value: 0 }, uExpand: { value: 0 }, uSize: { value: 0.12 } },
   }), [])
 
   return <points ref={pointsRef} geometry={geometry} material={material} />
