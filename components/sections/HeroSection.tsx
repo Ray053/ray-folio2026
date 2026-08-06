@@ -1,6 +1,5 @@
 'use client'
 import { useRef, useEffect, useState } from 'react'
-import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -61,57 +60,30 @@ function HeroText() {
   )
 }
 
-const NoiseBlobScene = dynamic(
-  () => import('@/components/three/NoiseBlobScene').then(m => m.NoiseBlobScene),
-  { ssr: false }
-)
-
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
-  const blobRef    = useRef<HTMLDivElement>(null)
   const textRef    = useRef<HTMLDivElement>(null)
   const [cam, setCam] = useState(false)
-  const [inView, setInView] = useState(true)
   const [lowPower, setLowPower] = useState(false)
 
-  // Detect mobile / touch devices to reduce 3D cost
+  // Detect mobile / touch devices to reduce cost
   useEffect(() => {
     setLowPower(window.matchMedia('(max-width: 768px), (pointer: coarse)').matches)
   }, [])
 
-  // Pause the R3F render loop when the hero scrolls out of view
-  useEffect(() => {
-    const el = sectionRef.current
-    if (!el) return
-    const io = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
-      { rootMargin: '100px' }
-    )
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
-
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const base = {
-        trigger: sectionRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 1.2,
-      }
-
-      // Blob: parallax DOWN — moves slower than scroll, feels like a deep background layer
-      gsap.fromTo(blobRef.current,
-        { y: -50 },
-        { y: 180, ease: 'none', scrollTrigger: base }
-      )
-
       // Text: parallax UP — moves faster than scroll, feels like a foreground layer
       gsap.to(textRef.current, {
         y: -100,
         opacity: 0,
         ease: 'none',
-        scrollTrigger: { ...base, end: '55% top' },
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: '55% top',
+          scrub: 1.2,
+        },
       })
     }, sectionRef)
 
@@ -127,7 +99,7 @@ export function HeroSection() {
         overflow: 'hidden',
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: 'var(--color-background)',
+        backgroundColor: 'transparent',
       }}
     >
       {/* Blue halo — makes the orb read as a light source */}
@@ -153,18 +125,7 @@ export function HeroSection() {
         pointerEvents: 'none',
       }} />
 
-      {/* Blob / figure — above the mask so the full figure reads */}
-      <div
-        ref={blobRef}
-        style={{
-          position: 'absolute',
-          inset: '-60px',
-          zIndex: 2,
-          willChange: 'transform',
-        }}
-      >
-        <NoiseBlobScene active={cam} inView={inView} lowPower={lowPower} />
-      </div>
+      {/* The travelling ball is rendered by the page-level fixed JourneyBall layer. */}
 
       {!lowPower && <ParticleCursor />}
 
