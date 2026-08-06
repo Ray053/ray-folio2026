@@ -106,6 +106,39 @@ export type CMSSiteInfo = {
   cvSrc: string
 }
 
+export type DanceVideo = {
+  id: string
+  title: string
+  year: number
+  location?: string
+  videoSrc?: string
+  thumbnailSrc?: string
+}
+
+export async function getDanceVideos(locale: string): Promise<DanceVideo[]> {
+  try {
+    const payload = await getPayload({ config })
+    const { docs } = await payload.find({
+      collection: 'dance-videos' as any,
+      depth: 1,
+      limit: 24,
+      sort: 'order',
+      locale: locale as any,
+    })
+    return docs.map((d: any) => ({
+      id: String(d.id),
+      title: typeof d.title === 'string' ? d.title : '',
+      year: typeof d.year === 'number' ? d.year : new Date().getFullYear(),
+      location: typeof d.location === 'string' ? d.location : '',
+      videoSrc: urlOf(d.video),
+      thumbnailSrc: urlOf(d.thumbnail),
+    }))
+  } catch (e) {
+    console.error('getDanceVideos failed:', e)
+    return []
+  }
+}
+
 export async function getSiteInfo(locale: string): Promise<CMSSiteInfo | null> {
   try {
     const payload = await getPayload({ config })
