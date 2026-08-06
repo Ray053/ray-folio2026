@@ -173,10 +173,10 @@ const fragmentShader = /* glsl */`
             + sin(uTime * 0.3 + vWorldPos.x * 2.0) * 0.05;
     b = clamp(b, 0.0, 1.0);
 
-    vec3 blueDeep = vec3(0.000, 0.106, 0.239);   // #001B3D
-    vec3 blueMid  = vec3(0.039, 0.518, 1.000);   // #0A84FF
-    vec3 blueLite = vec3(0.353, 0.690, 1.000);   // #5AB0FF
-    vec3 hiBlue   = vec3(0.918, 0.957, 1.000);   // #EAF4FF
+    vec3 blueDeep = vec3(0.000, 0.102, 0.502);   // #001A80
+    vec3 blueMid  = vec3(0.000, 0.200, 1.000);   // #0033FF
+    vec3 blueLite = vec3(0.541, 0.647, 1.000);   // #8AA5FF
+    vec3 hiBlue   = vec3(0.000, 0.761, 1.000);   // #00C2FF
 
     vec3 albedo = mix(blueDeep, blueMid, smoothstep(0.0, 0.6, b));
     albedo      = mix(albedo,  blueLite, smoothstep(0.55, 1.0, b));
@@ -192,9 +192,10 @@ const fragmentShader = /* glsl */`
     vec3 sheen    = mix(blueLite, hiBlue, 0.5);
     vec3 specular = hiBlue*(s1+s2) + sheen*(s3+s4);
 
-    // ── Fresnel rim — bright blue-white glowing edge ─────────────
+    // ── Fresnel edge — cyan→lime acid flash at grazing angles ────
     float F = schlick(NdotV, 0.42);
-    vec3 fresnel = mix(blueLite, hiBlue, F) * F * 0.95;
+    vec3 lime = vec3(0.800, 1.000, 0.000);       // #CCFF00
+    vec3 fresnel = mix(mix(blueLite, hiBlue, F), lime, F * F) * F * 1.0;
 
     // ── Fake environment reflection ──────────────────────────────
     vec3 R    = reflect(-V, N);
