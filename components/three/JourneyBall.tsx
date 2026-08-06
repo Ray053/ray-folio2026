@@ -4,14 +4,17 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { NoiseBlob } from './NoiseBlob'
 import { ParticleBall } from './ParticleBall'
+import { DanceCylinder } from './DanceCylinder'
+import type { DanceVideo } from '@/lib/payload'
 import {
   screenToWorld, mix2, smoothstep, clamp01, lerp, ballScale, ballOpacity, JOURNEY, type Vec2,
 } from '@/lib/scrollJourney'
 
 // Reads scroll + DOM anchors each frame and drives the ball's position, scale, opacity.
-function Controller({ groupRef, pointsRef, reducedMotion }: {
+function Controller({ groupRef, pointsRef, cylinderRef, reducedMotion }: {
   groupRef: React.RefObject<THREE.Group | null>
   pointsRef: React.RefObject<THREE.Points | null>
+  cylinderRef: React.RefObject<THREE.Group | null>
   reducedMotion: boolean
 }) {
   const { size } = useThree()
@@ -73,13 +76,13 @@ function Controller({ groupRef, pointsRef, reducedMotion }: {
     let target = mix2(heroPt, aboutPt, toAbout)
     if (trajPt) target = mix2(target, trajPt, toTraj)
 
-    // Dance zone: continue into it and morph mesh → particles.
+    // Dance zone (tall pinned section): centre the ball in the viewport as it
+    // pins; dancePin = progress through the sticky span (drives the cylinder).
     const dance = document.getElementById('dance-zone')?.getBoundingClientRect()
-    const danceCenter: Vec2 = dance
-      ? { x: vp.width / 2, y: dance.top + dance.height / 2 }
-      : target
-    const toDance = dance ? smoothstep(vh * 0.85, vh * 0.5, dance.top + dance.height / 2) : 0
+    const toDance = dance ? smoothstep(vh * 0.6, 0, dance.top) : 0
+    const danceCenter: Vec2 = { x: vp.width / 2, y: vh * 0.5 }
     target = mix2(target, danceCenter, toDance)
+    const dancePin = dance ? clamp01(-dance.top / Math.max(1, dance.height - vh)) : 0
 
     // Screen → world, smoothed.
     const world = screenToWorld(target.x, target.y, vp, cam)
@@ -100,14 +103,23 @@ function Controller({ groupRef, pointsRef, reducedMotion }: {
       pMat.uniforms.uExpand.value = morph
     }
     if (pts && !reducedMotion) pts.rotation.y += 0.0016
+
+    // Dance cylinder: centre on the ball, rotate by pin progress, show when morphed.
+    const cyl = cylinderRef.current
+    if (cyl) {
+      cyl.position.copy(g.position)
+      cyl.rotation.y = reducedMotion ? 0 : dancePin * Math.PI * 2
+      cyl.visible = toDance > 0.01
+    }
   })
 
   return null
 }
 
-export function JourneyBall({ lowPower }: { lowPower: boolean }) {
+export function JourneyBall({ lowPower, danceItems = [] }: { lowPower: boolean; danceItems?: DanceVideo[] }) {
   const groupRef = useRef<THREE.Group>(null)
   const pointsRef = useRef<THREE.Points>(null)
+  const cylinderRef = useRef<THREE.Group>(null)
   const [reducedMotion, setReducedMotion] = useState(false)
   const [inRange, setInRange] = useState(true)
 
@@ -146,7 +158,10 @@ export function JourneyBall({ lowPower }: { lowPower: boolean }) {
           <NoiseBlob active={false} scaleFactor={1} detail={lowPower ? 3 : 5} />
           <ParticleBall pointsRef={pointsRef} count={lowPower ? 600 : 1400} />
         </group>
-        <Controller groupRef={groupRef} pointsRef={pointsRef} reducedMotion={reducedMotion} />
+        <group ref={cylinderRef} visible={false}>
+          <DanceCylinder items={danceItems} groupRef={cylinderRef} lowPower={lowPower} />
+        </group>
+        <Controller groupRef={groupRef} pointsRef={pointsRef} cylinderRef={cylinderRef} reducedMotion={reducedMotion} />
       </Canvas>
     </div>
   )
