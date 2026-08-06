@@ -28,7 +28,7 @@ function Controller({ groupRef, pointsRef, cylinderRef, reducedMotion }: {
     if (mat?.uniforms?.uOpacity) mat.uniforms.uOpacity.value = o
   }
 
-  useFrame(() => {
+  useFrame((state, delta) => {
     const g = groupRef.current
     if (!g) return
     const vp = { width: size.width, height: size.height }
@@ -101,15 +101,26 @@ function Controller({ groupRef, pointsRef, cylinderRef, reducedMotion }: {
     if (pMat?.uniforms) {
       pMat.uniforms.uOpacity.value = morph
       pMat.uniforms.uExpand.value = morph
+      pMat.uniforms.uTime.value += delta
+      const m = pMat.uniforms.uMouse.value as THREE.Vector2
+      m.x += (state.pointer.x - m.x) * 0.08
+      m.y += (state.pointer.y - m.y) * 0.08
     }
     if (pts && !reducedMotion) pts.rotation.y += 0.0016
 
-    // Dance cylinder: centre on the ball, rotate by pin progress, show when morphed.
+    // Dance cylinder: centre on the ball, rotate by pin progress; near the end
+    // of the pin, slide the cards off to the right and fade them out.
     const cyl = cylinderRef.current
     if (cyl) {
       cyl.position.copy(g.position)
       cyl.rotation.y = reducedMotion ? 0 : dancePin * Math.PI * 2
-      cyl.visible = toDance > 0.01
+      const exit = smoothstep(0.8, 1.0, dancePin)
+      cyl.position.x = g.position.x + exit * 6
+      cyl.children.forEach(ch => {
+        const mat = (ch as THREE.Mesh).material as THREE.MeshBasicMaterial | undefined
+        if (mat && 'opacity' in mat) mat.opacity = 1 - exit
+      })
+      cyl.visible = toDance > 0.01 && exit < 0.999
     }
   })
 

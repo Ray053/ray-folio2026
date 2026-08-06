@@ -7,11 +7,16 @@ const vertexShader = /* glsl */`
   attribute float aRnd;
   uniform float uExpand;
   uniform float uSize;
+  uniform float uTime;
+  uniform vec2  uMouse;
   varying float vRnd;
   void main() {
     vRnd = aRnd;
     // drift outward a touch as the ball dissolves
     vec3 p = position * (1.0 + uExpand * (0.15 + aRnd * 0.5));
+    // mouse disturbance — particles wobble toward the pointer, per-particle
+    float w = sin(uTime * 3.0 + aRnd * 6.2831);
+    p.xy += uMouse * w * 0.35 * (0.4 + aRnd);
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     gl_PointSize = uSize * (300.0 / -mv.z);
     gl_Position = projectionMatrix * mv;
@@ -53,7 +58,10 @@ export function ParticleBall({
   const material = useMemo(() => new THREE.ShaderMaterial({
     vertexShader, fragmentShader,
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-    uniforms: { uOpacity: { value: 0 }, uExpand: { value: 0 }, uSize: { value: 0.12 } },
+    uniforms: {
+      uOpacity: { value: 0 }, uExpand: { value: 0 }, uSize: { value: 0.12 },
+      uTime: { value: 0 }, uMouse: { value: new THREE.Vector2(0, 0) },
+    },
   }), [])
 
   return <points ref={pointsRef} geometry={geometry} material={material} />

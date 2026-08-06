@@ -4,10 +4,10 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import type { DanceVideo } from '@/lib/payload'
 
-const R = 3.0        // cylinder radius (world units) — larger than the ~0.85 ball
-const PLANE_W = 1.4
-const PLANE_H = 2.4  // portrait dance clips
-// distinct tints for planes without a thumbnail (placeholder demo)
+const R = 2.7        // cylinder radius (world units)
+const PLANE_W = 1.0
+const PLANE_H = 1.7  // portrait dance clips (smaller cards)
+// tints for planes without a video (fallback)
 const PALETTE = ['#0033FF', '#00C2FF', '#3D6BFF', '#8AA5FF', '#CCFF00', '#001A80']
 
 export function DanceCylinder({ items, groupRef, lowPower }: {
@@ -19,43 +19,29 @@ export function DanceCylinder({ items, groupRef, lowPower }: {
   const [front, setFront] = useState(0)
 
   const geometry = useMemo(() => new THREE.PlaneGeometry(PLANE_W, PLANE_H), [])
-  const materials = useMemo(
-    () => items.map((_, i) => new THREE.MeshBasicMaterial({
-      color: new THREE.Color(PALETTE[i % PALETTE.length]), side: THREE.DoubleSide, toneMapped: false,
-    })),
-    [items],
-  )
-  const thumbs = useRef<(THREE.Texture | null)[]>([])
 
-  // Load thumbnails imperatively; solid blue until each resolves.
-  useEffect(() => {
-    thumbs.current = items.map(() => null)
-    const loader = new THREE.TextureLoader()
-    items.forEach((it, i) => {
-      if (!it.thumbnailSrc) return
-      loader.load(it.thumbnailSrc, (tex) => {
-        tex.colorSpace = THREE.SRGBColorSpace
-        thumbs.current[i] = tex
-        materials[i].map = tex
-        materials[i].color.set('#ffffff')
-        materials[i].needsUpdate = true
-      })
-    })
-    return () => { thumbs.current.forEach(t => t?.dispose()) }
-  }, [items, materials])
-
-  // One shared video texture for the camera-facing plane.
-  const videoRef = useRef<HTMLVideoElement | null>(null)
-  const videoTex = useMemo(() => {
-    if (typeof document === 'undefined') return null
+  // One <video> + VideoTexture per item that has a videoSrc.
+  const videos = useMemo(() => items.map(it => {
+    if (typeof document === 'undefined' || !it.videoSrc) return null
     const v = document.createElement('video')
-    v.muted = true; v.loop = true; v.playsInline = true; v.crossOrigin = 'anonymous'
-    videoRef.current = v
+    v.src = it.videoSrc
+    v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto'
+    v.load()
+    return v
+  }), [items])
+
+  const videoTex = useMemo(() => videos.map(v => {
+    if (!v) return null
     const t = new THREE.VideoTexture(v)
     t.colorSpace = THREE.SRGBColorSpace
     return t
-  }, [])
-  const prevFront = useRef(-1)
+  }), [videos])
+
+  const materials = useMemo(() => items.map((_, i) => new THREE.MeshBasicMaterial({
+    map: videoTex[i] ?? null,
+    color: new THREE.Color(videoTex[i] ? '#ffffff' : PALETTE[i % PALETTE.length]),
+    side: THREE.DoubleSide, toneMapped: false, transparent: true,
+  })), [items, videoTex])
 
   // Camera-facing plane index from the group rotation; setState only on change.
   useFrame(() => {
@@ -66,26 +52,14 @@ export function DanceCylinder({ items, groupRef, lowPower }: {
     if (idx !== front) setFront(idx)
   })
 
-  // Swap the front plane to the (playing) video; restore the previous to its thumbnail.
+  // Play the front video, pause the rest (paused ones show their current frame).
   useEffect(() => {
-    if (lowPower || !videoTex) return
-    const p = prevFront.current
-    if (p >= 0 && p !== front && materials[p]) {
-      materials[p].map = thumbs.current[p] ?? null
-      materials[p].color.set(thumbs.current[p] ? '#ffffff' : PALETTE[p % PALETTE.length])
-      materials[p].needsUpdate = true
-    }
-    const src = items[front]?.videoSrc
-    const v = videoRef.current
-    if (v && src && materials[front]) {
-      v.src = src
-      v.play().catch(() => {})
-      materials[front].map = videoTex
-      materials[front].color.set('#ffffff')
-      materials[front].needsUpdate = true
-    }
-    prevFront.current = front
-  }, [front, items, lowPower, videoTex, materials])
+    videos.forEach((v, i) => {
+      if (!v) return
+      if (i === front && !lowPower) v.play().catch(() => {})
+      else v.pause()
+    })
+  }, [front, videos, lowPower])
 
   return (
     <>
@@ -100,7 +74,7 @@ export function DanceCylinder({ items, groupRef, lowPower }: {
             material={materials[i]}
             position={[x, 0, z]}
             rotation={[0, a, 0]}
-            scale={i === front ? 1.3 : 1}
+            scale={i === front ? 1.25 : 1}
           />
         )
       })}
