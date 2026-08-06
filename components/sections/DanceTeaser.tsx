@@ -45,7 +45,7 @@ export function DanceTeaser() {
       style={{
         padding: 'clamp(64px, 8vw, 112px) 24px',
         backgroundColor: 'var(--color-surface)',
-        borderTop: '1px solid var(--color-border)',
+        borderTop: '2px solid var(--color-ink)',
       }}
     >
       <div
@@ -60,15 +60,8 @@ export function DanceTeaser() {
       >
         {/* Left: text */}
         <div className="dance-text">
-          <p style={{
-            fontSize: '12px',
-            fontWeight: 500,
-            letterSpacing: '0.15em',
-            textTransform: 'uppercase',
-            color: 'var(--color-text-muted)',
-            marginBottom: '12px',
-          }}>
-            {t('eyebrow')}
+          <p className="mono-label" style={{ marginBottom: '12px' }}>
+            {'// '}{t('eyebrow')}
           </p>
 
           <h2 style={{
@@ -76,7 +69,7 @@ export function DanceTeaser() {
             fontSize: 'clamp(28px, 3.5vw, 48px)',
             fontWeight: 700,
             lineHeight: 1.1,
-            letterSpacing: '-0.02em',
+            letterSpacing: '-0.02em', textTransform: 'uppercase',
             color: 'var(--color-text-primary)',
             margin: '0 0 16px',
           }}>
@@ -96,26 +89,24 @@ export function DanceTeaser() {
           <Link
             href="/dance"
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              fontSize: '14px',
-              fontWeight: 500,
-              color: 'var(--color-text-secondary)',
+              display: 'inline-flex', alignItems: 'center', gap: '8px',
+              padding: '10px 18px', borderRadius: 0,
+              border: '2px solid var(--color-ink)', boxShadow: '4px 4px 0 var(--color-ink)',
+              background: 'var(--color-accent)', color: '#fff',
+              fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
+              fontSize: '13px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
               textDecoration: 'none',
-              borderBottom: '1px solid var(--color-border)',
-              paddingBottom: '2px',
-              transition: 'color 0.15s, border-color 0.15s',
+              transition: 'transform 0.15s ease, box-shadow 0.15s ease',
             }}
             onMouseEnter={e => {
               const el = e.currentTarget
-              el.style.color = 'var(--color-text-primary)'
-              el.style.borderColor = 'var(--color-text-primary)'
+              el.style.transform = 'translate(2px, 2px)'
+              el.style.boxShadow = '2px 2px 0 var(--color-ink)'
             }}
             onMouseLeave={e => {
               const el = e.currentTarget
-              el.style.color = 'var(--color-text-secondary)'
-              el.style.borderColor = 'var(--color-border)'
+              el.style.transform = 'translate(0, 0)'
+              el.style.boxShadow = '4px 4px 0 var(--color-ink)'
             }}
           >
             {t('cta')}
@@ -139,15 +130,14 @@ export function DanceTeaser() {
               key={thumb.id}
               className="dance-thumb"
               style={{
-                width: `${88 - i * 8}px`,
+                width: `${92 - i * 6}px`,
                 aspectRatio: thumb.aspectRatio,
-                borderRadius: '8px',
+                borderRadius: 0,
                 backgroundColor: 'var(--color-surface-2)',
-                border: '1px solid var(--color-border)',
+                border: '2px solid var(--color-ink)',
+                boxShadow: '4px 4px 0 var(--color-accent)',
                 overflow: 'hidden',
                 flexShrink: 0,
-                opacity: 1 - i * 0.18,
-                transform: `scale(${1 - i * 0.04})`,
                 position: 'relative',
               }}
             >

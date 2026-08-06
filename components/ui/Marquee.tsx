@@ -88,17 +88,18 @@ export function Marquee({ items, baseSpeed = 0.5 }: Props) {
               fontWeight: 700,
               letterSpacing: '-0.02em',
               lineHeight: 1,
-              color: i % 3 === 1 ? 'var(--color-accent)' : 'var(--color-text-muted)',
-              opacity: i % 3 === 1 ? 0.9 : 0.32,
+              textTransform: 'uppercase',
+              color: i % 3 === 1 ? 'var(--color-accent)' : 'var(--color-ink)',
+              opacity: 1,
             }}
           >
             {item}
             <span style={{
-              width: 'clamp(8px, 1vw, 14px)',
-              height: 'clamp(8px, 1vw, 14px)',
-              borderRadius: '9999px',
-              background: 'var(--color-accent)',
-              opacity: 0.5,
+              width: 'clamp(10px, 1.1vw, 16px)',
+              height: 'clamp(10px, 1.1vw, 16px)',
+              borderRadius: 0,
+              background: 'var(--color-acid)',
+              border: '2px solid var(--color-ink)',
               flexShrink: 0,
             }} />
           </span>
