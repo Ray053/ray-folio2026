@@ -4,7 +4,6 @@ import { useTranslations } from 'next-intl'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ParticleCursor } from '@/components/three/ParticleCursor'
-import { WebcamToggle } from '@/components/ui/WebcamToggle'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -63,7 +62,6 @@ function HeroText() {
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const textRef    = useRef<HTMLDivElement>(null)
-  const [cam, setCam] = useState(false)
   const [lowPower, setLowPower] = useState(false)
 
   // Detect mobile / touch devices to reduce cost
@@ -119,9 +117,8 @@ export function HeroSection() {
         position: 'absolute',
         inset: 0,
         zIndex: 1,
-        background: 'linear-gradient(to right, var(--color-background) 28%, transparent 65%)',
-        opacity: cam ? 0.35 : 1,
-        transition: 'opacity 0.8s ease',
+        background: 'linear-gradient(to right, var(--color-background) 22%, transparent 60%)',
+        opacity: 1,
         pointerEvents: 'none',
       }} />
 
@@ -143,16 +140,6 @@ export function HeroSection() {
         }}
       >
         <HeroText />
-      </div>
-
-      {/* Webcam toggle — bottom right */}
-      <div style={{
-        position: 'absolute',
-        bottom: 'clamp(20px, 4vw, 36px)',
-        right: 'clamp(20px, 4vw, 36px)',
-        zIndex: 25,
-      }}>
-        <WebcamToggle active={cam} onChange={setCam} />
       </div>
     </section>
   )
