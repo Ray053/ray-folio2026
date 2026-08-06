@@ -234,38 +234,6 @@ html.lenis body { height: auto; }
   .hero-stage { animation: none !important; }
 }
 
-/* ─── visionOS liquid-glass (approximation; no official Apple web API) ─── */
-.glass, .glass-pill {
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  background: rgba(255, 255, 255, 0.60);
-  border: 1px solid rgba(255, 255, 255, 0.70);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.55),
-    0 8px 32px var(--color-shadow-accent);
-}
-.glass      { border-radius: 1.5rem; }
-.glass-pill { border-radius: 9999px; }
-
-.dark .glass, .dark .glass-pill {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 8px 32px var(--color-shadow-accent);
-}
-
-/* a11y: solid fallback when the OS asks to reduce transparency */
-@media (prefers-reduced-transparency: reduce) {
-  .glass, .glass-pill,
-  .dark .glass, .dark .glass-pill {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    background: var(--color-surface);
-    border-color: var(--color-border);
-  }
-}
-
 /* ─── Bauhaus hard-edge blocks (replaces liquid glass) ─── */
 .hard-block {
   background: var(--color-background);
