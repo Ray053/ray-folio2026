@@ -13,10 +13,10 @@ function HeroText() {
     <>
       <h1 style={{
         fontFamily: 'var(--font-syne), ui-sans-serif',
-        fontSize: 'clamp(48px, 7vw, 96px)',
-        fontWeight: 700, lineHeight: 1.0, letterSpacing: '-0.03em',
+        fontSize: 'clamp(56px, 9vw, 128px)',
+        fontWeight: 800, lineHeight: 0.95, letterSpacing: '-0.03em',
+        textTransform: 'uppercase',
         color: 'var(--color-text-primary)', margin: 0,
-        textShadow: '0 2px 24px rgba(0,0,0,0.35)',
       }}>
         Ray
       </h1>
@@ -26,13 +26,8 @@ function HeroText() {
         padding: '20px 22px', borderRadius: 0,
         display: 'flex', flexDirection: 'column', gap: '12px',
       }}>
-        <p style={{
-          fontFamily: 'var(--font-syne), ui-sans-serif',
-          fontSize: 'clamp(12px, 1.1vw, 14px)', fontWeight: 500,
-          letterSpacing: '0.15em', textTransform: 'uppercase',
-          color: 'var(--color-accent-hover)', margin: 0,
-        }}>
-          {t('role')}
+        <p className="mono-label" style={{ margin: 0 }}>
+          {'// '}{t('role')}
         </p>
         <p style={{
           fontSize: 'clamp(14px, 1.2vw, 16px)', lineHeight: 1.6,
@@ -114,6 +109,22 @@ export function HeroSection() {
 
       {/* Stage backdrop — backlight glow + horizon */}
       <div className="hero-stage" />
+
+      {/* Bauhaus geometric motifs */}
+      <div aria-hidden style={{
+        position: 'absolute', zIndex: 1, pointerEvents: 'none',
+        right: 'clamp(24px, 9vw, 140px)', top: '20%',
+        width: 'clamp(56px, 7vw, 104px)', height: 'clamp(56px, 7vw, 104px)',
+        background: 'var(--color-acid)', border: '2px solid var(--color-ink)',
+        transform: 'rotate(-8deg)',
+      }} />
+      <div aria-hidden style={{
+        position: 'absolute', zIndex: 1, pointerEvents: 'none',
+        right: 'clamp(90px, 16vw, 260px)', bottom: '22%',
+        width: 'clamp(40px, 5vw, 72px)', height: 'clamp(40px, 5vw, 72px)',
+        borderRadius: '9999px',
+        background: 'transparent', border: '3px solid var(--color-accent)',
+      }} />
 
       {/* Left gradient — sits BELOW the canvas so the figure isn't clipped */}
       <div style={{
