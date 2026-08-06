@@ -44,7 +44,7 @@ function HeroText() {
           alignSelf: 'flex-start', marginTop: '4px',
           display: 'inline-flex', alignItems: 'center', gap: '10px',
           padding: '10px 10px 10px 18px', borderRadius: '9999px',
-          background: 'var(--color-blue-500)', color: '#fff',
+          background: 'var(--color-accent)', color: '#fff',
           fontSize: '14px', fontWeight: 600, textDecoration: 'none',
         }}>
           {t('downloadCV')}
