@@ -7,6 +7,8 @@ import type { DanceVideo } from '@/lib/payload'
 const R = 3.0        // cylinder radius (world units) — larger than the ~0.85 ball
 const PLANE_W = 1.4
 const PLANE_H = 2.4  // portrait dance clips
+// distinct tints for planes without a thumbnail (placeholder demo)
+const PALETTE = ['#0033FF', '#00C2FF', '#3D6BFF', '#8AA5FF', '#CCFF00', '#001A80']
 
 export function DanceCylinder({ items, groupRef, lowPower }: {
   items: DanceVideo[]
@@ -18,8 +20,8 @@ export function DanceCylinder({ items, groupRef, lowPower }: {
 
   const geometry = useMemo(() => new THREE.PlaneGeometry(PLANE_W, PLANE_H), [])
   const materials = useMemo(
-    () => items.map(() => new THREE.MeshBasicMaterial({
-      color: new THREE.Color('#0033FF'), side: THREE.DoubleSide, toneMapped: false,
+    () => items.map((_, i) => new THREE.MeshBasicMaterial({
+      color: new THREE.Color(PALETTE[i % PALETTE.length]), side: THREE.DoubleSide, toneMapped: false,
     })),
     [items],
   )
@@ -70,7 +72,7 @@ export function DanceCylinder({ items, groupRef, lowPower }: {
     const p = prevFront.current
     if (p >= 0 && p !== front && materials[p]) {
       materials[p].map = thumbs.current[p] ?? null
-      materials[p].color.set(thumbs.current[p] ? '#ffffff' : '#0033FF')
+      materials[p].color.set(thumbs.current[p] ? '#ffffff' : PALETTE[p % PALETTE.length])
       materials[p].needsUpdate = true
     }
     const src = items[front]?.videoSrc
