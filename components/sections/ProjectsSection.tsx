@@ -20,6 +20,9 @@ export type ProjectItem = {
   coverSrc?: string
 }
 
+// Sample clips used when a project has no video of its own (so hover still plays).
+const SAMPLE_VIDEOS = ['/dance1.webm', '/dance2.webm', '/dance3.mp4']
+
 const PLACEHOLDER_PROJECTS: ProjectItem[] = [
   { id: '1', slug: 'healthcare-app-redesign', title: 'Healthcare App Redesign', tags: ['UX Research', 'Product Design'], year: 2025, coverColor: '#0033FF' },
   { id: '2', slug: 'e-commerce-checkout', title: 'E-Commerce Checkout Flow', tags: ['Interaction Design', 'Testing'], year: 2024, coverColor: '#001A80' },
@@ -212,12 +215,12 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
             />
           )}
-          {proj.videoSrc && (
-            <video
-              src={proj.videoSrc} muted loop autoPlay playsInline
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-          )}
+          <video
+            key={proj.videoSrc || proj.id}
+            src={proj.videoSrc || SAMPLE_VIDEOS[current % SAMPLE_VIDEOS.length]}
+            muted loop autoPlay playsInline
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          />
           <div style={{
             position: 'absolute', bottom: 0, left: 0, right: 0,
             padding: '12px 14px',
