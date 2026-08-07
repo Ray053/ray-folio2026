@@ -6,7 +6,6 @@ export function Footer() {
   return (
     <footer
       style={{
-        borderTop: '2px solid var(--color-ink)',
         backgroundColor: 'transparent',
         color: 'var(--color-ink)',
         padding: 'clamp(48px, 7vw, 88px) 24px',

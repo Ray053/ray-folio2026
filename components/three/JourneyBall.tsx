@@ -114,13 +114,16 @@ function Controller({ groupRef, pointsRef, cylinderRef, reducedMotion }: {
     if (cyl) {
       cyl.position.copy(g.position)
       cyl.rotation.y = reducedMotion ? 0 : dancePin * Math.PI * 2
-      const exit = smoothstep(0.8, 1.0, dancePin)
-      cyl.position.x = g.position.x + exit * 6
+      // cards slide IN from the right on enter, OUT to the right on exit
+      const enterT = smoothstep(0.0, 0.12, dancePin)
+      const exitT = smoothstep(0.82, 1.0, dancePin)
+      cyl.position.x = g.position.x + (1 - enterT) * 9 + exitT * 9
+      const cardsOpacity = enterT * (1 - exitT)
       cyl.children.forEach(ch => {
         const mat = (ch as THREE.Mesh).material as THREE.MeshBasicMaterial | undefined
-        if (mat && 'opacity' in mat) mat.opacity = 1 - exit
+        if (mat && 'opacity' in mat) mat.opacity = cardsOpacity
       })
-      cyl.visible = toDance > 0.01 && exit < 0.999
+      cyl.visible = toDance > 0.01 && cardsOpacity > 0.001
     }
   })
 

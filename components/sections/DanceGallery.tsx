@@ -27,7 +27,7 @@ export function DanceGallery({ items }: { items: DanceVideo[] }) {
     return (
       <section id="dance-zone" style={{
         position: 'relative', backgroundColor: 'transparent',
-        borderTop: '2px solid var(--color-ink)', padding: 'clamp(48px, 7vw, 88px) 24px',
+        padding: 'clamp(48px, 7vw, 88px) 24px',
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <p className="mono-label" style={{ marginBottom: '12px' }}>{'// '}{t('eyebrow')}</p>
@@ -57,7 +57,7 @@ export function DanceGallery({ items }: { items: DanceVideo[] }) {
   return (
     <section id="dance-zone" style={{
       position: 'relative', height: '320vh',
-      backgroundColor: 'transparent', borderTop: '2px solid var(--color-ink)',
+      backgroundColor: 'transparent',
     }}>
       <div style={{
         position: 'sticky', top: 0, height: '100vh',
