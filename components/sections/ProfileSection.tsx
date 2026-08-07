@@ -1,14 +1,13 @@
 'use client'
 import { useRef, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const INTRO =
-  '我是林家禾(Ray),一位專注於使用者體驗的 UX 設計師。我相信好的設計始於對人的理解——在複雜的問題與真實的需求之間,尋找清晰、誠實而有溫度的解法。從使用者研究、資訊架構到互動細節,我致力於將棘手的問題轉化為自然、順暢且值得信任的產品體驗。'
-
 export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
+  const t = useTranslations('about')
   const sectionRef = useRef<HTMLElement>(null)
   const textRef    = useRef<HTMLParagraphElement>(null)
 
@@ -38,7 +37,9 @@ export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
     return () => ctx.revert()
   }, [])
 
-  const words = Array.from(INTRO)
+  const intro = t('homeIntro')
+  const isLatin = intro.includes(' ')
+  const words = isLatin ? intro.split(' ') : Array.from(intro)
 
   return (
     <section
@@ -99,7 +100,7 @@ export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
         {/* Right — intro text with scroll fill */}
         <div>
           <p className="mono-label" style={{ marginBottom: '20px' }}>
-            {'// '}About Me
+            {'// '}{t('eyebrow')}
           </p>
           <p
             ref={textRef}
@@ -115,7 +116,7 @@ export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
           >
             {words.map((w, i) => (
               <span key={i} className="fill-word" style={{ opacity: 0.16 }}>
-                {w}
+                {w}{isLatin ? ' ' : ''}
               </span>
             ))}
           </p>
