@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const INTRO =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.'
+  "I'm Ray, a UX designer who works in the space between people and the technology they use. I care about clarity, rhythm, and the small moments that make an interface feel alive — turning messy problems into experiences that feel obvious, honest, and a little bit joyful. When I'm not designing, I'm usually dancing."
 
 export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
   const sectionRef = useRef<HTMLElement>(null)
