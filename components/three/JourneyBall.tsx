@@ -11,10 +11,11 @@ import {
 } from '@/lib/scrollJourney'
 
 // Reads scroll + DOM anchors each frame and drives the ball's position, scale, opacity.
-function Controller({ groupRef, pointsRef, cylinderRef, reducedMotion }: {
+function Controller({ groupRef, pointsRef, cylinderRef, pointerRef, reducedMotion }: {
   groupRef: React.RefObject<THREE.Group | null>
   pointsRef: React.RefObject<THREE.Points | null>
   cylinderRef: React.RefObject<THREE.Group | null>
+  pointerRef: React.RefObject<{ x: number; y: number }>
   reducedMotion: boolean
 }) {
   const { size } = useThree()
@@ -28,7 +29,7 @@ function Controller({ groupRef, pointsRef, cylinderRef, reducedMotion }: {
     if (mat?.uniforms?.uOpacity) mat.uniforms.uOpacity.value = o
   }
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     const g = groupRef.current
     if (!g) return
     const vp = { width: size.width, height: size.height }
@@ -103,8 +104,8 @@ function Controller({ groupRef, pointsRef, cylinderRef, reducedMotion }: {
       pMat.uniforms.uExpand.value = morph
       pMat.uniforms.uTime.value += delta
       const m = pMat.uniforms.uMouse.value as THREE.Vector2
-      m.x += (state.pointer.x - m.x) * 0.08
-      m.y += (state.pointer.y - m.y) * 0.08
+      m.x += (pointerRef.current.x - m.x) * 0.08
+      m.y += (pointerRef.current.y - m.y) * 0.08
     }
     if (pts && !reducedMotion) pts.rotation.y += 0.0016
 
@@ -134,8 +135,20 @@ export function JourneyBall({ lowPower, danceItems = [] }: { lowPower: boolean; 
   const groupRef = useRef<THREE.Group>(null)
   const pointsRef = useRef<THREE.Points>(null)
   const cylinderRef = useRef<THREE.Group>(null)
+  const pointerRef = useRef({ x: 0, y: 0 })
   const [reducedMotion, setReducedMotion] = useState(false)
   const [inRange, setInRange] = useState(true)
+
+  // Global pointer (normalized -1..1) — feeds the particle disturbance without
+  // the R3F canvas needing to capture events (so page hovers still work).
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      pointerRef.current.x = (e.clientX / window.innerWidth) * 2 - 1
+      pointerRef.current.y = -((e.clientY / window.innerHeight) * 2 - 1)
+    }
+    window.addEventListener('mousemove', onMove, { passive: true })
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [])
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -166,7 +179,7 @@ export function JourneyBall({ lowPower, danceItems = [] }: { lowPower: boolean; 
         gl={{ antialias: !lowPower, alpha: true, premultipliedAlpha: false }}
         dpr={lowPower ? 1 : [1, 2]}
         frameloop={inRange ? 'always' : 'never'}
-        style={{ background: 'transparent' }}
+        style={{ background: 'transparent', pointerEvents: 'none' }}
       >
         <group ref={groupRef}>
           <NoiseBlob active={false} scaleFactor={1} detail={lowPower ? 3 : 5} />
@@ -175,7 +188,7 @@ export function JourneyBall({ lowPower, danceItems = [] }: { lowPower: boolean; 
         <group ref={cylinderRef} visible={false}>
           <DanceCylinder items={danceItems} groupRef={cylinderRef} lowPower={lowPower} />
         </group>
-        <Controller groupRef={groupRef} pointsRef={pointsRef} cylinderRef={cylinderRef} reducedMotion={reducedMotion} />
+        <Controller groupRef={groupRef} pointsRef={pointsRef} cylinderRef={cylinderRef} pointerRef={pointerRef} reducedMotion={reducedMotion} />
       </Canvas>
     </div>
   )
