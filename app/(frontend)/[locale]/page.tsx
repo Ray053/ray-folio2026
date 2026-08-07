@@ -5,7 +5,7 @@ import { DanceGallery } from '@/components/sections/DanceGallery'
 import { Marquee } from '@/components/ui/Marquee'
 import { UnifiedTrajectory } from '@/components/ui/UnifiedTrajectory'
 import { JourneyBallMount } from '@/components/three/JourneyBallMount'
-import { getProjects, getSiteInfo, getDanceVideos, type DanceVideo } from '@/lib/payload'
+import { getProjects, getSiteInfo, type DanceVideo } from '@/lib/payload'
 
 // Default dance clips — the Payload CMS 'dance-videos' collection overrides
 // these whenever it has entries.
@@ -17,10 +17,12 @@ const DANCE_VIDEOS: DanceVideo[] = [
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
-  const [projects, site, danceCms] = await Promise.all([
-    getProjects(locale), getSiteInfo(locale), getDanceVideos(locale),
+  const [projects, site] = await Promise.all([
+    getProjects(locale), getSiteInfo(locale),
   ])
-  const dance = danceCms.length ? danceCms : DANCE_VIDEOS
+  // Use the 3 default clips for now (CMS dance-videos media is currently missing);
+  // re-add getDanceVideos(locale) and `danceCms.length ? danceCms : DANCE_VIDEOS` once the CMS has clean entries.
+  const dance = DANCE_VIDEOS
 
   return (
     <>
