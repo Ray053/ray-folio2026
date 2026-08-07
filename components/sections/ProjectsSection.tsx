@@ -20,8 +20,8 @@ export type ProjectItem = {
   coverSrc?: string
 }
 
-// Sample clips used when a project has no video of its own (so hover still plays).
-const SAMPLE_VIDEOS = ['/dance1.webm', '/dance2.webm', '/dance3.mp4']
+// Project clips used when a project has no video of its own (so hover still plays).
+const SAMPLE_VIDEOS = ['/taichung.webm', '/chuanghua.mp4']
 
 const PLACEHOLDER_PROJECTS: ProjectItem[] = [
   { id: '1', slug: 'healthcare-app-redesign', title: 'Healthcare App Redesign', tags: ['UX Research', 'Product Design'], year: 2025, coverColor: '#0033FF' },
