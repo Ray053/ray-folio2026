@@ -5,9 +5,10 @@ import { DanceGallery } from '@/components/sections/DanceGallery'
 import { Marquee } from '@/components/ui/Marquee'
 import { UnifiedTrajectory } from '@/components/ui/UnifiedTrajectory'
 import { JourneyBallMount } from '@/components/three/JourneyBallMount'
-import { getProjects, getSiteInfo, type DanceVideo } from '@/lib/payload'
+import { getProjects, getSiteInfo, getDanceVideos, type DanceVideo } from '@/lib/payload'
 
-// Dance clips — served statically from /public for now.
+// Default dance clips — the Payload CMS 'dance-videos' collection overrides
+// these whenever it has entries.
 const DANCE_VIDEOS: DanceVideo[] = [
   { id: 'd1', title: 'Freestyle', year: 2025, videoSrc: '/dance1.webm' },
   { id: 'd2', title: 'Crew Collab', year: 2025, videoSrc: '/dance2.webm' },
@@ -16,10 +17,10 @@ const DANCE_VIDEOS: DanceVideo[] = [
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
-  const [projects, site] = await Promise.all([
-    getProjects(locale), getSiteInfo(locale),
+  const [projects, site, danceCms] = await Promise.all([
+    getProjects(locale), getSiteInfo(locale), getDanceVideos(locale),
   ])
-  const dance = DANCE_VIDEOS
+  const dance = danceCms.length ? danceCms : DANCE_VIDEOS
 
   return (
     <>
