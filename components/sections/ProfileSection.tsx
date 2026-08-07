@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const INTRO =
-  "I'm Ray, a UX designer who works in the space between people and the technology they use. I care about clarity, rhythm, and the small moments that make an interface feel alive — turning messy problems into experiences that feel obvious, honest, and a little bit joyful. When I'm not designing, I'm usually dancing."
+  '我是林家禾(Ray),一位專注於使用者體驗的 UX 設計師。我相信好的設計始於對人的理解——在複雜的問題與真實的需求之間,尋找清晰、誠實而有溫度的解法。從使用者研究、資訊架構到互動細節,我致力於將棘手的問題轉化為自然、順暢且值得信任的產品體驗。'
 
 export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
   const sectionRef = useRef<HTMLElement>(null)
@@ -38,7 +38,7 @@ export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
     return () => ctx.revert()
   }, [])
 
-  const words = INTRO.split(' ')
+  const words = Array.from(INTRO)
 
   return (
     <section
@@ -115,7 +115,7 @@ export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
           >
             {words.map((w, i) => (
               <span key={i} className="fill-word" style={{ opacity: 0.16 }}>
-                {w}{' '}
+                {w}
               </span>
             ))}
           </p>
