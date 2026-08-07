@@ -35,8 +35,6 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
   const PROJECTS = projects && projects.length ? projects : PLACEHOLDER_PROJECTS
   const sectionRef = useRef<HTMLElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
-  const xTo = useRef<((v: number) => void) | null>(null)
-  const yTo = useRef<((v: number) => void) | null>(null)
 
   const [active, setActive]   = useState<number | null>(null)
   const [current, setCurrent] = useState(0)
@@ -44,31 +42,16 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
 
   useEffect(() => setMounted(true), [])
 
-  // Smooth cursor follow — global listener so the card tracks anywhere
+  // Cursor follow — set transform imperatively (no re-render per move).
   useEffect(() => {
     if (!mounted) return
     const onMouseMove = (e: MouseEvent) => {
-      if (!previewRef.current) return
-      if (!xTo.current) {
-        xTo.current = gsap.quickTo(previewRef.current, 'x', { duration: 0.4, ease: 'power3' })
-        yTo.current = gsap.quickTo(previewRef.current, 'y', { duration: 0.4, ease: 'power3' })
-      }
-      xTo.current?.(e.clientX + 24)
-      yTo.current?.(e.clientY - 90)
+      const el = previewRef.current
+      if (el) el.style.transform = `translate(${e.clientX + 24}px, ${e.clientY - 90}px)`
     }
     window.addEventListener('mousemove', onMouseMove)
     return () => window.removeEventListener('mousemove', onMouseMove)
   }, [mounted])
-
-  // Show / hide preview
-  useEffect(() => {
-    gsap.to(previewRef.current, {
-      opacity: active !== null ? 1 : 0,
-      scale:   active !== null ? 1 : 0.8,
-      duration: 0.35,
-      ease: 'power3.out',
-    })
-  }, [active])
 
   // Entrance
   useEffect(() => {
@@ -198,7 +181,8 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
             overflow: 'hidden',
             pointerEvents: 'none',
             zIndex: 45,
-            opacity: 0,
+            opacity: active !== null ? 1 : 0,
+            transition: 'opacity 0.3s ease',
             border: '2px solid var(--color-ink)',
             boxShadow: '6px 6px 0 var(--color-ink)',
             willChange: 'transform',
