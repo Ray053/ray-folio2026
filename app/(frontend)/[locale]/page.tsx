@@ -29,7 +29,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <HeroSection />
 
         <UnifiedTrajectory>
-          <ProfileSection photoSrc={site?.photoSrc} />
+          <ProfileSection photoSrc={site?.photoSrc} bio={site?.bio} />
           <ProjectsSection projects={projects} />
         </UnifiedTrajectory>
 

@@ -9,6 +9,8 @@ const H = 1.25       // base plane height; width follows each video's aspect rat
 const FRONT = 1.25   // front-plane enlarge factor
 // tints for planes without a video (fallback)
 const PALETTE = ['#0033FF', '#00C2FF', '#3D6BFF', '#8AA5FF', '#CCFF00', '#001A80']
+// working default clips to fall back to when a CMS media file is missing
+const DANCE_FALLBACK = ['/dance1.webm', '/dance2.webm', '/dance3.mp4']
 
 export function DanceCylinder({ items, groupRef, lowPower }: {
   items: DanceVideo[]
@@ -30,6 +32,10 @@ export function DanceCylinder({ items, groupRef, lowPower }: {
     v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto'
     v.addEventListener('loadedmetadata', () => {
       if (v.videoWidth && v.videoHeight) aspects.current[i] = v.videoWidth / v.videoHeight
+    })
+    v.addEventListener('error', () => {
+      const fb = DANCE_FALLBACK[i % DANCE_FALLBACK.length]
+      if (!v.src.endsWith(fb)) { v.src = fb; v.load() }
     })
     v.load()
     return v

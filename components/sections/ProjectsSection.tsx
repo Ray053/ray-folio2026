@@ -219,6 +219,12 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
             key={proj.videoSrc || proj.id}
             src={proj.videoSrc || SAMPLE_VIDEOS[current % SAMPLE_VIDEOS.length]}
             muted loop autoPlay playsInline
+            onError={e => {
+              // CMS media missing → fall back to a working default clip
+              const el = e.currentTarget
+              const fb = SAMPLE_VIDEOS[current % SAMPLE_VIDEOS.length]
+              if (!el.src.endsWith(fb)) { el.src = fb; el.play().catch(() => {}) }
+            }}
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
           />
           <div style={{

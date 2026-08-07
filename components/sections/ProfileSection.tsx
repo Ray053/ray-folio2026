@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
+export function ProfileSection({ photoSrc, bio }: { photoSrc?: string; bio?: string }) {
   const t = useTranslations('about')
   const sectionRef = useRef<HTMLElement>(null)
   const textRef    = useRef<HTMLParagraphElement>(null)
@@ -37,7 +37,7 @@ export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
     return () => ctx.revert()
   }, [])
 
-  const intro = t('homeIntro')
+  const intro = bio && bio.trim() ? bio : t('homeIntro')
   const isLatin = intro.includes(' ')
   const words = isLatin ? intro.split(' ') : Array.from(intro)
 
