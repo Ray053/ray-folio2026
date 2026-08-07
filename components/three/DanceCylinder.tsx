@@ -5,7 +5,7 @@ import * as THREE from 'three'
 import type { DanceVideo } from '@/lib/payload'
 
 const R = 2.7        // cylinder radius (world units)
-const H = 1.6        // base plane height; width follows each video's aspect ratio
+const H = 1.25       // base plane height; width follows each video's aspect ratio
 const FRONT = 1.25   // front-plane enlarge factor
 // tints for planes without a video (fallback)
 const PALETTE = ['#0033FF', '#00C2FF', '#3D6BFF', '#8AA5FF', '#CCFF00', '#001A80']
