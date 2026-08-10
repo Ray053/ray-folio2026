@@ -109,17 +109,17 @@ function Controller({ groupRef, pointsRef, cylinderRef, pointerRef, reducedMotio
     }
     if (pts && !reducedMotion) pts.rotation.y += 0.0016
 
-    // Dance cylinder: centre on the ball, rotate by pin progress; near the end
-    // of the pin, slide the cards off to the right and fade them out.
+    // Dance cylinder: centred on the ball. Exactly ONE full revolution over the
+    // pin — front cards travel left → right (enter at the ball's front-left, exit
+    // at the front-right), so every clip passes the front once per scroll.
     const cyl = cylinderRef.current
     if (cyl) {
       cyl.position.copy(g.position)
       cyl.rotation.y = reducedMotion ? 0 : dancePin * Math.PI * 2
-      // scroll-like flow: cards slide IN from the LEFT, OUT to the RIGHT
-      const enterT = smoothstep(0.0, 0.12, dancePin)
-      const exitT = smoothstep(0.82, 1.0, dancePin)
-      cyl.position.x = g.position.x - (1 - enterT) * 9 + exitT * 9
-      const cardsOpacity = enterT * (1 - exitT)
+      // quick fade only at the very start/end so the whole loop stays visible
+      const fadeIn = smoothstep(0.0, 0.05, dancePin)
+      const fadeOut = 1 - smoothstep(0.95, 1.0, dancePin)
+      const cardsOpacity = fadeIn * fadeOut
       cyl.children.forEach(ch => {
         const mat = (ch as THREE.Mesh).material as THREE.MeshBasicMaterial | undefined
         if (mat && 'opacity' in mat) mat.opacity = cardsOpacity
