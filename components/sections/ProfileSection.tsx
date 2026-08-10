@@ -21,6 +21,15 @@ export function ProfileSection({ photoSrc, bio }: { photoSrc?: string; bio?: str
           scrollTrigger: { trigger: sectionRef.current, start: 'top 90%', end: 'top 45%', scrub: true },
         }
       )
+
+      // Photo grows from small to full size as the section scrolls in
+      gsap.fromTo('.profile-photo',
+        { scale: 0.7 },
+        {
+          scale: 1, ease: 'none', transformOrigin: 'center center',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 92%', end: 'top 42%', scrub: true },
+        }
+      )
       gsap.fromTo('.fill-word',
         { opacity: 0.16 },
         {
