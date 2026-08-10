@@ -4,14 +4,20 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import type { DanceVideo } from '@/lib/payload'
 
-const R = 2.7        // cylinder radius (world units)
-const H = 1.25       // base plane height; width follows each video's aspect ratio
-const FRONT = 1.25   // front-plane enlarge factor
+const R = 3.0        // ring radius around the ball
+const H = 1.3        // base plane height; width follows each video's aspect ratio
+const FRONT = 1.35   // front-plane enlarge factor
 // tints for planes without a video (fallback)
 const PALETTE = ['#0033FF', '#00C2FF', '#3D6BFF', '#8AA5FF', '#CCFF00', '#001A80']
 // working default clips to fall back to when a CMS media file is missing
 const DANCE_FALLBACK = ['/dance1.webm', '/dance2.webm', '/dance3.mp4']
 
+/**
+ * A rotating 3D ring of dance clips around the particle ball. All cards stay
+ * visible (perspective makes the far ones smaller / angled); the card nearest
+ * the camera enlarges and plays its video. The ring's rotation + scale are
+ * driven by the parent group (from JourneyBall's controller).
+ */
 export function DanceCylinder({ items, groupRef, lowPower }: {
   items: DanceVideo[]
   groupRef: React.RefObject<THREE.Group | null>
@@ -20,11 +26,10 @@ export function DanceCylinder({ items, groupRef, lowPower }: {
   const n = Math.max(items.length, 1)
   const [front, setFront] = useState(0)
 
-  const geometry = useMemo(() => new THREE.PlaneGeometry(1, 1), []) // unit plane; scaled per frame
-  const aspects = useRef<number[]>(items.map(() => 9 / 16))          // updated on metadata load
+  const geometry = useMemo(() => new THREE.PlaneGeometry(1, 1), [])
+  const aspects = useRef<number[]>(items.map(() => 9 / 16))
   const meshRefs = useRef<(THREE.Mesh | null)[]>([])
 
-  // One <video> + VideoTexture per item; capture natural aspect on metadata load.
   const videos = useMemo(() => items.map((it, i) => {
     if (typeof document === 'undefined' || !it.videoSrc) return null
     const v = document.createElement('video')
@@ -54,24 +59,31 @@ export function DanceCylinder({ items, groupRef, lowPower }: {
     side: THREE.DoubleSide, toneMapped: false, transparent: true,
   })), [items, videoTex])
 
-  // Front index from the group rotation + size each plane to its video aspect.
+  // Each frame: size every plane to its video aspect + pick the front-most
+  // (nearest-camera) card to enlarge. All cards stay visible.
   useFrame(() => {
     const g = groupRef.current
-    if (g) {
-      const step = (Math.PI * 2) / n
-      const idx = ((Math.round(-g.rotation.y / step) % n) + n) % n
-      if (idx !== front) setFront(idx)
-    }
+    if (!g) return
+    const rot = g.rotation.y
+    let frontI = 0
+    let frontZ = -Infinity
     for (let i = 0; i < n; i++) {
       const m = meshRefs.current[i]
       if (!m) continue
+      const worldAngle = (i / n) * Math.PI * 2 + rot
       const asp = aspects.current[i] || (9 / 16)
-      const f = i === front ? FRONT : 1
-      m.scale.set(H * asp * f, H * f, 1)
+      m.scale.set(H * asp, H, 1)
+      const z = Math.cos(worldAngle)
+      if (z > frontZ) { frontZ = z; frontI = i }
+    }
+    if (frontI !== front) setFront(frontI)
+    const fm = meshRefs.current[front]
+    if (fm) {
+      const asp = aspects.current[front] || (9 / 16)
+      fm.scale.set(H * asp * FRONT, H * FRONT, 1)
     }
   })
 
-  // Play the front video, pause the rest (paused ones show their current frame).
   useEffect(() => {
     videos.forEach((v, i) => {
       if (!v) return

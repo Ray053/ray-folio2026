@@ -5,6 +5,7 @@ export function Footer() {
   const t = useTranslations('footer')
   return (
     <footer
+      id="site-footer"
       style={{
         backgroundColor: 'transparent',
         color: 'var(--color-ink)',

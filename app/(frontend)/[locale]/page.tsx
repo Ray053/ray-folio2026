@@ -5,6 +5,7 @@ import { DanceGallery } from '@/components/sections/DanceGallery'
 import { Marquee } from '@/components/ui/Marquee'
 import { UnifiedTrajectory } from '@/components/ui/UnifiedTrajectory'
 import { JourneyBallMount } from '@/components/three/JourneyBallMount'
+import { LiveClock } from '@/components/layout/LiveClock'
 import { getProjects, getSiteInfo, type DanceVideo } from '@/lib/payload'
 
 // Default dance clips — the Payload CMS 'dance-videos' collection overrides
@@ -27,6 +28,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   return (
     <>
       <JourneyBallMount danceItems={dance} />
+      <LiveClock />
       <div style={{ position: 'relative', zIndex: 1 }}>
         <HeroSection />
 

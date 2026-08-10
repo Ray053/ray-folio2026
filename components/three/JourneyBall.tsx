@@ -90,9 +90,11 @@ function Controller({ groupRef, pointsRef, cylinderRef, pointerRef, reducedMotio
     cur.current.x += (world.x - cur.current.x) * 0.15
     cur.current.y += (world.y - cur.current.y) * 0.15
     g.position.set(cur.current.x, cur.current.y, 0)
-    // Settle to a compact particle ball at the dance centre — small enough
-    // to leave room for the video cards that orbit around it in Phase 2b.
-    g.scale.setScalar(lerp(ballScale(progress), 0.85, toDance))
+    // Settle to a small particle ball at the dance centre — it shrinks as the
+    // section pins so the orbiting video cards become the focus, then grows
+    // back to full size in the pin's tail as the cards disperse toward the footer.
+    const danceScale = lerp(0.45, 1.0, smoothstep(0.82, 1, dancePin))
+    g.scale.setScalar(lerp(ballScale(progress), danceScale, toDance))
 
     // Cross-fade mesh → particle ball across the dance morph.
     const morph = toDance
@@ -109,22 +111,17 @@ function Controller({ groupRef, pointsRef, cylinderRef, pointerRef, reducedMotio
     }
     if (pts && !reducedMotion) pts.rotation.y += 0.0016
 
-    // Dance cylinder: centred on the ball. Exactly ONE full revolution over the
-    // pin — front cards travel left → right (enter at the ball's front-left, exit
-    // at the front-right), so every clip passes the front once per scroll.
+    // Dance ring: a perspective carousel centred on the ball. It makes exactly
+    // ONE full revolution over the pin so every clip passes the camera-facing
+    // front once. A scale in/out (assemble → disperse) avoids a hard pop when
+    // the section enters/leaves — all cards stay visible through the middle.
     const cyl = cylinderRef.current
     if (cyl) {
       cyl.position.copy(g.position)
       cyl.rotation.y = reducedMotion ? 0 : dancePin * Math.PI * 2
-      // quick fade only at the very start/end so the whole loop stays visible
-      const fadeIn = smoothstep(0.0, 0.05, dancePin)
-      const fadeOut = 1 - smoothstep(0.95, 1.0, dancePin)
-      const cardsOpacity = fadeIn * fadeOut
-      cyl.children.forEach(ch => {
-        const mat = (ch as THREE.Mesh).material as THREE.MeshBasicMaterial | undefined
-        if (mat && 'opacity' in mat) mat.opacity = cardsOpacity
-      })
-      cyl.visible = toDance > 0.01 && cardsOpacity > 0.001
+      const inOut = smoothstep(0, 0.12, dancePin) * (1 - smoothstep(0.9, 1, dancePin))
+      cyl.scale.setScalar(inOut)
+      cyl.visible = toDance > 0.01 && inOut > 0.01
     }
   })
 
