@@ -4,8 +4,11 @@ import { useTranslations } from 'next-intl'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ParticleCursor } from '@/components/three/ParticleCursor'
+import { LiquidChrome } from '@/components/ui/LiquidChrome'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const CHROME = 'linear-gradient(135deg, #f6f8fb 0%, #c7ccd2 22%, #8a929c 42%, #565e68 52%, #aeb6be 66%, #ffffff 84%, #79818a 100%)'
 
 function HeroText() {
   const t = useTranslations('hero')
@@ -110,21 +113,40 @@ export function HeroSection() {
       {/* Stage backdrop — backlight glow + horizon */}
       <div className="hero-stage" />
 
-      {/* Bauhaus geometric motifs */}
-      <div aria-hidden style={{
+      {/* Liquid-metal chrome blob */}
+      <LiquidChrome style={{
         position: 'absolute', zIndex: 1, pointerEvents: 'none',
-        right: 'clamp(24px, 9vw, 140px)', top: '20%',
-        width: 'clamp(56px, 7vw, 104px)', height: 'clamp(56px, 7vw, 104px)',
-        background: 'var(--color-acid)', border: '2px solid var(--color-ink)',
-        transform: 'rotate(-8deg)',
+        right: 'clamp(-50px, 3vw, 40px)', top: '12%',
+        width: 'clamp(190px, 27vw, 400px)', height: 'clamp(190px, 27vw, 400px)',
+        filter: 'drop-shadow(6px 10px 16px rgba(0,0,0,0.22))',
       }} />
+
+      {/* Metallic sticker — rounded square, tilted */}
       <div aria-hidden style={{
-        position: 'absolute', zIndex: 1, pointerEvents: 'none',
-        right: 'clamp(90px, 16vw, 260px)', bottom: '22%',
-        width: 'clamp(40px, 5vw, 72px)', height: 'clamp(40px, 5vw, 72px)',
+        position: 'absolute', zIndex: 2, pointerEvents: 'none',
+        right: 'clamp(24px, 12vw, 210px)', top: '20%',
+        width: 'clamp(52px, 6vw, 92px)', height: 'clamp(52px, 6vw, 92px)',
+        borderRadius: '14px',
+        background: CHROME,
+        border: '2px solid rgba(10,10,10,0.85)',
+        boxShadow: '4px 6px 14px rgba(0,0,0,0.28), inset 0 1px 2px rgba(255,255,255,0.9)',
+        transform: 'rotate(-10deg)',
+      }} />
+
+      {/* Metallic sticker — circle badge with an accent star */}
+      <div aria-hidden style={{
+        position: 'absolute', zIndex: 2, pointerEvents: 'none',
+        right: 'clamp(78px, 19vw, 320px)', bottom: '20%',
+        width: 'clamp(44px, 5vw, 78px)', height: 'clamp(44px, 5vw, 78px)',
         borderRadius: '9999px',
-        background: 'transparent', border: '3px solid var(--color-accent)',
-      }} />
+        background: CHROME,
+        border: '2px solid rgba(10,10,10,0.85)',
+        boxShadow: '3px 5px 12px rgba(0,0,0,0.26), inset 0 1px 2px rgba(255,255,255,0.9)',
+        transform: 'rotate(8deg)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <span style={{ color: 'var(--color-accent)', fontSize: 'clamp(18px, 2.4vw, 30px)', fontWeight: 800, lineHeight: 1 }}>★</span>
+      </div>
 
       {/* Left gradient — sits BELOW the canvas so the figure isn't clipped */}
       <div style={{
