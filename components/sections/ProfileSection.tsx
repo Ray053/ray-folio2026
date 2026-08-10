@@ -13,10 +13,14 @@ export function ProfileSection({ photoSrc, bio }: { photoSrc?: string; bio?: str
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.profile-photo', {
-        y: 44, opacity: 0, duration: 0.9, ease: 'power4.out',
-        scrollTrigger: { trigger: sectionRef.current, start: 'top 75%' },
-      })
+      // Blur → clear reveal as the section scrolls into view
+      gsap.fromTo('.profile-reveal',
+        { filter: 'blur(16px)' },
+        {
+          filter: 'blur(0px)', ease: 'none',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 90%', end: 'top 45%', scrub: true },
+        }
+      )
       gsap.fromTo('.fill-word',
         { opacity: 0.16 },
         {
@@ -52,6 +56,7 @@ export function ProfileSection({ photoSrc, bio }: { photoSrc?: string; bio?: str
       }}
     >
       <div
+        className="profile-reveal"
         style={{
           maxWidth: '1200px',
           margin: '0 auto',
@@ -59,6 +64,7 @@ export function ProfileSection({ photoSrc, bio }: { photoSrc?: string; bio?: str
           gridTemplateColumns: 'minmax(0, 0.85fr) minmax(0, 1.15fr)',
           gap: 'clamp(40px, 6vw, 88px)',
           alignItems: 'start',
+          willChange: 'filter, opacity',
         }}
       >
         {/* Left — photo */}
