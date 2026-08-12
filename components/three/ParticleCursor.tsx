@@ -91,7 +91,7 @@ export function ParticleCursor() {
 
         ctx.beginPath()
         ctx.arc(p.x, p.y, Math.max(0.1, radius), 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(140, 185, 210, ${alpha})`
+        ctx.fillStyle = `rgba(10, 132, 255, ${alpha})`
         ctx.fill()
       }
 

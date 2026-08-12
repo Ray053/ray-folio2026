@@ -1,23 +1,35 @@
 'use client'
 import { useRef, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const INTRO =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.'
-
-export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
+export function ProfileSection({ photoSrc, bio }: { photoSrc?: string; bio?: string }) {
+  const t = useTranslations('about')
   const sectionRef = useRef<HTMLElement>(null)
   const textRef    = useRef<HTMLParagraphElement>(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.profile-photo', {
-        y: 44, opacity: 0, duration: 0.9, ease: 'power4.out',
-        scrollTrigger: { trigger: sectionRef.current, start: 'top 75%' },
-      })
+      // Blur → clear reveal as the section scrolls into view
+      gsap.fromTo('.profile-reveal',
+        { filter: 'blur(16px)' },
+        {
+          filter: 'blur(0px)', ease: 'none',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 90%', end: 'top 45%', scrub: true },
+        }
+      )
+
+      // Photo grows from small to full size as the section scrolls in
+      gsap.fromTo('.profile-photo',
+        { scale: 0.7 },
+        {
+          scale: 1, ease: 'none', transformOrigin: 'center center',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 92%', end: 'top 42%', scrub: true },
+        }
+      )
       gsap.fromTo('.fill-word',
         { opacity: 0.16 },
         {
@@ -38,7 +50,9 @@ export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
     return () => ctx.revert()
   }, [])
 
-  const words = INTRO.split(' ')
+  const intro = bio && bio.trim() ? bio : t('homeIntro')
+  const isLatin = intro.includes(' ')
+  const words = isLatin ? intro.split(' ') : Array.from(intro)
 
   return (
     <section
@@ -51,6 +65,7 @@ export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
       }}
     >
       <div
+        className="profile-reveal"
         style={{
           maxWidth: '1200px',
           margin: '0 auto',
@@ -58,15 +73,17 @@ export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
           gridTemplateColumns: 'minmax(0, 0.85fr) minmax(0, 1.15fr)',
           gap: 'clamp(40px, 6vw, 88px)',
           alignItems: 'start',
+          willChange: 'filter, opacity',
         }}
       >
         {/* Left — photo */}
         <div className="profile-photo" style={{ position: 'sticky', top: '96px' }}>
           <div style={{
             aspectRatio: '4/5',
-            borderRadius: '16px',
+            borderRadius: 0,
             overflow: 'hidden',
-            border: '1px solid var(--color-border)',
+            border: '2px solid var(--color-ink)',
+            boxShadow: '8px 8px 0 var(--color-accent)',
             backgroundColor: 'var(--color-surface-2)',
             position: 'relative',
           }}>
@@ -97,11 +114,8 @@ export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
 
         {/* Right — intro text with scroll fill */}
         <div>
-          <p style={{
-            fontSize: '12px', fontWeight: 500, letterSpacing: '0.15em',
-            textTransform: 'uppercase', color: 'var(--color-accent)', marginBottom: '20px',
-          }}>
-            About Me
+          <p className="mono-label" style={{ marginBottom: '20px' }}>
+            {'// '}{t('eyebrow')}
           </p>
           <p
             ref={textRef}
@@ -117,7 +131,7 @@ export function ProfileSection({ photoSrc }: { photoSrc?: string }) {
           >
             {words.map((w, i) => (
               <span key={i} className="fill-word" style={{ opacity: 0.16 }}>
-                {w}{' '}
+                {w}{isLatin ? ' ' : ''}
               </span>
             ))}
           </p>

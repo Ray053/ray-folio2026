@@ -3,7 +3,6 @@ import { useRef, useEffect, useState, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link, usePathname } from '@/i18n/navigation'
 import gsap from 'gsap'
-import { ThemeToggle } from './ThemeToggle'
 import { LangToggle } from './LangToggle'
 import { LogoIcon } from './LogoIcon'
 
@@ -59,22 +58,18 @@ export function Navbar() {
         className={scrolled ? 'nav-condensed' : ''}
         style={{
           position: 'sticky', top: 0, zIndex: 50,
-          borderBottom: scrolled
-            ? '1px solid color-mix(in srgb, var(--color-border) 60%, transparent)'
-            : '1px solid var(--color-border)',
-          backdropFilter: scrolled ? 'blur(22px) saturate(1.5)' : 'blur(12px)',
-          WebkitBackdropFilter: scrolled ? 'blur(22px) saturate(1.5)' : 'blur(12px)',
-          backgroundColor: scrolled
-            ? 'color-mix(in srgb, var(--color-background) 58%, transparent)'
-            : 'color-mix(in srgb, var(--color-background) 85%, transparent)',
-          boxShadow: scrolled ? '0 6px 28px rgba(0,0,0,0.10)' : 'none',
-          transition: 'backdrop-filter 0.35s ease, background-color 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease',
+          padding: '0 16px',
+          pointerEvents: 'none',   // let the page under the gaps stay interactive
         }}
       >
-        <nav style={{
-          maxWidth: '1200px', margin: '0 auto',
-          padding: '0 24px', height: '64px',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        <nav className="hard-block" style={{
+          pointerEvents: 'auto',
+          width: 'max-content', maxWidth: '100%',
+          margin: '14px auto 0',
+          padding: '8px 10px 8px 18px',
+          height: '56px',
+          display: 'flex', alignItems: 'center', gap: '8px',
+          transition: 'padding 0.35s ease, margin 0.35s ease',
         }}>
           {/* Logo */}
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
@@ -93,14 +88,16 @@ export function Navbar() {
             <NavLink href="/work"  active={pathname === '/work'}>  {t('work')}  </NavLink>
             <NavLink href="/about" active={pathname === '/about'}> {t('about')} </NavLink>
             <a href="/cv.pdf" download style={{
-              padding: '7px 16px', marginLeft: '4px', borderRadius: '6px',
-              border: '1px solid var(--color-border)', fontSize: '14px',
-              fontWeight: 500, color: 'var(--color-text-primary)', textDecoration: 'none',
+              padding: '8px 16px', marginLeft: '6px', borderRadius: 0,
+              border: '2px solid var(--color-ink)',
+              background: 'var(--color-accent)', boxShadow: '4px 4px 0 var(--color-ink)',
+              fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
+              fontSize: '13px', fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase',
+              color: '#fff', textDecoration: 'none',
             }}>
               {t('downloadCV')}
             </a>
             <LangToggle />
-            <ThemeToggle />
           </div>
 
           {/* Hamburger (mobile only) */}
@@ -164,7 +161,6 @@ export function Navbar() {
           style={{ display: 'flex', alignItems: 'center', gap: '16px', paddingTop: '32px' }}
         >
           <LangToggle />
-          <ThemeToggle />
         </div>
       </div>
     </>

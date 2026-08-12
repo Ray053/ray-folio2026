@@ -21,14 +21,12 @@ export function UnifiedTrajectory({ children }: { children: React.ReactNode }) {
   const wrapRef  = useRef<HTMLDivElement>(null)
   const layerRef = useRef<HTMLDivElement>(null)
   const pathRef  = useRef<SVGPathElement>(null)
-  const ballRef  = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const path = pathRef.current
-      const ball = ballRef.current
       const layer = layerRef.current
-      if (!path || !ball || !layer) return
+      if (!path || !layer) return
 
       const len = path.getTotalLength()
       path.style.strokeDasharray  = `${len}`
@@ -40,11 +38,9 @@ export function UnifiedTrajectory({ children }: { children: React.ReactNode }) {
         end: 'bottom 60%',
         scrub: true,
         onUpdate: (self) => {
-          const p = self.progress
-          const pt = path.getPointAtLength(len * p)   // pt.x / pt.y in 0..1
-          const w = layer.clientWidth, h = layer.clientHeight
-          ball.style.transform = `translate(${pt.x * w}px, ${pt.y * h}px)`
-          path.style.strokeDashoffset = `${len * (1 - p)}`
+          // Draw the trail on as you scroll; the travelling ball is now the
+          // page-level 3D JourneyBall, which reads #journey-path / #journey-layer.
+          path.style.strokeDashoffset = `${len * (1 - self.progress)}`
         },
       })
     }, wrapRef)
@@ -52,41 +48,32 @@ export function UnifiedTrajectory({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <div ref={wrapRef} style={{ position: 'relative', backgroundColor: 'var(--color-background)' }}>
+    <div ref={wrapRef} style={{ position: 'relative', backgroundColor: 'transparent' }}>
       {/* Trajectory layer — behind the transparent sections */}
       <div
         ref={layerRef}
+        id="journey-layer"
         aria-hidden
         style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}
       >
         <svg width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0 }}>
           <defs>
             <linearGradient id="uni-trail" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%"   stopColor="#5C82A0" />
-              <stop offset="30%"  stopColor="#8AAABF" />
-              <stop offset="55%"  stopColor="#b69ad8" />
-              <stop offset="80%"  stopColor="#d88ab0" />
-              <stop offset="100%" stopColor="#8ad8d0" />
+              <stop offset="0%"   stopColor="#001B3D" />
+              <stop offset="30%"  stopColor="#0060DF" />
+              <stop offset="55%"  stopColor="#0A84FF" />
+              <stop offset="80%"  stopColor="#5AB0FF" />
+              <stop offset="100%" stopColor="#EAF4FF" />
             </linearGradient>
           </defs>
           <path
             ref={pathRef}
+            id="journey-path"
             d={PATH_D}
             fill="none" stroke="url(#uni-trail)" strokeWidth={2}
             vectorEffect="non-scaling-stroke" strokeLinecap="round" opacity={0.72}
           />
         </svg>
-        <div
-          ref={ballRef}
-          style={{
-            position: 'absolute', top: 0, left: 0,
-            width: '20px', height: '20px', marginLeft: '-10px', marginTop: '-10px',
-            borderRadius: '9999px',
-            background: 'conic-gradient(from 120deg, #5C82A0, #8AAABF, #b69ad8, #d88ab0, #8ad8d0, #5C82A0)',
-            boxShadow: '0 0 20px 5px rgba(140,185,210,0.5), 0 0 6px 2px rgba(216,232,240,0.85)',
-            willChange: 'transform',
-          }}
-        />
       </div>
 
       {/* Sections (transparent backgrounds) above the trajectory */}

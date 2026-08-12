@@ -38,32 +38,28 @@ export function WebcamToggle({
       onClick={toggle}
       disabled={loading}
       aria-pressed={active}
+      className="glass-pill"
       style={{
         display: 'flex',
         alignItems: 'center',
         gap: '10px',
         padding: '10px 16px',
-        borderRadius: '9999px',
-        border: '1px solid var(--color-border)',
-        background: 'color-mix(in srgb, var(--color-surface) 70%, transparent)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
         color: 'var(--color-text-primary)',
         fontSize: '13px',
         fontWeight: 500,
         cursor: loading ? 'wait' : 'pointer',
-        transition: 'border-color 0.2s, background 0.2s',
+        transition: 'transform 0.15s',
       }}
-      onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--color-accent)' }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--color-border)' }}
+      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)' }}
+      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)' }}
     >
       {/* Status dot */}
       <span style={{
         width: '8px',
         height: '8px',
         borderRadius: '9999px',
-        backgroundColor: active ? '#5C82A0' : 'var(--color-text-muted)',
-        boxShadow: active ? '0 0 8px 2px rgba(92,130,160,0.7)' : 'none',
+        backgroundColor: active ? '#0A84FF' : 'var(--color-text-muted)',
+        boxShadow: active ? '0 0 8px 2px rgba(10,132,255,0.7)' : 'none',
         transition: 'all 0.2s',
         flexShrink: 0,
       }} />

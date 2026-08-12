@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Script from 'next/script'
 import { Inter, Syne, Geist_Mono } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
@@ -33,8 +32,6 @@ export function generateStaticParams() {
   return routing.locales.map(locale => ({ locale }))
 }
 
-const themeScript = `(function(){var s=localStorage.getItem('theme'),p=window.matchMedia('(prefers-color-scheme: dark)').matches,d=s?s==='dark':p;if(d)document.documentElement.classList.add('dark');})()`
-
 type Props = {
   children: React.ReactNode
   params: Promise<{ locale: string }>
@@ -52,11 +49,6 @@ export default async function LocaleLayout({ children, params }: Props) {
       className={`${inter.variable} ${syne.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        <Script id="theme-init" strategy="beforeInteractive">
-          {themeScript}
-        </Script>
-      </head>
       <body style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
         <NextIntlClientProvider messages={messages}>
           <SmoothScroll>

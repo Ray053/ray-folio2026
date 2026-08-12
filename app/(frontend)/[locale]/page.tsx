@@ -1,27 +1,46 @@
 import { HeroSection } from '@/components/sections/HeroSection'
 import { ProfileSection } from '@/components/sections/ProfileSection'
 import { ProjectsSection } from '@/components/sections/ProjectsSection'
-import { DanceTeaser } from '@/components/sections/DanceTeaser'
+import { DanceGallery } from '@/components/sections/DanceGallery'
 import { Marquee } from '@/components/ui/Marquee'
 import { UnifiedTrajectory } from '@/components/ui/UnifiedTrajectory'
-import { getProjects, getSiteInfo } from '@/lib/payload'
+import { JourneyBallMount } from '@/components/three/JourneyBallMount'
+import { LiveClock } from '@/components/layout/LiveClock'
+import { getProjects, getSiteInfo, type DanceVideo } from '@/lib/payload'
+
+// Default dance clips — the Payload CMS 'dance-videos' collection overrides
+// these whenever it has entries.
+const DANCE_VIDEOS: DanceVideo[] = [
+  { id: 'd1', title: 'Freestyle', year: 2025, videoSrc: '/dance1.webm' },
+  { id: 'd2', title: 'Crew Collab', year: 2025, videoSrc: '/dance2.webm' },
+  { id: 'd3', title: 'Street Jam', year: 2024, videoSrc: '/dance3.mp4' },
+]
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
-  const [projects, site] = await Promise.all([getProjects(locale), getSiteInfo(locale)])
+  const [projects, site] = await Promise.all([
+    getProjects(locale), getSiteInfo(locale),
+  ])
+  // Use the 3 default clips for now (CMS dance-videos media is currently missing);
+  // re-add getDanceVideos(locale) and `danceCms.length ? danceCms : DANCE_VIDEOS` once the CMS has clean entries.
+  const dance = DANCE_VIDEOS
 
   return (
     <>
-      <HeroSection />
+      <JourneyBallMount danceItems={dance} />
+      <LiveClock />
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <HeroSection />
 
-      <UnifiedTrajectory>
-        <ProfileSection photoSrc={site?.photoSrc} />
-        <ProjectsSection projects={projects} />
-      </UnifiedTrajectory>
+        <UnifiedTrajectory>
+          <ProfileSection photoSrc={site?.photoSrc} bio={site?.bio} />
+          <ProjectsSection projects={projects} />
+        </UnifiedTrajectory>
 
-      <Marquee items={['UX DESIGN', 'CREATIVE', 'INTERACTION', 'DANCE', 'MOTION']} />
+        <Marquee items={['UX DESIGN', 'CREATIVE', 'INTERACTION', 'DANCE', 'MOTION']} />
 
-      <DanceTeaser />
+        <DanceGallery items={dance} />
+      </div>
     </>
   )
 }

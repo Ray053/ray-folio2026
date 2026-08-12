@@ -102,7 +102,7 @@ export function ScrollProgress() {
             height: `${8 - i}px`,
             transform: 'translate(-50%, -50%)',
             borderRadius: '9999px',
-            backgroundColor: 'rgba(140, 185, 210, 1)',
+            backgroundColor: 'rgba(10, 132, 255, 1)',
             opacity: 0,
           }}
         />
@@ -119,8 +119,8 @@ export function ScrollProgress() {
           height: '13px',
           transform: 'translate(-50%, -50%)',
           borderRadius: '9999px',
-          background: 'radial-gradient(circle at 35% 30%, #d8e8f0, #5C82A0 70%)',
-          boxShadow: '0 0 14px 3px rgba(140,185,210,0.75), 0 0 4px 1px rgba(216,232,240,0.9)',
+          background: 'radial-gradient(circle at 35% 30%, #EAF4FF, #0A84FF 70%)',
+          boxShadow: '0 0 14px 3px rgba(10,132,255,0.75), 0 0 4px 1px rgba(234,244,255,0.9)',
         }}
       />
     </div>

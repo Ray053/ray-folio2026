@@ -5,10 +5,12 @@ export function Footer() {
   const t = useTranslations('footer')
   return (
     <footer
+      id="site-footer"
       style={{
-        borderTop: '1px solid var(--color-border)',
-        backgroundColor: 'var(--color-surface)',
-        padding: '40px 24px',
+        backgroundColor: 'transparent',
+        color: 'var(--color-ink)',
+        padding: 'clamp(48px, 7vw, 88px) 24px',
+        position: 'relative', zIndex: 1,
       }}
     >
       <div
@@ -31,9 +33,10 @@ export function Footer() {
         >
           <p
             style={{
-              fontSize: '14px',
-              color: 'var(--color-text-muted)',
-              margin: 0,
+              fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
+              fontSize: 'clamp(20px, 3vw, 40px)',
+              textTransform: 'uppercase', letterSpacing: '0.02em',
+              color: 'var(--color-ink)', margin: 0, wordBreak: 'break-all',
             }}
           >
             ray70804@gmail.com
@@ -47,9 +50,9 @@ export function Footer() {
 
         <p
           style={{
-            fontSize: '12px',
-            color: 'var(--color-text-muted)',
-            margin: 0,
+            fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
+            fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em',
+            color: 'var(--color-text-secondary)', margin: 0,
           }}
         >
           © {new Date().getFullYear()} Ray. {t('rights')}.
@@ -66,11 +69,14 @@ function FooterLink({ href, label }: { href: string; label: string }) {
       target="_blank"
       rel="noopener noreferrer"
       style={{
-        fontSize: '14px',
-        color: 'var(--color-text-secondary)',
+        fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
+        fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.06em',
+        color: 'var(--color-ink)',
         textDecoration: 'none',
         transition: 'color 0.15s',
       }}
+      onMouseEnter={e => { e.currentTarget.style.color = 'var(--color-accent)' }}
+      onMouseLeave={e => { e.currentTarget.style.color = 'var(--color-ink)' }}
     >
       {label}
     </a>

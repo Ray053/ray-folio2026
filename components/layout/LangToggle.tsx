@@ -13,7 +13,7 @@ export function LangToggle() {
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '13px', fontWeight: 500 }}>
+    <div className="hard-block" style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '13px', fontWeight: 500, padding: '6px 12px', borderRadius: 0, boxShadow: '3px 3px 0 var(--color-ink)', fontFamily: 'var(--font-geist-mono), ui-monospace, monospace' }}>
       {routing.locales.map((l, i) => (
         <span key={l} style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
           {i > 0 && (

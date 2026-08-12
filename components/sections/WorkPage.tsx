@@ -25,12 +25,12 @@ const BENTO_POSITIONS: React.CSSProperties[] = [
 export type WorkItem = Omit<WorkProject, 'gridStyle'>
 
 const PLACEHOLDER_PROJECTS: WorkItem[] = [
-  { id: '1', slug: 'healthcare-app-redesign', title: 'Healthcare App Redesign', description: 'Redesigned the patient journey for a telehealth app, reducing drop-off by 38%.', tags: ['UX Research', 'Product Design'], year: 2025, coverColor: '#1B3550' },
-  { id: '2', slug: 'e-commerce-checkout', title: 'E-Commerce Checkout Flow', description: 'Simplified a 7-step checkout into 3, increasing conversion by 22%.', tags: ['Interaction Design', 'Testing'], year: 2024, coverColor: '#122333' },
-  { id: '3', slug: 'design-system', title: 'Design System at Scale', description: 'Built a cross-platform design system used by 4 product teams.', tags: ['Design Systems'], year: 2024, coverColor: '#254A64' },
-  { id: '4', slug: 'onboarding-experience', title: 'Onboarding Experience', description: 'Personalised onboarding that improved day-7 retention by 31%.', tags: ['UX Research'], year: 2023, coverColor: '#1B3550' },
-  { id: '5', slug: 'mobile-banking', title: 'Mobile Banking Redesign', description: 'Led the UX strategy for a complete mobile banking overhaul.', tags: ['UX Strategy'], year: 2023, coverColor: '#0D1B2A' },
-  { id: '6', slug: 'dashboard-dataviz', title: 'Dashboard & Data Viz', description: 'Real-time analytics dashboard turning complex data into clear insights.', tags: ['Data Visualisation'], year: 2022, coverColor: '#122333' },
+  { id: '1', slug: 'healthcare-app-redesign', title: 'Healthcare App Redesign', description: 'Redesigned the patient journey for a telehealth app, reducing drop-off by 38%.', tags: ['UX Research', 'Product Design'], year: 2025, coverColor: '#0033FF' },
+  { id: '2', slug: 'e-commerce-checkout', title: 'E-Commerce Checkout Flow', description: 'Simplified a 7-step checkout into 3, increasing conversion by 22%.', tags: ['Interaction Design', 'Testing'], year: 2024, coverColor: '#001A80' },
+  { id: '3', slug: 'design-system', title: 'Design System at Scale', description: 'Built a cross-platform design system used by 4 product teams.', tags: ['Design Systems'], year: 2024, coverColor: '#3D6BFF' },
+  { id: '4', slug: 'onboarding-experience', title: 'Onboarding Experience', description: 'Personalised onboarding that improved day-7 retention by 31%.', tags: ['UX Research'], year: 2023, coverColor: '#0033FF' },
+  { id: '5', slug: 'mobile-banking', title: 'Mobile Banking Redesign', description: 'Led the UX strategy for a complete mobile banking overhaul.', tags: ['UX Strategy'], year: 2023, coverColor: '#00C2FF' },
+  { id: '6', slug: 'dashboard-dataviz', title: 'Dashboard & Data Viz', description: 'Real-time analytics dashboard turning complex data into clear insights.', tags: ['Data Visualisation'], year: 2022, coverColor: '#001A80' },
 ]
 
 export function WorkPage({ projects }: { projects?: WorkItem[] }) {
@@ -68,17 +68,14 @@ export function WorkPage({ projects }: { projects?: WorkItem[] }) {
         maxWidth: '1200px',
         margin: '0 auto',
       }}>
-        <p className="work-header" style={{
-          fontSize: '12px', fontWeight: 500, letterSpacing: '0.15em',
-          textTransform: 'uppercase', color: 'var(--color-text-muted)', marginBottom: '12px',
-        }}>
-          {t('eyebrow')}
+        <p className="work-header mono-label" style={{ marginBottom: '12px' }}>
+          {'// '}{t('eyebrow')}
         </p>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
           <h1 className="work-header" style={{
             fontFamily: 'var(--font-syne), ui-sans-serif',
             fontSize: 'clamp(40px, 5.5vw, 72px)', fontWeight: 700,
-            lineHeight: 1.0, letterSpacing: '-0.03em',
+            lineHeight: 1.0, letterSpacing: '-0.03em', textTransform: 'uppercase',
             color: 'var(--color-text-primary)', margin: 0,
           }}>
             {t('heading')}
@@ -92,7 +89,7 @@ export function WorkPage({ projects }: { projects?: WorkItem[] }) {
         </div>
       </div>
 
-      <div style={{ position: 'relative', zIndex: 1, height: '1px', backgroundColor: 'var(--color-border)', maxWidth: '1200px', margin: '0 auto' }} />
+      <div style={{ position: 'relative', zIndex: 1, height: '2px', backgroundColor: 'var(--color-ink)', maxWidth: '1200px', margin: '0 auto' }} />
 
       {/* Bento grid */}
       <div
@@ -105,11 +102,11 @@ export function WorkPage({ projects }: { projects?: WorkItem[] }) {
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
           gridTemplateRows: '300px 220px 300px',
-          gap: '12px',
+          gap: '22px',
         }}
       >
-        {ALL_PROJECTS.map(project => (
-          <WorkBentoCard key={project.id} project={project} />
+        {ALL_PROJECTS.map((project, i) => (
+          <WorkBentoCard key={project.id} project={project} index={i} />
         ))}
       </div>
 
