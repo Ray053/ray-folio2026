@@ -40,6 +40,17 @@ export function WorkBentoCard({ project, index = 0 }: { project: WorkProject; in
 
   const lifted = hover && !reduce
 
+  // Staggered reveal for the overlay's inner content — each line rises in on
+  // hover-enter with an increasing delay, and drops back together (no delay)
+  // on hover-leave so the overlay doesn't linger.
+  const revealStyle = (delayMs: number): React.CSSProperties => ({
+    transform: hover ? 'translateY(0)' : 'translateY(10px)',
+    opacity: hover ? 1 : 0,
+    transition: reduce
+      ? 'opacity 0.15s ease'
+      : `transform 0.4s cubic-bezier(0.16,1,0.3,1) ${hover ? delayMs : 0}ms, opacity 0.3s ease ${hover ? delayMs : 0}ms`,
+  })
+
   return (
     <div
       className="work-bento-card"
@@ -93,20 +104,21 @@ export function WorkBentoCard({ project, index = 0 }: { project: WorkProject; in
         pointerEvents: hover ? 'auto' : 'none',
         transition: 'opacity 0.2s ease',
       }}>
-        <span className="mono-label" style={{ color: 'var(--color-acid)', marginBottom: '8px' }}>
+        <span className="mono-label" style={{ color: 'var(--color-acid)', marginBottom: '8px', ...revealStyle(0) }}>
           {project.year}
         </span>
         <h3 style={{
           fontFamily: 'var(--font-syne), ui-sans-serif',
           fontSize: 'clamp(16px, 1.6vw, 22px)', fontWeight: 700,
           margin: '0 0 10px', lineHeight: 1.15, textTransform: 'uppercase', color: '#fff',
+          ...revealStyle(40),
         }}>
           {project.title}
         </h3>
-        <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.72)', margin: '0 0 14px', lineHeight: 1.55 }}>
+        <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.72)', margin: '0 0 14px', lineHeight: 1.55, ...revealStyle(80) }}>
           {project.description}
         </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px', ...revealStyle(120) }}>
           {project.tags.map(tag => (
             <span key={tag} style={{
               padding: '3px 9px', borderRadius: 0,
@@ -122,6 +134,7 @@ export function WorkBentoCard({ project, index = 0 }: { project: WorkProject; in
           fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
           fontSize: '12px', letterSpacing: '0.08em', textTransform: 'uppercase',
           color: 'var(--color-acid)', display: 'flex', alignItems: 'center', gap: '8px',
+          ...revealStyle(160),
         }}>
           View Case Study
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">

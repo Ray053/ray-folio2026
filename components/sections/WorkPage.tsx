@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { WorkBentoCard, type WorkProject } from '@/components/ui/WorkBentoCard'
 import { AmbientGlow } from '@/components/ui/AmbientGlow'
 import { Marquee } from '@/components/ui/Marquee'
+import { ease } from '@/lib/motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -46,10 +47,10 @@ export function WorkPage({ projects }: { projects?: WorkItem[] }) {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from('.work-header', {
-        y: 28, opacity: 0, duration: 0.7, ease: 'power4.out', stagger: 0.1, delay: 0.1,
+        y: 28, opacity: 0, duration: 0.7, ease: ease.outExpo, stagger: 0.1, delay: 0.1,
       })
       gsap.from('.work-bento-card', {
-        y: 40, opacity: 0, duration: 0.65, ease: 'power4.out', stagger: 0.08,
+        y: 40, opacity: 0, duration: 0.65, ease: ease.outExpo, stagger: 0.08,
         scrollTrigger: { trigger: '.work-bento-grid', start: 'top 82%' },
       })
     }, wrapRef)

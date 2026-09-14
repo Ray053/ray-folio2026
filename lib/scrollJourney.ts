@@ -6,7 +6,7 @@ export interface CameraParams { fov: number; distance: number }
 export const JOURNEY = {
   camDistance: 6,   // camera z distance from the ball plane
   camFov: 40,       // perspective vertical FOV (deg)
-  opacity: 0.62,    // ball translucency
+  opacity: 0.74,    // saturated liquid-metal body while retaining some translucency
 } as const
 
 export const clamp01 = (n: number): number => (n < 0 ? 0 : n > 1 ? 1 : n)
@@ -47,4 +47,15 @@ export function ballScale(progress: number): number {
 export function ballOpacity(progress: number): number {
   const p = clamp01(progress)
   return lerp(JOURNEY.opacity, Math.min(JOURNEY.opacity + 0.15, 0.85), smoothstep(0.6, 1.0, p))
+}
+
+/** Hero-only topology transition: Mobius at rest, fully spherical before the first viewport ends. */
+export function heroShapeMorph(scrollY: number, viewportHeight: number): number {
+  if (viewportHeight <= 0) return scrollY > 0 ? 1 : 0
+  return smoothstep(viewportHeight * 0.08, viewportHeight * 0.72, scrollY)
+}
+
+/** Cross-fade that hides the unavoidable topology seam at the sphere endpoint. */
+export function heroSphereBlend(shapeMorph: number): number {
+  return smoothstep(0.76, 0.96, shapeMorph)
 }

@@ -2,6 +2,7 @@
 import { useRef, useEffect } from 'react'
 import { usePathname } from '@/i18n/navigation'
 import gsap from 'gsap'
+import { ease, duration } from '@/lib/motion'
 
 /**
  * Replays an enter animation (fade + slide up) on every route change.
@@ -21,7 +22,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
     }
     gsap.fromTo(el,
       { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }
+      { opacity: 1, y: 0, duration: duration.slow, ease: ease.inOut }
     )
   }, [pathname])
 

@@ -1,8 +1,10 @@
 export const ease = {
   outExpo:  'power4.out',
+  inExpo:   'power4.in',
   inOut:    'power2.inOut',
   outBack:  'back.out(1.4)',
   smooth:   'power1.inOut',
+  hover:    'power2.out',
 } as const
 
 export const duration = {

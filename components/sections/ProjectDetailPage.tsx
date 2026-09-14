@@ -2,6 +2,7 @@
 import { useRef, useEffect } from 'react'
 import { Link } from '@/i18n/navigation'
 import gsap from 'gsap'
+import { ease, duration } from '@/lib/motion'
 
 type Project = {
   slug: string
@@ -23,8 +24,8 @@ export function ProjectDetailPage({ project }: { project: Project }) {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from('.detail-line', {
-        y: 24, opacity: 0, duration: 0.65,
-        ease: 'power4.out', stagger: 0.08, delay: 0.1,
+        y: 24, opacity: 0, duration: duration.slow,
+        ease: ease.outExpo, stagger: 0.08, delay: 0.1,
       })
     }, wrapRef)
     return () => ctx.revert()

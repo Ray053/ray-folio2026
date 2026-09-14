@@ -6,6 +6,7 @@ import { useRouter } from '@/i18n/navigation'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { AmbientGlow } from '@/components/ui/AmbientGlow'
+import { ease, duration, scrollTriggerDefaults } from '@/lib/motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -58,11 +59,11 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
     const ctx = gsap.context(() => {
       // Entrance — slide only (never hides opacity, so content can't vanish)
       gsap.from('.acc-head', {
-        y: 36, duration: 0.7, ease: 'power4.out',
-        scrollTrigger: { trigger: sectionRef.current, start: 'top 85%' },
+        y: 36, duration: duration.slow, ease: ease.outExpo,
+        scrollTrigger: { trigger: sectionRef.current, start: scrollTriggerDefaults.start },
       })
       gsap.from('.acc-row', {
-        y: 30, duration: 0.6, ease: 'power4.out', stagger: 0.08,
+        y: 30, duration: 0.6, ease: ease.outExpo, stagger: 0.08,
         scrollTrigger: { trigger: '.acc-list', start: 'top 88%' },
       })
     }, sectionRef)

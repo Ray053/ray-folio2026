@@ -2,6 +2,7 @@
 import { useRef, useCallback } from 'react'
 import { useRouter } from '@/i18n/navigation'
 import gsap from 'gsap'
+import { ease, duration } from '@/lib/motion'
 
 type Project = {
   id: string
@@ -33,20 +34,20 @@ export function ProjectCard({ project }: { project: Project }) {
     gsap.to(innerRef.current, {
       rotateY: x * 10,
       rotateX: -y * 8,
-      duration: 0.4,
-      ease: 'power2.out',
+      duration: duration.base,
+      ease: ease.hover,
     })
     gsap.to(card.querySelector('.card-bg'), {
       x: x * 16, y: y * 12,
-      duration: 0.4, ease: 'power2.out',
+      duration: duration.base, ease: ease.hover,
     })
   }, [])
 
   const onMouseEnter = useCallback(() => {
     videoRef.current?.play().catch(() => {})
-    gsap.to(innerRef.current, { scale: 1.02, duration: 0.4, ease: 'power2.out' })
-    gsap.to(overlayRef.current, { opacity: 1, duration: 0.35, ease: 'power2.out' })
-    gsap.to(contentRef.current, { y: 0, opacity: 1, duration: 0.4, ease: 'power3.out' })
+    gsap.to(innerRef.current, { scale: 1.02, duration: duration.base, ease: ease.hover })
+    gsap.to(overlayRef.current, { opacity: 1, duration: 0.35, ease: ease.hover })
+    gsap.to(contentRef.current, { y: 0, opacity: 1, duration: duration.base, ease: ease.outExpo })
   }, [])
 
   const onMouseLeave = useCallback(() => {
@@ -56,13 +57,15 @@ export function ProjectCard({ project }: { project: Project }) {
       videoRef.current.pause()
       videoRef.current.currentTime = 0
     }
+    // Elastic settle back to rest — CLAUDE.md's "輕彈效果" token, a Y2K-
+    // appropriate bounce instead of a flat linear reset.
     gsap.to(innerRef.current, {
       rotateX: 0, rotateY: 0, scale: 1,
-      duration: 0.6, ease: 'power3.out',
+      duration: duration.slow, ease: ease.outBack,
     })
-    gsap.to(card.querySelector('.card-bg'), { x: 0, y: 0, duration: 0.6, ease: 'power3.out' })
-    gsap.to(overlayRef.current, { opacity: 0, duration: 0.3, ease: 'power2.in' })
-    gsap.to(contentRef.current, { y: 16, opacity: 0, duration: 0.25, ease: 'power2.in' })
+    gsap.to(card.querySelector('.card-bg'), { x: 0, y: 0, duration: duration.slow, ease: ease.outBack })
+    gsap.to(overlayRef.current, { opacity: 0, duration: 0.3, ease: ease.inOut })
+    gsap.to(contentRef.current, { y: 16, opacity: 0, duration: 0.25, ease: ease.inOut })
   }, [])
 
   return (

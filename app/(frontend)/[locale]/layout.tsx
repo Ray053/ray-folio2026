@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { Inter, Syne, Geist_Mono } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
@@ -50,12 +51,24 @@ export default async function LocaleLayout({ children, params }: Props) {
       suppressHydrationWarning
     >
       <body style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
+        {/* Sets .dark on <html> before hydration so there's no flash of the
+            wrong theme. suppressHydrationWarning on <html> above covers the
+            resulting className mismatch between the server markup and this. */}
+        <Script id="theme-init" strategy="beforeInteractive">{`
+          (function () {
+            try {
+              var saved = localStorage.getItem('theme');
+              var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+              document.documentElement.classList.toggle('dark', dark);
+            } catch (e) {}
+          })();
+        `}</Script>
         <NextIntlClientProvider messages={messages}>
           <SmoothScroll>
             <LoadingScreen />
             <ScrollProgress />
             <Navbar />
-            <main style={{ flex: 1 }}>
+            <main style={{ flex: 1, position: 'relative', zIndex: 1 }}>
               <PageTransition>{children}</PageTransition>
             </main>
             <Footer />

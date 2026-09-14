@@ -2,6 +2,20 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 
+// Read (and consume) the locale-switch flag exactly once at module
+// evaluation time — which happens once per real page load — rather than
+// inside the component. Reading it in a render or effect body instead breaks
+// under React Strict Mode's dev-only double-invoke: the first (discarded)
+// pass would already remove the flag from sessionStorage before the second,
+// real pass gets to read it, so the fallback would silently never trigger.
+let skipParticleIntro = false
+if (typeof window !== 'undefined') {
+  try {
+    skipParticleIntro = sessionStorage.getItem('skip-intro-particles') === '1'
+    if (skipParticleIntro) sessionStorage.removeItem('skip-intro-particles')
+  } catch {}
+}
+
 const SVG_SIZE = 110
 const VB       = 432           // viewBox size
 const STEP     = 7             // sampling grid step in viewBox units
@@ -50,10 +64,11 @@ export function LoadingScreen() {
     gsap.set(svgEl, { opacity: 0 })
     document.body.style.overflow = 'hidden'
 
-    // ── Lightweight path for mobile / touch / reduced-motion ───────
+    // ── Lightweight path for mobile / touch / reduced-motion, or a locale
+    // switch (see skipParticleIntro above) ─────────────────────────────
     // The per-particle radial-gradient canvas is too heavy on phones, so just
     // fade the logo in and fly it to the navbar.
-    const simple = window.matchMedia(
+    const simple = skipParticleIntro || window.matchMedia(
       '(max-width: 768px), (pointer: coarse), (prefers-reduced-motion: reduce)'
     ).matches
     if (simple) {

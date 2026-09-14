@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import {
   clamp01, lerp, smoothstep, mix2, screenToWorld, ballScale, ballOpacity, JOURNEY,
+  heroShapeMorph,
+  heroSphereBlend,
 } from './scrollJourney'
 
 describe('helpers', () => {
@@ -63,6 +65,34 @@ describe('ballOpacity', () => {
       const o = ballOpacity(p)
       expect(o).toBeGreaterThan(0.3); expect(o).toBeLessThanOrEqual(1)
     }
+  })
+})
+
+describe('heroShapeMorph', () => {
+  it('keeps the Mobius form at the top and becomes a sphere before the hero leaves', () => {
+    expect(heroShapeMorph(0, 1000)).toBe(0)
+    expect(heroShapeMorph(800, 1000)).toBe(1)
+  })
+
+  it('changes smoothly and monotonically through the hero scroll', () => {
+    const samples = [0, 100, 250, 400, 550, 700, 900].map((y) => heroShapeMorph(y, 1000))
+    expect(samples[3]).toBeGreaterThan(0)
+    expect(samples[3]).toBeLessThan(1)
+    for (let i = 1; i < samples.length; i += 1) {
+      expect(samples[i]).toBeGreaterThanOrEqual(samples[i - 1])
+    }
+  })
+
+  it('handles an unavailable viewport height without invalid values', () => {
+    expect(heroShapeMorph(200, 0)).toBe(1)
+  })
+})
+
+describe('heroSphereBlend', () => {
+  it('keeps the sculptural mesh through most of the morph, then hands off fully to a clean sphere', () => {
+    expect(heroSphereBlend(0.7)).toBe(0)
+    expect(heroSphereBlend(0.86)).toBeGreaterThan(0)
+    expect(heroSphereBlend(1)).toBe(1)
   })
 })
 

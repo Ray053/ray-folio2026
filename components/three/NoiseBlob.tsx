@@ -5,6 +5,7 @@ import type { ThreeEvent } from '@react-three/fiber'
 import * as THREE from 'three'
 import type { SpawnFn } from './SplinterSystem'
 import { getHandLandmarks } from '@/lib/poseTracking'
+import { createMobiusMorphGeometry } from '@/lib/mobiusGeometry'
 
 const HAND_MAP_X = 3.0
 const HAND_MAP_Y = 2.4
@@ -59,8 +60,12 @@ float snoise(vec3 v){
 }`
 
 const vertexShader = /* glsl */`
+  attribute vec3 aMobius;
+  attribute vec3 aSphereNormal;
+  attribute vec3 aMobiusNormal;
   uniform float uTime;
   uniform float uStrength;
+  uniform float uMorph;
   uniform vec2  uMouse;
 
   varying vec3 vNormal;
@@ -78,7 +83,10 @@ const vertexShader = /* glsl */`
   }
 
   void main(){
-    vec3 pos  = position;
+    float morph = smoothstep(0.0, 1.0, uMorph);
+    vec3 basePos = mix(aMobius, position, morph);
+    vec3 baseNormal = normalize(mix(aMobiusNormal, aSphereNormal, morph));
+    vec3 pos  = basePos;
     float n   = sampleNoise(pos);
 
     // Mouse boost
@@ -86,10 +94,11 @@ const vertexShader = /* glsl */`
     float mb  = smoothstep(-0.2,1.0,dot(normalize(pos),mDir))*0.65;
     float str = uStrength*(1.0+mb);
 
-    pos += normal*n*str;
+    float liquidStrength = mix(0.16, 0.42, morph) * str;
+    pos += baseNormal*n*liquidStrength;
     pos += mDir*mb*0.07;
     // Jitter
-    pos += normal*sin(uTime*1.8+length(position)*3.0)*0.012;
+    pos += baseNormal*sin(uTime*1.8+length(basePos)*3.0)*0.012;
 
     // ── Recalculate displaced normals ──────────────────────────
     // Numerical gradient of the noise = how the surface bends
@@ -100,7 +109,7 @@ const vertexShader = /* glsl */`
       sampleNoise(position+vec3(0,0,e)) - sampleNoise(position-vec3(0,0,e))
     ) / (2.0*e);
 
-    vec3 displacedNormal = normalize(normal - grad * str * 0.8);
+    vec3 displacedNormal = normalize(baseNormal - grad * liquidStrength * 0.8);
 
     vNoise    = n;
     vLocalY   = position.y;
@@ -116,6 +125,7 @@ const fragmentShader = /* glsl */`
   uniform float uTime;
   uniform vec2  uMouse;
   uniform float uOpacity;
+  uniform float uMorph;
 
   varying vec3  vNormal;
   varying vec3  vViewDir;
@@ -135,7 +145,11 @@ const fragmentShader = /* glsl */`
   }
 
   void main(){
+    // A Mobius strip needs both sides; the closed sphere must hide its back
+    // faces or transparent triangles show through the liquid surface.
+    if (!gl_FrontFacing && uMorph > 0.42) discard;
     vec3  N    = normalize(vNormal);
+    if (!gl_FrontFacing) N = -N;
     vec3  V    = normalize(vViewDir);
     float NdotV = max(dot(N,V), 0.0);
 
@@ -173,10 +187,10 @@ const fragmentShader = /* glsl */`
             + sin(uTime * 0.3 + vWorldPos.x * 2.0) * 0.05;
     b = clamp(b, 0.0, 1.0);
 
-    vec3 blueDeep = vec3(0.000, 0.102, 0.502);   // #001A80
-    vec3 blueMid  = vec3(0.000, 0.200, 1.000);   // #0033FF
-    vec3 blueLite = vec3(0.541, 0.647, 1.000);   // #8AA5FF
-    vec3 hiBlue   = vec3(0.000, 0.761, 1.000);   // #00C2FF
+    vec3 blueDeep = vec3(0.004, 0.025, 0.180);
+    vec3 blueMid  = vec3(0.000, 0.110, 0.760);
+    vec3 blueLite = vec3(0.100, 0.360, 1.000);
+    vec3 hiBlue   = vec3(0.020, 0.720, 1.000);
 
     vec3 albedo = mix(blueDeep, blueMid, smoothstep(0.0, 0.6, b));
     albedo      = mix(albedo,  blueLite, smoothstep(0.55, 1.0, b));
@@ -192,10 +206,10 @@ const fragmentShader = /* glsl */`
     vec3 sheen    = mix(blueLite, hiBlue, 0.5);
     vec3 specular = hiBlue*(s1+s2) + sheen*(s3+s4);
 
-    // ── Fresnel edge — cyan→lime acid flash at grazing angles ────
+    // ── Fresnel edge — electric blue flash at grazing angles ─────
     float F = schlick(NdotV, 0.42);
-    vec3 lime = vec3(0.800, 1.000, 0.000);       // #CCFF00
-    vec3 fresnel = mix(mix(blueLite, hiBlue, F), lime, F * F) * F * 1.0;
+    vec3 edgeBlue = vec3(0.120, 0.300, 1.000);
+    vec3 fresnel = mix(mix(blueLite, hiBlue, F), edgeBlue, F * F) * F * 1.0;
 
     // ── Fake environment reflection ──────────────────────────────
     vec3 R    = reflect(-V, N);
@@ -212,7 +226,7 @@ const fragmentShader = /* glsl */`
                + fresnel
                + albedo * env;
 
-    color = pow(color, vec3(0.92));
+    color = pow(color, vec3(0.92)) * vec3(0.72, 0.88, 1.16);
 
     gl_FragColor = vec4(color, uOpacity);
   }
@@ -229,6 +243,7 @@ export function NoiseBlob({
   frozenRef,
   detail = 5,
   opacity = 1,
+  morphing = false,
 }: {
   spawnRef?: React.MutableRefObject<SpawnFn | undefined>
   posRef?: React.MutableRefObject<THREE.Vector3>
@@ -238,8 +253,9 @@ export function NoiseBlob({
   frozenRef?: React.MutableRefObject<boolean>
   detail?: number
   opacity?: number
+  morphing?: boolean
 }) {
-  const meshRef     = useRef<THREE.Mesh>(null)
+  const meshRef     = useRef<THREE.Group>(null)
   const materialRef = useRef<THREE.ShaderMaterial>(null)
   const lastPt      = useRef<THREE.Vector3 | null>(null)
   const lastTime    = useRef(0)
@@ -281,7 +297,23 @@ export function NoiseBlob({
     uStrength: { value: 0.48 },
     uMouse:    { value: new THREE.Vector2(0, 0) },
     uOpacity:  { value: 1 },
+    uMorph:    { value: 1 },
   }), [])
+  const geometry = useMemo(() => {
+    if (morphing) {
+      return createMobiusMorphGeometry({
+        uSegments: detail <= 3 ? 96 : 160,
+        crossSegments: detail <= 3 ? 16 : 24,
+      })
+    }
+    const sphere = new THREE.IcosahedronGeometry(1.4, detail)
+    sphere.setAttribute('aMobius', sphere.getAttribute('position').clone())
+    sphere.setAttribute('aSphereNormal', sphere.getAttribute('normal').clone())
+    sphere.setAttribute('aMobiusNormal', sphere.getAttribute('normal').clone())
+    return sphere
+  }, [detail, morphing])
+
+  useEffect(() => () => geometry.dispose(), [geometry])
 
   // Set opacity from prop on change only (per-frame writers, e.g. the journey
   // controller, may drive uOpacity directly without fighting this).
@@ -338,17 +370,35 @@ export function NoiseBlob({
   })
 
   return (
-    <mesh ref={meshRef} onPointerMove={onPointerMove}>
-      <icosahedronGeometry args={[1.4, detail]} />
-      <shaderMaterial
-        ref={materialRef}
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
-        uniforms={uniforms}
-        side={THREE.FrontSide}
-        transparent
-        depthWrite={false}
-      />
-    </mesh>
+    <group ref={meshRef} onPointerMove={onPointerMove}>
+      <mesh name="liquid-shape" geometry={geometry}>
+        <shaderMaterial
+          ref={materialRef}
+          vertexShader={vertexShader}
+          fragmentShader={fragmentShader}
+          uniforms={uniforms}
+          side={morphing ? THREE.DoubleSide : THREE.FrontSide}
+          transparent
+          depthWrite={false}
+        />
+      </mesh>
+      {morphing && (
+        <mesh name="liquid-sphere" visible={false}>
+          <icosahedronGeometry args={[1.4, detail]} />
+          <meshPhysicalMaterial
+            color="#0878ff"
+            emissive="#0048e8"
+            emissiveIntensity={1.25}
+            metalness={0.34}
+            roughness={0.16}
+            clearcoat={1}
+            clearcoatRoughness={0.08}
+            transparent
+            opacity={0}
+            depthWrite={false}
+          />
+        </mesh>
+      )}
+    </group>
   )
 }

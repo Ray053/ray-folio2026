@@ -2,6 +2,8 @@
 import { useRef, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import gsap from 'gsap'
+import { ease, duration } from '@/lib/motion'
+import { useMagnetic } from '@/lib/useMagnetic'
 
 export type AboutInfo = {
   name?: string
@@ -16,6 +18,7 @@ export type AboutInfo = {
 export function AboutSection({ info }: { info?: AboutInfo }) {
   const t = useTranslations('about')
   const wrapRef = useRef<HTMLDivElement>(null)
+  const cvRef = useMagnetic<HTMLAnchorElement>(0.3)
   const bioParas = info?.bio ? info.bio.split('\n').filter(Boolean) : null
 
   useEffect(() => {
@@ -23,15 +26,15 @@ export function AboutSection({ info }: { info?: AboutInfo }) {
       gsap.from('.about-photo', {
         x: -40,
         opacity: 0,
-        duration: 0.9,
-        ease: 'power4.out',
+        duration: duration.slower,
+        ease: ease.outExpo,
         delay: 0.1,
       })
       gsap.from('.about-line', {
         y: 24,
         opacity: 0,
-        duration: 0.7,
-        ease: 'power4.out',
+        duration: duration.slow,
+        ease: ease.outExpo,
         stagger: 0.1,
         delay: 0.25,
       })
@@ -185,6 +188,7 @@ export function AboutSection({ info }: { info?: AboutInfo }) {
           {/* CV */}
           <div className="about-line">
             <a
+              ref={cvRef}
               href={info?.cvSrc || '/cv.pdf'}
               download
               style={{
@@ -199,6 +203,7 @@ export function AboutSection({ info }: { info?: AboutInfo }) {
                 color: 'var(--color-text-primary)',
                 textDecoration: 'none',
                 transition: 'border-color 0.15s, background 0.15s',
+                willChange: 'transform',
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.borderColor = 'var(--color-accent)'

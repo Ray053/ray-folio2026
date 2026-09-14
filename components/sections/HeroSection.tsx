@@ -4,14 +4,13 @@ import { useTranslations } from 'next-intl'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ParticleCursor } from '@/components/three/ParticleCursor'
-import { LiquidChrome } from '@/components/ui/LiquidChrome'
+import { useMagnetic } from '@/lib/useMagnetic'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const CHROME = 'linear-gradient(135deg, #f6f8fb 0%, #c7ccd2 22%, #8a929c 42%, #565e68 52%, #aeb6be 66%, #ffffff 84%, #79818a 100%)'
-
 function HeroText() {
   const t = useTranslations('hero')
+  const ctaRef = useMagnetic<HTMLAnchorElement>(0.35)
   return (
     <>
       <h1 style={{
@@ -38,7 +37,7 @@ function HeroText() {
         }}>
           {t('tagline')}
         </p>
-        <a href="/cv.pdf" download style={{
+        <a ref={ctaRef} href="/cv.pdf" download style={{
           alignSelf: 'flex-start', marginTop: '4px',
           display: 'inline-flex', alignItems: 'center', gap: '10px',
           padding: '10px 12px 10px 18px', borderRadius: 0,
@@ -46,7 +45,7 @@ function HeroText() {
           background: 'var(--color-accent)', color: '#fff',
           fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
           fontSize: '13px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
-          textDecoration: 'none',
+          textDecoration: 'none', willChange: 'transform',
         }}>
           {t('downloadCV')}
           <span style={{
@@ -101,64 +100,7 @@ export function HeroSection() {
         backgroundColor: 'transparent',
       }}
     >
-      {/* Blue halo — makes the orb read as a light source */}
-      <div aria-hidden style={{
-        position: 'absolute', zIndex: 0, pointerEvents: 'none',
-        top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-        width: 'min(90vw, 900px)', height: 'min(90vw, 900px)',
-        background: 'radial-gradient(circle, var(--color-shadow-accent) 0%, transparent 60%)',
-        filter: 'blur(40px)',
-      }} />
-
-      {/* Stage backdrop — backlight glow + horizon */}
-      <div className="hero-stage" />
-
-      {/* Liquid-metal chrome blob */}
-      <LiquidChrome style={{
-        position: 'absolute', zIndex: 1, pointerEvents: 'none',
-        right: 'clamp(-50px, 3vw, 40px)', top: '12%',
-        width: 'clamp(190px, 27vw, 400px)', height: 'clamp(190px, 27vw, 400px)',
-        filter: 'drop-shadow(6px 10px 16px rgba(0,0,0,0.22))',
-      }} />
-
-      {/* Metallic sticker — rounded square, tilted */}
-      <div aria-hidden style={{
-        position: 'absolute', zIndex: 2, pointerEvents: 'none',
-        right: 'clamp(24px, 12vw, 210px)', top: '20%',
-        width: 'clamp(52px, 6vw, 92px)', height: 'clamp(52px, 6vw, 92px)',
-        borderRadius: '14px',
-        background: CHROME,
-        border: '2px solid rgba(10,10,10,0.85)',
-        boxShadow: '4px 6px 14px rgba(0,0,0,0.28), inset 0 1px 2px rgba(255,255,255,0.9)',
-        transform: 'rotate(-10deg)',
-      }} />
-
-      {/* Metallic sticker — circle badge with an accent star */}
-      <div aria-hidden style={{
-        position: 'absolute', zIndex: 2, pointerEvents: 'none',
-        right: 'clamp(78px, 19vw, 320px)', bottom: '20%',
-        width: 'clamp(44px, 5vw, 78px)', height: 'clamp(44px, 5vw, 78px)',
-        borderRadius: '9999px',
-        background: CHROME,
-        border: '2px solid rgba(10,10,10,0.85)',
-        boxShadow: '3px 5px 12px rgba(0,0,0,0.26), inset 0 1px 2px rgba(255,255,255,0.9)',
-        transform: 'rotate(8deg)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}>
-        <span style={{ color: 'var(--color-accent)', fontSize: 'clamp(18px, 2.4vw, 30px)', fontWeight: 800, lineHeight: 1 }}>★</span>
-      </div>
-
-      {/* Left gradient — sits BELOW the canvas so the figure isn't clipped */}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        zIndex: 1,
-        background: 'linear-gradient(to right, var(--color-background) 22%, transparent 60%)',
-        opacity: 1,
-        pointerEvents: 'none',
-      }} />
-
-      {/* The travelling ball is rendered by the page-level fixed JourneyBall layer. */}
+      {/* The translucent sculpture floats over the copy without capturing clicks. */}
 
       {!lowPower && <ParticleCursor />}
 

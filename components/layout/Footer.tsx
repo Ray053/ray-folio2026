@@ -1,10 +1,30 @@
 'use client'
 import { useTranslations } from 'next-intl'
+import { useRef, useEffect } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ease, duration, scrollTriggerDefaults } from '@/lib/motion'
+import { useMagnetic } from '@/lib/useMagnetic'
+
+gsap.registerPlugin(ScrollTrigger)
 
 export function Footer() {
   const t = useTranslations('footer')
+  const footerRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.footer-line', {
+        y: 24, opacity: 0, duration: duration.slow, ease: ease.outExpo, stagger: 0.1,
+        scrollTrigger: { trigger: footerRef.current, start: scrollTriggerDefaults.start },
+      })
+    }, footerRef)
+    return () => ctx.revert()
+  }, [])
+
   return (
     <footer
+      ref={footerRef}
       id="site-footer"
       style={{
         backgroundColor: 'transparent',
@@ -23,6 +43,7 @@ export function Footer() {
         }}
       >
         <div
+          className="footer-line"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -49,6 +70,7 @@ export function Footer() {
         </div>
 
         <p
+          className="footer-line"
           style={{
             fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
             fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.08em',
@@ -63,22 +85,42 @@ export function Footer() {
 }
 
 function FooterLink({ href, label }: { href: string; label: string }) {
+  const underlineRef = useRef<HTMLSpanElement>(null)
+  const magneticRef = useMagnetic<HTMLAnchorElement>(0.25)
+
+  const onEnter = () => {
+    gsap.to(underlineRef.current, { scaleX: 1, duration: duration.base, ease: ease.outExpo })
+  }
+  const onLeave = () => {
+    gsap.to(underlineRef.current, { scaleX: 0, duration: duration.fast, ease: ease.hover })
+  }
+
   return (
     <a
+      ref={magneticRef}
       href={href}
       target="_blank"
       rel="noopener noreferrer"
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
       style={{
         fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
         fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.06em',
         color: 'var(--color-ink)',
-        textDecoration: 'none',
-        transition: 'color 0.15s',
+        textDecoration: 'none', position: 'relative',
+        display: 'inline-block', willChange: 'transform', paddingBottom: '2px',
       }}
-      onMouseEnter={e => { e.currentTarget.style.color = 'var(--color-accent)' }}
-      onMouseLeave={e => { e.currentTarget.style.color = 'var(--color-ink)' }}
     >
       {label}
+      <span
+        ref={underlineRef}
+        aria-hidden
+        style={{
+          position: 'absolute', left: 0, right: 0, bottom: 0,
+          height: '1px', backgroundColor: 'var(--color-accent)',
+          transform: 'scaleX(0)', transformOrigin: 'left center',
+        }}
+      />
     </a>
   )
 }
