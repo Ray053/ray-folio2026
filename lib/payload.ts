@@ -1,5 +1,6 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { getPlaceholderProjectBySlug } from './placeholderProjects'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -48,6 +49,7 @@ function toParagraphs(text: unknown): string[] | undefined {
 }
 
 function mapProject(d: any, i = 0): CMSProject {
+  const fallback = getPlaceholderProjectBySlug(d.slug)
   return {
     id: String(d.id),
     slug: typeof d.slug === 'string' && d.slug ? d.slug : String(d.id),
@@ -56,8 +58,8 @@ function mapProject(d: any, i = 0): CMSProject {
     tags: Array.isArray(d.tags) ? d.tags.map((t: any) => t?.tag).filter(Boolean) : [],
     year: typeof d.year === 'number' ? d.year : new Date().getFullYear(),
     coverColor: COLORS[i % COLORS.length],
-    coverSrc: urlOf(d.coverImage),
-    videoSrc: urlOf(d.video),
+    coverSrc: urlOf(d.coverImage) || fallback?.coverSrc || '',
+    videoSrc: urlOf(d.video) || fallback?.videoSrc || '',
     liveUrl: typeof d.liveUrl === 'string' ? d.liveUrl : '',
     role: typeof d.role === 'string' && d.role ? d.role : undefined,
     duration: typeof d.duration === 'string' && d.duration ? d.duration : undefined,

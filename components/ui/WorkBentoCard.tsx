@@ -1,6 +1,7 @@
 'use client'
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from '@/i18n/navigation'
+import { ProjectPreviewMedia } from './ProjectPreviewMedia'
 
 export type WorkProject = {
   id: string
@@ -29,7 +30,6 @@ export function WorkBentoCard({ project, index = 0 }: { project: WorkProject; in
   const router = useRouter()
   const [hover, setHover] = useState(false)
   const [reduce, setReduce] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
     setReduce(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
@@ -40,12 +40,9 @@ export function WorkBentoCard({ project, index = 0 }: { project: WorkProject; in
 
   const onEnter = useCallback(() => {
     setHover(true)
-    videoRef.current?.play().catch(() => {})
   }, [])
   const onLeave = useCallback(() => {
     setHover(false)
-    const v = videoRef.current
-    if (v) { v.pause(); v.currentTime = 0 }
   }, [])
 
   const lifted = hover && !reduce
@@ -84,30 +81,8 @@ export function WorkBentoCard({ project, index = 0 }: { project: WorkProject; in
       onMouseLeave={onLeave}
       onClick={() => router.push(`/work/${project.slug}`)}
     >
-      {/* Cover image — sits under everything; falls back to the solid block
-          colour (already the card's own background) when there's no asset. */}
-      {project.coverSrc && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={project.coverSrc} alt="" style={{
-          position: 'absolute', inset: 0, width: '100%', height: '100%',
-          objectFit: 'cover', zIndex: 0,
-        }} />
-      )}
-
-      {/* Hover video preview — fades in and plays over the still cover. */}
-      {project.videoSrc && (
-        <video
-          ref={videoRef}
-          src={project.videoSrc}
-          muted loop playsInline
-          style={{
-            position: 'absolute', inset: 0, width: '100%', height: '100%',
-            objectFit: 'cover', zIndex: 1,
-            opacity: hover ? 1 : 0,
-            transition: 'opacity 0.3s ease',
-          }}
-        />
-      )}
+      <ProjectPreviewMedia key={project.id} slug={project.slug}
+        coverSrc={project.coverSrc} videoSrc={project.videoSrc} active={hover && !reduce} />
 
       {/* Number tag — top-left, on a dark chip so it reads over any image */}
       <span className="mono-label" style={{

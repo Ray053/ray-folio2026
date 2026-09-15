@@ -6,6 +6,7 @@ import { useRouter } from '@/i18n/navigation'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { AmbientGlow } from '@/components/ui/AmbientGlow'
+import { ProjectPreviewMedia } from '@/components/ui/ProjectPreviewMedia'
 import { ease, duration, scrollTriggerDefaults } from '@/lib/motion'
 import { PLACEHOLDER_PROJECTS as SHARED_PLACEHOLDER_PROJECTS } from '@/lib/placeholderProjects'
 
@@ -21,9 +22,6 @@ export type ProjectItem = {
   videoSrc?: string
   coverSrc?: string
 }
-
-// Project clips used when a project has no video of its own (so hover still plays).
-const SAMPLE_VIDEOS = ['/taichung.webm', '/chuanghua.mp4']
 
 const PLACEHOLDER_PROJECTS: ProjectItem[] = SHARED_PLACEHOLDER_PROJECTS.map(
   ({ id, slug, title, tags, year, coverColor, videoSrc, coverSrc }) => ({
@@ -194,19 +192,8 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
             position: 'absolute', inset: 0,
             background: proj.coverColor,
           }} />
-          {proj.coverSrc && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={proj.coverSrc} alt=""
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-          )}
-          <video
-            key={current}
-            src={SAMPLE_VIDEOS[current % SAMPLE_VIDEOS.length]}
-            muted loop autoPlay playsInline
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-          />
+          <ProjectPreviewMedia key={proj.id} slug={proj.slug}
+            coverSrc={proj.coverSrc} videoSrc={proj.videoSrc} active={active !== null} />
           <div style={{
             position: 'absolute', bottom: 0, left: 0, right: 0,
             padding: '12px 14px',
