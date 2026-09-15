@@ -23,6 +23,16 @@ const eslintConfig = defineConfig([
       "react-hooks/set-state-in-effect": "warn",
     },
   },
+  {
+    // One-off Payload local-API scripts (seeding/migrating CMS content) run
+    // via tsx outside the app bundle. They cast collection slugs/docs `as
+    // any` since we haven't generated payload-types.ts — standard for this
+    // kind of script and not worth the generated-types dependency here.
+    files: ["scripts/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
