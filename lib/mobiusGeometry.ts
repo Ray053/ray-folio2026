@@ -23,8 +23,8 @@ export function createMobiusMorphGeometry({
   uSegments = 160,
   crossSegments = 24,
   ringRadius = 1.02,
-  halfWidth = 0.50,
-  halfThickness = 0.30,
+  halfWidth = 0.52,
+  halfThickness = 0.50,
   sphereRadius = 1.4,
   depthWave = 0.62,
 }: Options = {}): THREE.BufferGeometry {
