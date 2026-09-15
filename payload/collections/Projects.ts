@@ -45,6 +45,27 @@ export const Projects: CollectionConfig = {
       relationTo: 'media',
     },
     {
+      name: 'gallery',
+      type: 'array',
+      labels: { singular: 'Image', plural: 'Gallery' },
+      admin: {
+        description: 'Extra project images/screenshots (Behance/Webflow-style), shown as a gallery on the case-study page — separate from the single Cover Image above.',
+      },
+      fields: [
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+        },
+        {
+          name: 'caption',
+          type: 'text',
+          localized: true,
+        },
+      ],
+    },
+    {
       name: 'liveUrl',
       type: 'text',
     },

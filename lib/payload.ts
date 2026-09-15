@@ -39,6 +39,9 @@ export type CMSProject = {
   duration?: string
   outcome?: string
   caseStudy?: string[]
+  /** Extra project images (Behance/Webflow-style), managed in the CMS
+   * independently of the single Cover Image. */
+  gallery?: { src: string; caption?: string }[]
 }
 
 /** Splits a plain-text textarea field into paragraphs on blank lines. */
@@ -65,6 +68,11 @@ function mapProject(d: any, i = 0): CMSProject {
     duration: typeof d.duration === 'string' && d.duration ? d.duration : undefined,
     outcome: typeof d.outcome === 'string' && d.outcome ? d.outcome : undefined,
     caseStudy: toParagraphs(d.caseStudy),
+    gallery: Array.isArray(d.gallery)
+      ? d.gallery
+          .map((g: any) => ({ src: urlOf(g?.image), caption: typeof g?.caption === 'string' ? g.caption : undefined }))
+          .filter((g: { src: string }) => g.src)
+      : undefined,
   }
 }
 

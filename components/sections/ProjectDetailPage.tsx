@@ -17,6 +17,40 @@ type Project = {
   duration?: string
   outcome?: string
   caseStudy?: string[]
+  /** Extra project images added via the CMS Gallery field (Behance/Webflow-
+   * style) — independent of the single Cover Image. */
+  gallery?: { src: string; caption?: string }[]
+}
+
+function GallerySection({ items }: { items: { src: string; caption?: string }[] }) {
+  return (
+    <div>
+      <p style={{
+        fontSize: '11px', fontWeight: 500, letterSpacing: '0.12em',
+        textTransform: 'uppercase', color: 'var(--color-accent)', margin: '0 0 12px',
+      }}>
+        Gallery
+      </p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+        {items.map((item, i) => (
+          <figure key={item.src + i} style={{ margin: 0 }}>
+            <div style={{
+              border: '1px solid var(--color-border)', borderRadius: '8px', overflow: 'hidden',
+              backgroundColor: 'var(--color-surface)',
+            }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={item.src} alt={item.caption || ''} style={{ width: '100%', height: 'auto', display: 'block' }} />
+            </div>
+            {item.caption && (
+              <figcaption style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '6px' }}>
+                {item.caption}
+              </figcaption>
+            )}
+          </figure>
+        ))}
+      </div>
+    </div>
+  )
 }
 
 export function ProjectDetailPage({ project, diagrams }: { project: Project; diagrams?: Record<string, React.ReactNode> }) {
@@ -174,84 +208,125 @@ export function ProjectDetailPage({ project, diagrams }: { project: Project; dia
               "## Heading"            -> section heading
               "- one\n- two"          -> bullet list (every line starts "- ")
               "[[diagram:key]]"       -> the matching node from `diagrams`
+              "[[gallery]]"           -> the CMS Gallery field, placed here
               anything else           -> a plain paragraph
             so the narrative reads as Problem -> Research -> Solution ->
-            Outcome with flow charts / design-system swatches placed right
-            where they're relevant, instead of one wall of text. */}
-        {project.caseStudy && project.caseStudy.length > 0 ? (
-          <div style={{
-            marginTop: 'clamp(48px, 6vw, 80px)',
-            maxWidth: '820px',
-            borderTop: '1px solid var(--color-border)',
-            paddingTop: 'clamp(32px, 5vw, 56px)',
-          }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {project.caseStudy.map((para, i) => {
-                const heading = para.match(/^##\s+(.*)/)
-                if (heading) {
-                  return (
-                    <h2 key={i} className="detail-line" style={{
-                      fontFamily: 'var(--font-syne), ui-sans-serif',
-                      fontSize: 'clamp(20px, 2.2vw, 28px)', fontWeight: 700,
-                      color: 'var(--color-text-primary)', margin: i === 0 ? 0 : '16px 0 0',
-                    }}>
-                      {heading[1]}
-                    </h2>
-                  )
-                }
+            Outcome with flow charts / design-system swatches / a real image
+            gallery placed right where they're relevant. If there's a
+            gallery but no "[[gallery]]" marker (the common case for anyone
+            just uploading images in the admin without editing the write-up),
+            it's appended automatically instead of silently not showing. */}
+        {(() => {
+          const gallery = project.gallery?.filter((g) => g.src) ?? []
+          const hasGalleryMarker = project.caseStudy?.some((p) => p.trim() === '[[gallery]]') ?? false
+          const showAutoGallery = gallery.length > 0 && !hasGalleryMarker
 
-                const diagramKey = para.match(/^\[\[diagram:(\w+)\]\]$/)
-                if (diagramKey && diagrams?.[diagramKey[1]]) {
-                  return (
-                    <div key={i} className="detail-line" style={{ margin: '8px 0' }}>
-                      {diagrams[diagramKey[1]]}
-                    </div>
-                  )
-                }
-
-                const lines = para.split('\n').map((l) => l.trim()).filter(Boolean)
-                if (lines.length > 0 && lines.every((l) => l.startsWith('- '))) {
-                  return (
-                    <ul key={i} className="detail-line" style={{
-                      margin: 0, paddingLeft: '20px',
-                      display: 'flex', flexDirection: 'column', gap: '8px',
-                    }}>
-                      {lines.map((l, li) => (
-                        <li key={li} style={{
-                          fontSize: '16px', lineHeight: 1.7,
-                          color: 'var(--color-text-secondary)',
+          if (project.caseStudy && project.caseStudy.length > 0) {
+            return (
+              <div style={{
+                marginTop: 'clamp(48px, 6vw, 80px)',
+                maxWidth: '820px',
+                borderTop: '1px solid var(--color-border)',
+                paddingTop: 'clamp(32px, 5vw, 56px)',
+              }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  {project.caseStudy.map((para, i) => {
+                    const heading = para.match(/^##\s+(.*)/)
+                    if (heading) {
+                      return (
+                        <h2 key={i} className="detail-line" style={{
+                          fontFamily: 'var(--font-syne), ui-sans-serif',
+                          fontSize: 'clamp(20px, 2.2vw, 28px)', fontWeight: 700,
+                          color: 'var(--color-text-primary)', margin: i === 0 ? 0 : '16px 0 0',
                         }}>
-                          {l.slice(2)}
-                        </li>
-                      ))}
-                    </ul>
-                  )
-                }
+                          {heading[1]}
+                        </h2>
+                      )
+                    }
 
-                return (
-                  <p key={i} className="detail-line" style={{
-                    fontSize: '16px', lineHeight: 1.85,
-                    color: 'var(--color-text-secondary)', margin: 0,
-                  }}>
-                    {para}
-                  </p>
-                )
-              })}
+                    if (para.trim() === '[[gallery]]') {
+                      if (gallery.length === 0) return null
+                      return (
+                        <div key={i} className="detail-line" style={{ margin: '8px 0' }}>
+                          <GallerySection items={gallery} />
+                        </div>
+                      )
+                    }
+
+                    const diagramKey = para.match(/^\[\[diagram:(\w+)\]\]$/)
+                    if (diagramKey && diagrams?.[diagramKey[1]]) {
+                      return (
+                        <div key={i} className="detail-line" style={{ margin: '8px 0' }}>
+                          {diagrams[diagramKey[1]]}
+                        </div>
+                      )
+                    }
+
+                    const lines = para.split('\n').map((l) => l.trim()).filter(Boolean)
+                    if (lines.length > 0 && lines.every((l) => l.startsWith('- '))) {
+                      return (
+                        <ul key={i} className="detail-line" style={{
+                          margin: 0, paddingLeft: '20px',
+                          display: 'flex', flexDirection: 'column', gap: '8px',
+                        }}>
+                          {lines.map((l, li) => (
+                            <li key={li} style={{
+                              fontSize: '16px', lineHeight: 1.7,
+                              color: 'var(--color-text-secondary)',
+                            }}>
+                              {l.slice(2)}
+                            </li>
+                          ))}
+                        </ul>
+                      )
+                    }
+
+                    return (
+                      <p key={i} className="detail-line" style={{
+                        fontSize: '16px', lineHeight: 1.85,
+                        color: 'var(--color-text-secondary)', margin: 0,
+                      }}>
+                        {para}
+                      </p>
+                    )
+                  })}
+                  {showAutoGallery && (
+                    <div className="detail-line" style={{ margin: '8px 0' }}>
+                      <GallerySection items={gallery} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          }
+
+          if (gallery.length > 0) {
+            return (
+              <div className="detail-line" style={{
+                marginTop: 'clamp(48px, 6vw, 80px)',
+                maxWidth: '820px',
+                borderTop: '1px solid var(--color-border)',
+                paddingTop: 'clamp(32px, 5vw, 56px)',
+              }}>
+                <GallerySection items={gallery} />
+              </div>
+            )
+          }
+
+          return (
+            <div className="detail-line" style={{
+              marginTop: 'clamp(48px, 6vw, 80px)',
+              padding: '48px',
+              borderRadius: '12px',
+              border: '1px dashed var(--color-border)',
+              textAlign: 'center',
+            }}>
+              <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', margin: 0 }}>
+                Full case study content — add via Payload CMS
+              </p>
             </div>
-          </div>
-        ) : (
-          <div className="detail-line" style={{
-            marginTop: 'clamp(48px, 6vw, 80px)',
-            padding: '48px',
-            borderRadius: '12px',
-            border: '1px dashed var(--color-border)',
-            textAlign: 'center',
-          }}>
-            <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', margin: 0 }}>
-              Full case study content — add via Payload CMS
-            </p>
-          </div>
-        )}
+          )
+        })()}
       </div>
     </div>
   )

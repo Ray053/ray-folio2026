@@ -18,6 +18,9 @@ export type PlaceholderProject = {
   outcome?: string
   /** Long-form paragraphs rendered on the detail page below the summary. */
   caseStudy?: string[]
+  /** Extra project images (Behance/Webflow-style) — normally CMS-managed
+   * via the Gallery field; unused for the code-authored fallback projects. */
+  gallery?: { src: string; caption?: string }[]
 }
 
 export const PLACEHOLDER_PROJECTS: PlaceholderProject[] = [

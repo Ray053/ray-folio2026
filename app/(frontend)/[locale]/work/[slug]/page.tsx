@@ -115,6 +115,7 @@ export default async function Page({ params }: Props) {
         duration: project.duration,
         outcome: project.outcome,
         caseStudy: project.caseStudy,
+        gallery: 'gallery' in project ? project.gallery : undefined,
       }}
     />
   )
