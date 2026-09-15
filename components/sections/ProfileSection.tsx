@@ -65,14 +65,10 @@ export function ProfileSection({ photoSrc, bio }: { photoSrc?: string; bio?: str
       }}
     >
       <div
-        className="profile-reveal"
+        className="profile-reveal profile-grid"
         style={{
           maxWidth: '1200px',
           margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 0.85fr) minmax(0, 1.15fr)',
-          gap: 'clamp(40px, 6vw, 88px)',
-          alignItems: 'start',
           willChange: 'filter, opacity',
         }}
       >

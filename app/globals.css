@@ -242,6 +242,27 @@ html.lenis body { height: auto; }
   .nav-hamburger     { display: flex !important; }
 }
 
+/* ─── Profile section responsive (About photo + intro text) ─── */
+.profile-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(40px, 6vw, 88px);
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+  /* Photo is the grid's first child, so stacking to one column already
+     puts it above the intro text; sticky positioning only makes sense
+     side-by-side, so drop it here. */
+  .profile-photo {
+    position: static !important;
+    top: auto !important;
+  }
+}
+
 /* Logo name fades away when scrolled (condensed) */
 .nav-logo-name {
   overflow: hidden;
