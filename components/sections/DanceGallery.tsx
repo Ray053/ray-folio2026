@@ -30,8 +30,8 @@ export function DanceGallery({ items }: { items: DanceVideo[] }) {
         padding: 'clamp(48px, 7vw, 88px) 24px',
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <p className="mono-label" style={{ marginBottom: '12px' }}>{'// '}{t('eyebrow')}</p>
-          <h2 style={{
+          <p lang="en" className="mono-label" style={{ marginBottom: '12px' }}>{'// '}{t('eyebrow')}</p>
+          <h2 lang="en" style={{
             fontFamily: 'var(--font-syne), ui-sans-serif', fontSize: 'clamp(28px, 3.5vw, 48px)',
             fontWeight: 700, textTransform: 'uppercase', margin: '0 0 32px',
           }}>
@@ -65,8 +65,8 @@ export function DanceGallery({ items }: { items: DanceVideo[] }) {
         padding: 'clamp(32px, 5vw, 64px) 24px', pointerEvents: 'none',
       }}>
         <div style={{ pointerEvents: 'auto' }}>
-          <p className="mono-label" style={{ marginBottom: '8px' }}>{'// '}{t('eyebrow')}</p>
-          <h2 style={{
+          <p lang="en" className="mono-label" style={{ marginBottom: '8px' }}>{'// '}{t('eyebrow')}</p>
+          <h2 lang="en" style={{
             fontFamily: 'var(--font-syne), ui-sans-serif', fontSize: 'clamp(28px, 3.5vw, 56px)',
             fontWeight: 700, textTransform: 'uppercase', margin: 0,
           }}>

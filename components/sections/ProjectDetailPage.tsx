@@ -70,13 +70,14 @@ export function ProjectDetailPage({ project, diagrams }: { project: Project; dia
             </svg>
             All Work
           </Link>
-          <div className="detail-line" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
+          <div className="detail-line" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
             {project.tags.map(tag => (
               <span key={tag} style={{
-                padding: '3px 10px', borderRadius: '2px', fontSize: '11px',
-                fontWeight: 500, color: 'var(--color-accent)',
-                border: '1px solid rgba(92,130,160,0.4)',
-                backgroundColor: 'rgba(92,130,160,0.12)',
+                display: 'inline-block', padding: '6px 12px', borderRadius: '2px',
+                fontSize: '14px', lineHeight: 1.5, fontWeight: 600,
+                color: '#001A80', border: '1px solid #001A80',
+                // Solid backing keeps contrast independent of the cover image.
+                backgroundColor: '#DCE4FF', overflowWrap: 'anywhere', maxWidth: '100%',
               }}>
                 {tag}
               </span>
