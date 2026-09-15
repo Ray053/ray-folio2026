@@ -7,6 +7,11 @@ type Options = {
   halfWidth?: number
   halfThickness?: number
   sphereRadius?: number
+  /** Amplitude of the depth wobble (`sin(2u)`) that bends the ring out of
+   *  its plane twice per revolution. Raising this relative to `ringRadius`
+   *  is what makes the band read as a figure-eight/infinity symbol rather
+   *  than a flat twisted ring when seen edge-on. */
+  depthWave?: number
 }
 
 /**
@@ -21,6 +26,7 @@ export function createMobiusMorphGeometry({
   halfWidth = 0.50,
   halfThickness = 0.30,
   sphereRadius = 1.4,
+  depthWave = 0.62,
 }: Options = {}): THREE.BufferGeometry {
   if (crossSegments % 2 !== 0) throw new Error('crossSegments must be even')
 
@@ -42,7 +48,7 @@ export function createMobiusMorphGeometry({
     // its narrow thickness direction stays perpendicular to it.
     const widthDir = new THREE.Vector3(cosU * cosHalf, sinU * cosHalf, sinHalf)
     const thicknessDir = new THREE.Vector3(-cosU * sinHalf, -sinU * sinHalf, cosHalf)
-    const center = new THREE.Vector3(ringRadius * cosU, ringRadius * sinU, 0.16 * Math.sin(2 * u))
+    const center = new THREE.Vector3(ringRadius * cosU, ringRadius * sinU, depthWave * Math.sin(2 * u))
 
     for (let crossIndex = 0; crossIndex < crossSegments; crossIndex += 1) {
       const theta = crossIndex / crossSegments * Math.PI * 2
@@ -93,6 +99,6 @@ export function createMobiusMorphGeometry({
   geometry.setAttribute('aMobiusNormal', geometry.getAttribute('normal').clone())
   geometry.setAttribute('position', new THREE.BufferAttribute(sphere, 3))
   geometry.computeBoundingSphere()
-  geometry.boundingSphere!.radius = Math.max(sphereRadius, ringRadius + halfWidth + 0.2)
+  geometry.boundingSphere!.radius = Math.max(sphereRadius, ringRadius + halfWidth + depthWave + 0.2)
   return geometry
 }
