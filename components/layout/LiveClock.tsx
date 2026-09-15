@@ -36,7 +36,7 @@ export function LiveClock() {
       return footer.getBoundingClientRect().bottom <= window.innerHeight + 2
     }
     let over = 0
-    const THRESHOLD = 140 // px of extra downward scroll past the bottom
+    const THRESHOLD = 60 // px of extra downward scroll past the bottom
 
     const onWheel = (e: WheelEvent) => {
       if (atBottom() && e.deltaY > 0) {
