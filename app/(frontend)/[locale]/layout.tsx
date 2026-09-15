@@ -13,6 +13,7 @@ import { ScrollProgress } from '@/components/ui/ScrollProgress'
 import { PageTransition } from '@/components/ui/PageTransition'
 import { SmoothScroll } from '@/components/ui/SmoothScroll'
 import { CookieConsent } from '@/components/ui/CookieConsent'
+import { CustomCursor } from '@/components/ui/CustomCursor'
 import '../../globals.css'
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' })
@@ -66,6 +67,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         `}</Script>
         <NextIntlClientProvider messages={messages}>
           <SmoothScroll>
+            <CustomCursor />
             <LoadingScreen />
             <ScrollProgress />
             <Navbar />
