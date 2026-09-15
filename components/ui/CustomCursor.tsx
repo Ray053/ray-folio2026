@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 const CURSOR_BLUE = '#0033FF'
@@ -19,13 +19,15 @@ const INTERACTIVE_SELECTOR = 'a, button, [role="button"], input, textarea, selec
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null)
   const ringRef = useRef<HTMLDivElement>(null)
-  const mountedRef = useRef(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
+    if (!mounted) return
     if (window.matchMedia('(pointer: coarse)').matches) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-    mountedRef.current = true
     document.documentElement.style.cursor = 'none'
 
     const dot = dotRef.current
@@ -87,9 +89,9 @@ export function CustomCursor() {
       window.removeEventListener('mouseover', onOver)
       window.removeEventListener('mouseout', onOut)
     }
-  }, [])
+  }, [mounted])
 
-  if (typeof document === 'undefined') return null
+  if (!mounted) return null
 
   return createPortal(
     <div
