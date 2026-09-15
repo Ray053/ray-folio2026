@@ -37,7 +37,7 @@ export function screenToWorld(px: number, py: number, vp: Viewport, cam: CameraP
 // 0.00–0.35 hero (big) → 0.35–0.62 about (shrink) → 0.62–1.0 projects (small)
 export function ballScale(progress: number): number {
   const p = clamp01(progress)
-  const big = 1.0, mid = 0.5, small = 0.3
+  const big = 1.25, mid = 0.5, small = 0.3
   if (p < 0.35) return big
   if (p < 0.62) return lerp(big, mid, smoothstep(0.35, 0.62, p))
   return lerp(mid, small, smoothstep(0.62, 1.0, p))

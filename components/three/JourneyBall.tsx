@@ -151,11 +151,11 @@ function Controller({ groupRef, pointsRef, cylinderRef, pointerRef, reducedMotio
     // light keep the surface highlights drifting at rest too, like a piece
     // on a turntable rather than a frozen render.
     const t = state.clock.elapsedTime
-    const idleSwayY = Math.sin(t * 0.28) * 0.26
-    const idleSwayX = Math.cos(t * 0.21) * 0.09
-    const idleMouseX = Math.sin(t * 0.35) * 0.55
-    const idleMouseY = Math.cos(t * 0.27) * 0.45
-    const idleHover = 0.16 + 0.08 * Math.sin(t * 0.5)
+    const idleSwayY = Math.sin(t * 0.42) * 0.26
+    const idleSwayX = Math.cos(t * 0.32) * 0.09
+    const idleMouseX = Math.sin(t * 0.52) * 0.55
+    const idleMouseY = Math.cos(t * 0.4) * 0.45
+    const idleHover = 0.16 + 0.08 * Math.sin(t * 0.75)
     const targetMouseX = lerp(idleMouseX, mouseX, hover.current)
     const targetMouseY = lerp(idleMouseY, mouseY, hover.current)
     const hoverUniform = Math.max(hover.current, idleHover)
