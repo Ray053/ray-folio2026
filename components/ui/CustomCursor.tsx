@@ -4,8 +4,18 @@ import { createPortal } from 'react-dom'
 
 const CURSOR_BLUE = '#0033FF'
 const REST_SIZE = 16
-const HOVER_SIZE = 44
+const HOVER_SIZE = 56
 const RING_SIZE = 40
+
+const REST_BG = CURSOR_BLUE
+const REST_SHADOW = '0 0 0 1.5px rgba(255,255,255,0.6)'
+const REST_BORDER = 'none'
+const REST_BACKDROP = 'none'
+
+const HOVER_BG = 'rgba(120,170,255,0.16)'
+const HOVER_SHADOW = 'inset 0 1px 2px rgba(255,255,255,0.55), inset 0 -6px 10px rgba(0,51,255,0.25), 0 6px 18px rgba(0,51,255,0.25)'
+const HOVER_BORDER = '1px solid rgba(255,255,255,0.5)'
+const HOVER_BACKDROP = 'blur(3px) saturate(180%) url(#cursor-glass-lens)'
 
 const INTERACTIVE_SELECTOR = 'a, button, [role="button"], input, textarea, select, summary, label'
 
@@ -67,12 +77,22 @@ export function CustomCursor() {
       if ((e.target as Element | null)?.closest?.(INTERACTIVE_SELECTOR)) {
         dot.style.width = `${HOVER_SIZE}px`
         dot.style.height = `${HOVER_SIZE}px`
+        dot.style.background = HOVER_BG
+        dot.style.boxShadow = HOVER_SHADOW
+        dot.style.border = HOVER_BORDER
+        dot.style.backdropFilter = HOVER_BACKDROP
+        dot.style.setProperty('-webkit-backdrop-filter', HOVER_BACKDROP)
       }
     }
     const onOut = (e: MouseEvent) => {
       if ((e.target as Element | null)?.closest?.(INTERACTIVE_SELECTOR)) {
         dot.style.width = `${REST_SIZE}px`
         dot.style.height = `${REST_SIZE}px`
+        dot.style.background = REST_BG
+        dot.style.boxShadow = REST_SHADOW
+        dot.style.border = REST_BORDER
+        dot.style.backdropFilter = REST_BACKDROP
+        dot.style.setProperty('-webkit-backdrop-filter', REST_BACKDROP)
       }
     }
 
@@ -103,6 +123,14 @@ export function CustomCursor() {
         zIndex: 9999,
       }}
     >
+      {/* Feeds `backdrop-filter: url(#cursor-glass-lens)` on the hover dot —
+          refracts whatever sits behind it, like light through glass. */}
+      <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <filter id="cursor-glass-lens">
+          <feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves={2} seed={7} result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale={22} xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </svg>
       <div
         ref={ringRef}
         style={{
@@ -126,10 +154,12 @@ export function CustomCursor() {
           width: REST_SIZE,
           height: REST_SIZE,
           borderRadius: 9999,
-          background: CURSOR_BLUE,
-          boxShadow: '0 0 0 1.5px rgba(255,255,255,0.6)',
+          background: REST_BG,
+          boxShadow: REST_SHADOW,
+          border: REST_BORDER,
+          backdropFilter: REST_BACKDROP,
           opacity: 0,
-          transition: 'width 0.25s cubic-bezier(0.16, 1, 0.3, 1), height 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease',
+          transition: 'width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease',
         }}
       />
     </div>,
