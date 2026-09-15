@@ -32,16 +32,30 @@ export function CustomCursor() {
     const ring = ringRef.current
     if (!dot || !ring) return
 
-    const move = (x: number, y: number) => {
-      const t = `translateX(${x}px) translateY(${y}px) translateX(-50%) translateY(-50%)`
-      dot.style.transform = t
-      ring.style.transform = t
+    // Dot snaps to the real pointer immediately; the ring lerps toward it
+    // every frame, producing the trailing-delay look of the reference site.
+    const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 }
+    const ringPos = { ...target }
+    let raf = 0
+
+    const setTransform = (el: HTMLDivElement, x: number, y: number) => {
+      el.style.transform = `translateX(${x}px) translateY(${y}px) translateX(-50%) translateY(-50%)`
     }
+
+    const tick = () => {
+      ringPos.x += (target.x - ringPos.x) * 0.18
+      ringPos.y += (target.y - ringPos.y) * 0.18
+      setTransform(ring, ringPos.x, ringPos.y)
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
 
     const onMove = (e: MouseEvent) => {
       dot.style.opacity = '1'
       ring.style.opacity = '0.5'
-      move(e.clientX, e.clientY)
+      target.x = e.clientX
+      target.y = e.clientY
+      setTransform(dot, e.clientX, e.clientY)
     }
     const onLeave = () => {
       dot.style.opacity = '0'
@@ -67,6 +81,7 @@ export function CustomCursor() {
 
     return () => {
       document.documentElement.style.cursor = ''
+      cancelAnimationFrame(raf)
       window.removeEventListener('mousemove', onMove)
       document.removeEventListener('mouseleave', onLeave)
       window.removeEventListener('mouseover', onOver)
