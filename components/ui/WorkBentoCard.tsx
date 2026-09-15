@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from '@/i18n/navigation'
 
 export type WorkProject = {
@@ -10,6 +10,8 @@ export type WorkProject = {
   tags: string[]
   year: number
   coverColor: string
+  coverSrc?: string
+  videoSrc?: string
   gridStyle?: React.CSSProperties
 }
 
@@ -27,6 +29,7 @@ export function WorkBentoCard({ project, index = 0 }: { project: WorkProject; in
   const router = useRouter()
   const [hover, setHover] = useState(false)
   const [reduce, setReduce] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
     setReduce(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
@@ -35,8 +38,15 @@ export function WorkBentoCard({ project, index = 0 }: { project: WorkProject; in
   const block = BLOCKS[index % BLOCKS.length]
   const num = String(index + 1).padStart(2, '0')
 
-  const onEnter = useCallback(() => setHover(true), [])
-  const onLeave = useCallback(() => setHover(false), [])
+  const onEnter = useCallback(() => {
+    setHover(true)
+    videoRef.current?.play().catch(() => {})
+  }, [])
+  const onLeave = useCallback(() => {
+    setHover(false)
+    const v = videoRef.current
+    if (v) { v.pause(); v.currentTime = 0 }
+  }, [])
 
   const lifted = hover && !reduce
 
@@ -74,51 +84,65 @@ export function WorkBentoCard({ project, index = 0 }: { project: WorkProject; in
       onMouseLeave={onLeave}
       onClick={() => router.push(`/work/${project.slug}`)}
     >
-      {/* Number tag — top-left */}
+      {/* Cover image — sits under everything; falls back to the solid block
+          colour (already the card's own background) when there's no asset. */}
+      {project.coverSrc && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={project.coverSrc} alt="" style={{
+          position: 'absolute', inset: 0, width: '100%', height: '100%',
+          objectFit: 'cover', zIndex: 0,
+        }} />
+      )}
+
+      {/* Hover video preview — fades in and plays over the still cover. */}
+      {project.videoSrc && (
+        <video
+          ref={videoRef}
+          src={project.videoSrc}
+          muted loop playsInline
+          style={{
+            position: 'absolute', inset: 0, width: '100%', height: '100%',
+            objectFit: 'cover', zIndex: 1,
+            opacity: hover ? 1 : 0,
+            transition: 'opacity 0.3s ease',
+          }}
+        />
+      )}
+
+      {/* Number tag — top-left, on a dark chip so it reads over any image */}
       <span className="mono-label" style={{
-        position: 'absolute', top: '14px', left: '16px', zIndex: 1,
-        color: block.fg, fontSize: '12px', letterSpacing: '0.14em',
+        position: 'absolute', top: '14px', left: '16px', zIndex: 2,
+        color: '#fff', fontSize: '12px', letterSpacing: '0.14em',
+        padding: '2px 8px',
+        backgroundColor: (project.coverSrc || project.videoSrc) ? 'rgba(10,10,10,0.55)' : 'transparent',
       }}>
         [{num}]
       </span>
 
-      {/* Default title — bottom-left */}
-      <p style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0,
-        padding: '16px 18px', margin: 0, zIndex: 1,
-        fontFamily: 'var(--font-syne), ui-sans-serif',
-        fontSize: 'clamp(15px, 1.6vw, 22px)', fontWeight: 700,
-        lineHeight: 1.1, letterSpacing: '-0.01em', textTransform: 'uppercase',
-        color: block.fg,
-      }}>
-        {project.title}
-      </p>
-
-      {/* Hover detail overlay — solid ink, no blur */}
+      {/* Bottom scrim — title always visible; description/tags/CTA fade and
+          slide in on hover, and the video (if any) stays visible through it
+          instead of being covered by a full-card takeover. */}
       <div style={{
-        position: 'absolute', inset: 0, zIndex: 2,
-        background: 'var(--color-ink)', color: '#fff',
+        position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 2,
         display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-        padding: '22px',
-        opacity: hover ? 1 : 0,
+        padding: '18px', paddingTop: '48px',
+        background: 'linear-gradient(to top, rgba(10,10,10,0.85), rgba(10,10,10,0.45) 55%, transparent)',
         pointerEvents: hover ? 'auto' : 'none',
-        transition: 'opacity 0.2s ease',
       }}>
-        <span className="mono-label" style={{ color: 'var(--color-acid)', marginBottom: '8px', ...revealStyle(0) }}>
+        <span className="mono-label" style={{ color: 'var(--color-acid)', marginBottom: '6px', ...revealStyle(0) }}>
           {project.year}
         </span>
         <h3 style={{
           fontFamily: 'var(--font-syne), ui-sans-serif',
           fontSize: 'clamp(16px, 1.6vw, 22px)', fontWeight: 700,
-          margin: '0 0 10px', lineHeight: 1.15, textTransform: 'uppercase', color: '#fff',
-          ...revealStyle(40),
+          margin: '0 0 8px', lineHeight: 1.15, textTransform: 'uppercase', color: '#fff',
         }}>
           {project.title}
         </h3>
-        <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.72)', margin: '0 0 14px', lineHeight: 1.55, ...revealStyle(80) }}>
+        <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.78)', margin: '0 0 12px', lineHeight: 1.55, ...revealStyle(40) }}>
           {project.description}
         </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px', ...revealStyle(120) }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '14px', ...revealStyle(80) }}>
           {project.tags.map(tag => (
             <span key={tag} style={{
               padding: '3px 9px', borderRadius: 0,
@@ -134,7 +158,7 @@ export function WorkBentoCard({ project, index = 0 }: { project: WorkProject; in
           fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
           fontSize: '12px', letterSpacing: '0.08em', textTransform: 'uppercase',
           color: 'var(--color-acid)', display: 'flex', alignItems: 'center', gap: '8px',
-          ...revealStyle(160),
+          ...revealStyle(120),
         }}>
           View Case Study
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">

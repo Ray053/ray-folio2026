@@ -7,10 +7,11 @@ import { WorkBentoCard, type WorkProject } from '@/components/ui/WorkBentoCard'
 import { AmbientGlow } from '@/components/ui/AmbientGlow'
 import { Marquee } from '@/components/ui/Marquee'
 import { ease } from '@/lib/motion'
+import { PLACEHOLDER_PROJECTS as SHARED_PLACEHOLDER_PROJECTS } from '@/lib/placeholderProjects'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// Bento grid positions for 6 cards (3-col, 3-row alternating layout)
+// Bento grid positions (3-col, 3-row alternating layout), cycled by index.
 // Row 1: [wide ×2] [normal]
 // Row 2: [normal]  [wide ×2]
 // Row 3: [wide ×2] [normal]
@@ -25,14 +26,11 @@ const BENTO_POSITIONS: React.CSSProperties[] = [
 
 export type WorkItem = Omit<WorkProject, 'gridStyle'>
 
-const PLACEHOLDER_PROJECTS: WorkItem[] = [
-  { id: '1', slug: 'healthcare-app-redesign', title: 'Healthcare App Redesign', description: 'Redesigned the patient journey for a telehealth app, reducing drop-off by 38%.', tags: ['UX Research', 'Product Design'], year: 2025, coverColor: '#0033FF' },
-  { id: '2', slug: 'e-commerce-checkout', title: 'E-Commerce Checkout Flow', description: 'Simplified a 7-step checkout into 3, increasing conversion by 22%.', tags: ['Interaction Design', 'Testing'], year: 2024, coverColor: '#001A80' },
-  { id: '3', slug: 'design-system', title: 'Design System at Scale', description: 'Built a cross-platform design system used by 4 product teams.', tags: ['Design Systems'], year: 2024, coverColor: '#3D6BFF' },
-  { id: '4', slug: 'onboarding-experience', title: 'Onboarding Experience', description: 'Personalised onboarding that improved day-7 retention by 31%.', tags: ['UX Research'], year: 2023, coverColor: '#0033FF' },
-  { id: '5', slug: 'mobile-banking', title: 'Mobile Banking Redesign', description: 'Led the UX strategy for a complete mobile banking overhaul.', tags: ['UX Strategy'], year: 2023, coverColor: '#00C2FF' },
-  { id: '6', slug: 'dashboard-dataviz', title: 'Dashboard & Data Viz', description: 'Real-time analytics dashboard turning complex data into clear insights.', tags: ['Data Visualisation'], year: 2022, coverColor: '#001A80' },
-]
+const PLACEHOLDER_PROJECTS: WorkItem[] = SHARED_PLACEHOLDER_PROJECTS.map(
+  ({ id, slug, title, description, tags, year, coverColor, coverSrc, videoSrc }) => ({
+    id, slug, title, description, tags, year, coverColor, coverSrc, videoSrc,
+  })
+)
 
 export function WorkPage({ projects }: { projects?: WorkItem[] }) {
   const t       = useTranslations('workPage')

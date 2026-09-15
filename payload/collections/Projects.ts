@@ -49,6 +49,27 @@ export const Projects: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'role',
+      type: 'text',
+    },
+    {
+      name: 'duration',
+      type: 'text',
+    },
+    {
+      name: 'outcome',
+      type: 'textarea',
+      localized: true,
+    },
+    {
+      name: 'caseStudy',
+      type: 'textarea',
+      localized: true,
+      admin: {
+        description: 'Long-form case study body. Separate paragraphs with a blank line.',
+      },
+    },
+    {
       name: 'year',
       type: 'number',
     },

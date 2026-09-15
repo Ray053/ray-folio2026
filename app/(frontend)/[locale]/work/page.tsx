@@ -19,6 +19,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     tags: p.tags,
     year: p.year,
     coverColor: p.coverColor,
+    coverSrc: p.coverSrc || undefined,
+    videoSrc: p.videoSrc || undefined,
   }))
   return <WorkPage projects={projects} />
 }

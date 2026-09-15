@@ -34,6 +34,17 @@ export type CMSProject = {
   coverSrc: string
   videoSrc: string
   liveUrl: string
+  role?: string
+  duration?: string
+  outcome?: string
+  caseStudy?: string[]
+}
+
+/** Splits a plain-text textarea field into paragraphs on blank lines. */
+function toParagraphs(text: unknown): string[] | undefined {
+  if (typeof text !== 'string' || !text.trim()) return undefined
+  const paras = text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
+  return paras.length ? paras : undefined
 }
 
 function mapProject(d: any, i = 0): CMSProject {
@@ -48,6 +59,10 @@ function mapProject(d: any, i = 0): CMSProject {
     coverSrc: urlOf(d.coverImage),
     videoSrc: urlOf(d.video),
     liveUrl: typeof d.liveUrl === 'string' ? d.liveUrl : '',
+    role: typeof d.role === 'string' && d.role ? d.role : undefined,
+    duration: typeof d.duration === 'string' && d.duration ? d.duration : undefined,
+    outcome: typeof d.outcome === 'string' && d.outcome ? d.outcome : undefined,
+    caseStudy: toParagraphs(d.caseStudy),
   }
 }
 

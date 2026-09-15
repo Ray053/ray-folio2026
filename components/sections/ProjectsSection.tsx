@@ -7,6 +7,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { AmbientGlow } from '@/components/ui/AmbientGlow'
 import { ease, duration, scrollTriggerDefaults } from '@/lib/motion'
+import { PLACEHOLDER_PROJECTS as SHARED_PLACEHOLDER_PROJECTS } from '@/lib/placeholderProjects'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -24,11 +25,11 @@ export type ProjectItem = {
 // Project clips used when a project has no video of its own (so hover still plays).
 const SAMPLE_VIDEOS = ['/taichung.webm', '/chuanghua.mp4']
 
-const PLACEHOLDER_PROJECTS: ProjectItem[] = [
-  { id: '1', slug: 'healthcare-app-redesign', title: 'Healthcare App Redesign', tags: ['UX Research', 'Product Design'], year: 2025, coverColor: '#0033FF' },
-  { id: '2', slug: 'e-commerce-checkout', title: 'E-Commerce Checkout Flow', tags: ['Interaction Design', 'Testing'], year: 2024, coverColor: '#001A80' },
-  { id: '3', slug: 'design-system', title: 'Design System at Scale', tags: ['Design Systems', 'Components'], year: 2024, coverColor: '#3D6BFF' },
-]
+const PLACEHOLDER_PROJECTS: ProjectItem[] = SHARED_PLACEHOLDER_PROJECTS.map(
+  ({ id, slug, title, tags, year, coverColor, videoSrc, coverSrc }) => ({
+    id, slug, title, tags, year, coverColor, videoSrc, coverSrc,
+  })
+)
 
 export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
   const t = useTranslations('projects')

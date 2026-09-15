@@ -16,9 +16,10 @@ type Project = {
   role?: string
   duration?: string
   outcome?: string
+  caseStudy?: string[]
 }
 
-export function ProjectDetailPage({ project }: { project: Project }) {
+export function ProjectDetailPage({ project, diagrams }: { project: Project; diagrams?: Record<string, React.ReactNode> }) {
   const wrapRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -166,18 +167,90 @@ export function ProjectDetailPage({ project }: { project: Project }) {
           </div>
         </div>
 
-        {/* Placeholder for full case study content */}
-        <div className="detail-line" style={{
-          marginTop: 'clamp(48px, 6vw, 80px)',
-          padding: '48px',
-          borderRadius: '12px',
-          border: '1px dashed var(--color-border)',
-          textAlign: 'center',
-        }}>
-          <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', margin: 0 }}>
-            Full case study content — add via Payload CMS
-          </p>
-        </div>
+        {/* Full case study body, when supplied — otherwise a note that this
+            entry is CMS-only and hasn't had a long-form write-up added yet.
+            Each block in caseStudy can be:
+              "## Heading"            -> section heading
+              "- one\n- two"          -> bullet list (every line starts "- ")
+              "[[diagram:key]]"       -> the matching node from `diagrams`
+              anything else           -> a plain paragraph
+            so the narrative reads as Problem -> Research -> Solution ->
+            Outcome with flow charts / design-system swatches placed right
+            where they're relevant, instead of one wall of text. */}
+        {project.caseStudy && project.caseStudy.length > 0 ? (
+          <div style={{
+            marginTop: 'clamp(48px, 6vw, 80px)',
+            maxWidth: '820px',
+            borderTop: '1px solid var(--color-border)',
+            paddingTop: 'clamp(32px, 5vw, 56px)',
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {project.caseStudy.map((para, i) => {
+                const heading = para.match(/^##\s+(.*)/)
+                if (heading) {
+                  return (
+                    <h2 key={i} className="detail-line" style={{
+                      fontFamily: 'var(--font-syne), ui-sans-serif',
+                      fontSize: 'clamp(20px, 2.2vw, 28px)', fontWeight: 700,
+                      color: 'var(--color-text-primary)', margin: i === 0 ? 0 : '16px 0 0',
+                    }}>
+                      {heading[1]}
+                    </h2>
+                  )
+                }
+
+                const diagramKey = para.match(/^\[\[diagram:(\w+)\]\]$/)
+                if (diagramKey && diagrams?.[diagramKey[1]]) {
+                  return (
+                    <div key={i} className="detail-line" style={{ margin: '8px 0' }}>
+                      {diagrams[diagramKey[1]]}
+                    </div>
+                  )
+                }
+
+                const lines = para.split('\n').map((l) => l.trim()).filter(Boolean)
+                if (lines.length > 0 && lines.every((l) => l.startsWith('- '))) {
+                  return (
+                    <ul key={i} className="detail-line" style={{
+                      margin: 0, paddingLeft: '20px',
+                      display: 'flex', flexDirection: 'column', gap: '8px',
+                    }}>
+                      {lines.map((l, li) => (
+                        <li key={li} style={{
+                          fontSize: '16px', lineHeight: 1.7,
+                          color: 'var(--color-text-secondary)',
+                        }}>
+                          {l.slice(2)}
+                        </li>
+                      ))}
+                    </ul>
+                  )
+                }
+
+                return (
+                  <p key={i} className="detail-line" style={{
+                    fontSize: '16px', lineHeight: 1.85,
+                    color: 'var(--color-text-secondary)', margin: 0,
+                  }}>
+                    {para}
+                  </p>
+                )
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="detail-line" style={{
+            marginTop: 'clamp(48px, 6vw, 80px)',
+            padding: '48px',
+            borderRadius: '12px',
+            border: '1px dashed var(--color-border)',
+            textAlign: 'center',
+          }}>
+            <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', margin: 0 }}>
+              Full case study content — add via Payload CMS
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )
