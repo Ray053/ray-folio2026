@@ -12,6 +12,7 @@ import { LoadingScreen } from '@/components/ui/LoadingScreen'
 import { ScrollProgress } from '@/components/ui/ScrollProgress'
 import { PageTransition } from '@/components/ui/PageTransition'
 import { SmoothScroll } from '@/components/ui/SmoothScroll'
+import { CookieConsent } from '@/components/ui/CookieConsent'
 import '../../globals.css'
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' })
@@ -72,6 +73,7 @@ export default async function LocaleLayout({ children, params }: Props) {
               <PageTransition>{children}</PageTransition>
             </main>
             <Footer />
+            <CookieConsent />
           </SmoothScroll>
         </NextIntlClientProvider>
       </body>

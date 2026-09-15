@@ -40,5 +40,9 @@
   },
   "footer": {
     "rights": "All rights reserved"
+  },
+  "cookieConsent": {
+    "message": "This site uses local browser storage to remember your dark-mode and language preference. No third-party tracking, nothing shared with anyone.",
+    "accept": "Got it, continue"
   }
 }
