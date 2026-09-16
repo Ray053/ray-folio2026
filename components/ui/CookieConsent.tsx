@@ -9,9 +9,10 @@ import { useMagnetic } from '@/lib/useMagnetic'
 const STORAGE_KEY = 'cookie-consent'
 
 /**
- * Honest cookie/local-storage notice — this site has no third-party
- * tracking, just localStorage for theme + the locale cookie next-intl
- * already sets, so the copy says exactly that instead of generic legalese.
+ * Honest cookie/local-storage notice — covers localStorage for theme, the
+ * locale cookie next-intl already sets, and Google Analytics, which only
+ * loads after Accept (see GoogleAnalytics.tsx, gated on this same
+ * localStorage key / the 'cookie-consent-accepted' event fired below).
  */
 export function CookieConsent() {
   const t = useTranslations('cookieConsent')
@@ -45,6 +46,7 @@ export function CookieConsent() {
 
   const accept = () => {
     try { localStorage.setItem(STORAGE_KEY, 'accepted') } catch {}
+    window.dispatchEvent(new Event('cookie-consent-accepted'))
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (!reduce) {
       gsap.to(iconRef.current, { rotate: 360, duration: duration.slow, ease: ease.hover })

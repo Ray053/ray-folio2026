@@ -42,7 +42,7 @@
     "rights": "All rights reserved"
   },
   "cookieConsent": {
-    "message": "This site uses local browser storage to remember your dark-mode and language preference. No third-party tracking, nothing shared with anyone.",
+    "message": "This site uses local browser storage to remember your dark-mode and language preference. Accepting also enables Google Analytics to understand how visitors use the site — no other third-party tracking.",
     "accept": "Got it, continue"
   }
 }
