@@ -16,6 +16,7 @@ export type ProjectItem = {
   id: string
   slug: string
   title: string
+  description?: string
   tags: string[]
   year: number
   coverColor: string
@@ -24,10 +25,56 @@ export type ProjectItem = {
 }
 
 const PLACEHOLDER_PROJECTS: ProjectItem[] = SHARED_PLACEHOLDER_PROJECTS.map(
-  ({ id, slug, title, tags, year, coverColor, videoSrc, coverSrc }) => ({
-    id, slug, title, tags, year, coverColor, videoSrc, coverSrc,
+  ({ id, slug, title, description, tags, year, coverColor, videoSrc, coverSrc }) => ({
+    id, slug, title, description, tags, year, coverColor, videoSrc, coverSrc,
   })
 )
+
+/** Media + title always shown; the description panel below grows in a beat
+ *  after the project changes, instead of popping in instantly — used by
+ *  both the desktop cursor-following card and the mobile floating one. */
+function PreviewCardBody({ proj }: { proj: ProjectItem }) {
+  const [expanded, setExpanded] = useState(false)
+
+  useEffect(() => {
+    setExpanded(false)
+    const id = setTimeout(() => setExpanded(true), 140)
+    return () => clearTimeout(id)
+  }, [proj.id])
+
+  return (
+    <div style={{
+      maxHeight: expanded && proj.description ? '340px' : '206px',
+      overflow: 'hidden',
+      transition: 'max-height 0.4s cubic-bezier(0.22,1,0.36,1)',
+    }}>
+      <div style={{ position: 'relative', width: '100%', height: '170px' }}>
+        <div style={{ position: 'absolute', inset: 0, background: proj.coverColor }} />
+        <ProjectPreviewMedia key={proj.id} slug={proj.slug}
+          coverSrc={proj.coverSrc} videoSrc={proj.videoSrc} active />
+      </div>
+      <div style={{ padding: '12px 14px', background: 'var(--color-ink)' }}>
+        <p style={{
+          fontFamily: 'var(--font-syne), ui-sans-serif',
+          fontSize: '13px', fontWeight: 600, color: '#fff', margin: proj.description ? '0 0 6px' : 0,
+        }}>
+          {proj.title}
+        </p>
+        {proj.description && (
+          <p style={{
+            fontSize: '12px', lineHeight: 1.55, color: 'rgba(255,255,255,0.75)', margin: 0,
+            display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+            opacity: expanded ? 1 : 0,
+            transform: expanded ? 'translateY(0)' : 'translateY(6px)',
+            transition: 'opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s',
+          }}>
+            {proj.description}
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
 
 export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
   const t = useTranslations('projects')
@@ -40,6 +87,7 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
   const [current, setCurrent] = useState(0)
   const [mounted, setMounted] = useState(false)
   const [isCoarsePointer, setIsCoarsePointer] = useState(false)
+  const [sectionInView, setSectionInView] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -56,6 +104,18 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
     window.addEventListener('mousemove', onMouseMove)
     return () => window.removeEventListener('mousemove', onMouseMove)
   }, [mounted])
+
+  // Only float the mobile preview while this section is actually on screen —
+  // it's position:fixed, so without this it would hover over Hero/About too.
+  useEffect(() => {
+    if (!mounted || !isCoarsePointer || !sectionRef.current) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setSectionInView(entry.isIntersecting),
+      { threshold: 0.05 }
+    )
+    observer.observe(sectionRef.current)
+    return () => observer.disconnect()
+  }, [mounted, isCoarsePointer])
 
   // Entrance
   useEffect(() => {
@@ -121,44 +181,6 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
             {t('heading')}
           </h2>
         </div>
-
-        {/* Touch-device preview — no hover to trigger the cursor-following
-            card below, so instead show a sticky preview that swaps to
-            whichever project you've scrolled to (driven by `current`,
-            set by the ScrollTrigger effect above). */}
-        {mounted && isCoarsePointer && (
-          <div
-            aria-hidden
-            style={{
-              position: 'sticky',
-              top: 'clamp(72px, 12vw, 96px)',
-              width: '100%',
-              maxWidth: '420px',
-              height: '220px',
-              margin: '0 auto clamp(24px, 5vw, 40px)',
-              overflow: 'hidden',
-              border: '2px solid var(--color-ink)',
-              boxShadow: '6px 6px 0 var(--color-ink)',
-              zIndex: 2,
-            }}
-          >
-            <div style={{ position: 'absolute', inset: 0, background: proj.coverColor }} />
-            <ProjectPreviewMedia key={proj.id} slug={proj.slug}
-              coverSrc={proj.coverSrc} videoSrc={proj.videoSrc} active />
-            <div style={{
-              position: 'absolute', bottom: 0, left: 0, right: 0,
-              padding: '12px 14px',
-              background: 'var(--color-ink)',
-            }}>
-              <p style={{
-                fontFamily: 'var(--font-syne), ui-sans-serif',
-                fontSize: '13px', fontWeight: 600, color: '#fff', margin: 0,
-              }}>
-                {proj.title}
-              </p>
-            </div>
-          </div>
-        )}
 
         {/* Accordion list */}
         <div
@@ -226,7 +248,7 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
 
       {/* Cursor-following preview card — portaled to body to escape any
           transformed ancestor (PageTransition / trajectory). Desktop only:
-          touch devices get the sticky scroll-driven preview above instead. */}
+          touch devices get the floating scroll-driven preview below instead. */}
       {mounted && !isCoarsePointer && createPortal(
         <div
           ref={previewRef}
@@ -235,9 +257,7 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
             position: 'fixed',
             top: 0, left: 0,
             width: '260px',
-            height: '170px',
             borderRadius: 0,
-            overflow: 'hidden',
             pointerEvents: 'none',
             zIndex: 45,
             opacity: active !== null ? 1 : 0,
@@ -247,24 +267,37 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
             willChange: 'transform',
           }}
         >
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: proj.coverColor,
-          }} />
-          <ProjectPreviewMedia key={proj.id} slug={proj.slug}
-            coverSrc={proj.coverSrc} videoSrc={proj.videoSrc} active={active !== null} />
-          <div style={{
-            position: 'absolute', bottom: 0, left: 0, right: 0,
-            padding: '12px 14px',
-            background: 'var(--color-ink)',
-          }}>
-            <p style={{
-              fontFamily: 'var(--font-syne), ui-sans-serif',
-              fontSize: '13px', fontWeight: 600, color: '#fff', margin: 0,
-            }}>
-              {proj.title}
-            </p>
-          </div>
+          <PreviewCardBody proj={proj} />
+        </div>,
+        document.body,
+      )}
+
+      {/* Touch-device preview — no hover to trigger the card above, so
+          instead float a fixed card near the top of the viewport (like the
+          desktop one, minus cursor-tracking) that swaps to whichever
+          project you've scrolled to (driven by `current`, set by the
+          ScrollTrigger effect above). Only shown while this section itself
+          is in view, since position:fixed would otherwise hover over
+          Hero/About too. */}
+      {mounted && isCoarsePointer && createPortal(
+        <div
+          aria-hidden
+          style={{
+            position: 'fixed',
+            top: 'clamp(72px, 12vw, 92px)',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 'min(88vw, 340px)',
+            borderRadius: 0,
+            zIndex: 45,
+            opacity: sectionInView ? 1 : 0,
+            transition: 'opacity 0.3s ease',
+            border: '2px solid var(--color-ink)',
+            boxShadow: '6px 6px 0 var(--color-ink)',
+            pointerEvents: 'none',
+          }}
+        >
+          <PreviewCardBody proj={proj} />
         </div>,
         document.body,
       )}

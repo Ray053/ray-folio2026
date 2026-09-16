@@ -8,8 +8,11 @@ type Upload = { url?: string | null } | string | number | null | undefined
 export const urlOf = (u: Upload): string =>
   u && typeof u === 'object' && 'url' in u && u.url ? u.url : ''
 
-/** Flatten a Lexical richText value into plain text. */
+/** Flatten a Lexical richText value into plain text. Also accepts a plain
+ *  string as-is, since some fields were seeded with raw text instead of a
+ *  proper Lexical document. */
 export function lexicalToText(data: any): string {
+  if (typeof data === 'string') return data.trim()
   if (!data || typeof data !== 'object' || !data.root?.children) return ''
   const walk = (nodes: any[]): string =>
     nodes
