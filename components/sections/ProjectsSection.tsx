@@ -22,11 +22,14 @@ export type ProjectItem = {
   coverColor: string
   videoSrc?: string
   coverSrc?: string
+  /** When set, the row links out to this URL (e.g. Behance) instead of the
+   *  internal /work/[slug] case-study page. */
+  liveUrl?: string
 }
 
 const PLACEHOLDER_PROJECTS: ProjectItem[] = SHARED_PLACEHOLDER_PROJECTS.map(
-  ({ id, slug, title, description, tags, year, coverColor, videoSrc, coverSrc }) => ({
-    id, slug, title, description, tags, year, coverColor, videoSrc, coverSrc,
+  ({ id, slug, title, description, tags, year, coverColor, videoSrc, coverSrc, liveUrl }) => ({
+    id, slug, title, description, tags, year, coverColor, videoSrc, coverSrc, liveUrl,
   })
 )
 
@@ -175,7 +178,10 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
                 key={p.id}
                 className="acc-row"
                 onMouseEnter={() => { setActive(i); setCurrent(i) }}
-                onClick={() => router.push(`/work/${p.slug}`)}
+                onClick={() => {
+                  if (p.liveUrl) window.open(p.liveUrl, '_blank', 'noopener,noreferrer')
+                  else router.push(`/work/${p.slug}`)
+                }}
                 style={{
                   borderBottom: '2px solid var(--color-ink)',
                   padding: isActive ? '36px 8px 28px' : '24px 8px',

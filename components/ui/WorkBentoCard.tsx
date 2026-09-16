@@ -14,6 +14,9 @@ export type WorkProject = {
   coverSrc?: string
   videoSrc?: string
   orientation?: 'landscape' | 'portrait' | 'square'
+  /** When set, the card links out to this URL (e.g. Behance) instead of
+   *  the internal /work/[slug] case-study page. */
+  liveUrl?: string
   gridStyle?: React.CSSProperties
 }
 
@@ -80,7 +83,10 @@ export function WorkBentoCard({ project, index = 0 }: { project: WorkProject; in
       }}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
-      onClick={() => router.push(`/work/${project.slug}`)}
+      onClick={() => {
+        if (project.liveUrl) window.open(project.liveUrl, '_blank', 'noopener,noreferrer')
+        else router.push(`/work/${project.slug}`)
+      }}
     >
       <ProjectPreviewMedia key={project.id} slug={project.slug}
         coverSrc={project.coverSrc} videoSrc={project.videoSrc} active={hover && !reduce} />
@@ -136,7 +142,7 @@ export function WorkBentoCard({ project, index = 0 }: { project: WorkProject; in
           color: 'var(--color-acid)', display: 'flex', alignItems: 'center', gap: '8px',
           ...revealStyle(120),
         }}>
-          View Case Study
+          {project.liveUrl ? 'View on Behance' : 'View Case Study'}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>

@@ -22,6 +22,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     coverSrc: p.coverSrc || undefined,
     videoSrc: p.videoSrc || undefined,
     orientation: p.orientation,
+    liveUrl: p.liveUrl || undefined,
   }))
   return <WorkPage projects={projects} />
 }

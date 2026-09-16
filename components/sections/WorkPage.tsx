@@ -26,8 +26,8 @@ const SHAPES: Record<NonNullable<WorkProject['orientation']>, { col: number; row
 export type WorkItem = Omit<WorkProject, 'gridStyle'>
 
 const PLACEHOLDER_PROJECTS: WorkItem[] = SHARED_PLACEHOLDER_PROJECTS.map(
-  ({ id, slug, title, description, tags, year, coverColor, coverSrc, videoSrc, orientation }) => ({
-    id, slug, title, description, tags, year, coverColor, coverSrc, videoSrc, orientation,
+  ({ id, slug, title, description, tags, year, coverColor, coverSrc, videoSrc, orientation, liveUrl }) => ({
+    id, slug, title, description, tags, year, coverColor, coverSrc, videoSrc, orientation, liveUrl,
   })
 )
 
