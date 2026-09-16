@@ -1,5 +1,6 @@
 'use client'
 import { useRef, useEffect } from 'react'
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -84,11 +85,11 @@ export function ProfileSection({ photoSrc, bio }: { photoSrc?: string; bio?: str
             position: 'relative',
           }}>
             {photoSrc ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={photoSrc} alt="Profile" className="profile-photo-img" style={{
-                position: 'absolute', left: 0, top: '-15%', width: '100%', height: '130%',
-                objectFit: 'cover', willChange: 'transform',
-              }} />
+              <Image src={photoSrc} alt="Profile" width={800} height={1040}
+                className="profile-photo-img" sizes="(max-width: 768px) 100vw, 40vw" style={{
+                  position: 'absolute', left: 0, top: '-15%', width: '100%', height: '130%',
+                  objectFit: 'cover', willChange: 'transform',
+                }} />
             ) : (
               <div style={{
                 position: 'absolute', inset: 0,

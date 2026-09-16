@@ -1,5 +1,6 @@
 'use client'
 import React, { useState } from 'react'
+import Image from 'next/image'
 import { getPlaceholderProjectBySlug } from '../../lib/placeholderProjects'
 
 const mediaStyle: React.CSSProperties = {
@@ -35,8 +36,8 @@ export function ProjectPreviewMedia({ slug, coverSrc, videoSrc, active }: {
   return (
     <>
       {cover && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={cover} alt="" style={mediaStyle} onError={() => setFailedCover(cover)} />
+        <Image src={cover} alt="" fill sizes="(max-width: 768px) 100vw, 50vw"
+          style={{ objectFit: 'cover' }} onError={() => setFailedCover(cover)} />
       )}
       {active && video && <PreviewVideo key={video} src={video} poster={cover} />}
     </>

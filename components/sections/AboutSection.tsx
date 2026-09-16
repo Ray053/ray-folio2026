@@ -1,5 +1,6 @@
 'use client'
 import { useRef, useEffect } from 'react'
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import gsap from 'gsap'
 import { ease, duration } from '@/lib/motion'
@@ -103,10 +104,8 @@ export function AboutSection({ info }: { info?: AboutInfo }) {
             position: 'relative',
           }}>
             {info?.photoSrc ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={info.photoSrc} alt={info.name || 'Profile'} style={{
-                position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
-              }} />
+              <Image src={info.photoSrc} alt={info.name || 'Profile'} fill
+                sizes="(max-width: 768px) 100vw, 40vw" style={{ objectFit: 'cover' }} />
             ) : (
               <div style={{
                 position: 'absolute',

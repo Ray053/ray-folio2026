@@ -1,5 +1,6 @@
 'use client'
 import { useRef, useEffect } from 'react'
+import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import gsap from 'gsap'
 import { ease, duration } from '@/lib/motion'
@@ -38,8 +39,8 @@ function GallerySection({ items }: { items: { src: string; caption?: string }[] 
               border: '1px solid var(--color-border)', borderRadius: '8px', overflow: 'hidden',
               backgroundColor: 'var(--color-surface)',
             }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={item.src} alt={item.caption || ''} style={{ width: '100%', height: 'auto', display: 'block' }} />
+              <Image src={item.src} alt={item.caption || ''} width={1200} height={800}
+                sizes="(max-width: 768px) 100vw, 33vw" style={{ width: '100%', height: 'auto', display: 'block' }} />
             </div>
             {item.caption && (
               <figcaption style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '6px' }}>
@@ -79,11 +80,8 @@ export function ProjectDetailPage({ project, diagrams }: { project: Project; dia
         overflow: 'hidden',
       }}>
         {project.coverSrc && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={project.coverSrc} alt="" style={{
-            position: 'absolute', inset: 0, width: '100%', height: '100%',
-            objectFit: 'cover', opacity: 0.9,
-          }} />
+          <Image src={project.coverSrc} alt="" fill priority
+            sizes="100vw" style={{ objectFit: 'cover', opacity: 0.9 }} />
         )}
         <div style={{
           position: 'relative',

@@ -1,5 +1,6 @@
 'use client'
 import { useId } from 'react'
+import Image from 'next/image'
 
 // Hand-built process/architecture diagrams for specific case studies, drawn
 // in the site's own Bauhaus hard-block language (2px ink border, offset
@@ -253,8 +254,8 @@ export function MockupGallery({
               border: `1px solid ${border}`, borderRadius: '8px', overflow: 'hidden',
               backgroundColor: surface,
             }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={s.src} alt={s.alt} style={{ width: '100%', height: 'auto', display: 'block' }} />
+              <Image src={s.src} alt={s.alt} width={1200} height={800}
+                sizes="(max-width: 768px) 100vw, 33vw" style={{ width: '100%', height: 'auto', display: 'block' }} />
             </div>
             <figcaption style={{
               fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '6px',
@@ -301,8 +302,8 @@ export function PhotoHighlight({ src, alt, caption }: { src: string; alt: string
   return (
     <figure style={{ margin: 0, maxWidth: '420px' }}>
       <div style={{ border: `1px solid ${border}`, borderRadius: '8px', overflow: 'hidden' }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={alt} style={{ width: '100%', height: 'auto', display: 'block' }} />
+        <Image src={src} alt={alt} width={840} height={1120}
+          sizes="(max-width: 768px) 100vw, 420px" style={{ width: '100%', height: 'auto', display: 'block' }} />
       </div>
       <figcaption style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '8px' }}>
         {caption}
