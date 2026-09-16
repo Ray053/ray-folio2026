@@ -30,47 +30,26 @@ const PLACEHOLDER_PROJECTS: ProjectItem[] = SHARED_PLACEHOLDER_PROJECTS.map(
   })
 )
 
-/** Media + title always shown; the description panel below grows in a beat
- *  after the project changes, instead of popping in instantly — used by
- *  both the desktop cursor-following card and the mobile floating one. */
+/** Media + title only — just a visual anchor for whichever row is active.
+ *  The actual project intro expands inline in the accordion row itself
+ *  (see `.acc-row` below), not in this card. */
 function PreviewCardBody({ proj }: { proj: ProjectItem }) {
-  const [expanded, setExpanded] = useState(false)
-
-  useEffect(() => {
-    setExpanded(false)
-    const id = setTimeout(() => setExpanded(true), 140)
-    return () => clearTimeout(id)
-  }, [proj.id])
-
   return (
-    <div style={{
-      maxHeight: expanded && proj.description ? '340px' : '206px',
-      overflow: 'hidden',
-      transition: 'max-height 0.4s cubic-bezier(0.22,1,0.36,1)',
-    }}>
-      <div style={{ position: 'relative', width: '100%', height: '170px' }}>
-        <div style={{ position: 'absolute', inset: 0, background: proj.coverColor }} />
-        <ProjectPreviewMedia key={proj.id} slug={proj.slug}
-          coverSrc={proj.coverSrc} videoSrc={proj.videoSrc} active />
-      </div>
-      <div style={{ padding: '12px 14px', background: 'var(--color-ink)' }}>
+    <div style={{ width: '100%', height: '170px', position: 'relative' }}>
+      <div style={{ position: 'absolute', inset: 0, background: proj.coverColor }} />
+      <ProjectPreviewMedia key={proj.id} slug={proj.slug}
+        coverSrc={proj.coverSrc} videoSrc={proj.videoSrc} active />
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0,
+        padding: '12px 14px',
+        background: 'var(--color-ink)',
+      }}>
         <p style={{
           fontFamily: 'var(--font-syne), ui-sans-serif',
-          fontSize: '13px', fontWeight: 600, color: '#fff', margin: proj.description ? '0 0 6px' : 0,
+          fontSize: '13px', fontWeight: 600, color: '#fff', margin: 0,
         }}>
           {proj.title}
         </p>
-        {proj.description && (
-          <p style={{
-            fontSize: '12px', lineHeight: 1.55, color: 'rgba(255,255,255,0.75)', margin: 0,
-            display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-            opacity: expanded ? 1 : 0,
-            transform: expanded ? 'translateY(0)' : 'translateY(6px)',
-            transition: 'opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s',
-          }}>
-            {proj.description}
-          </p>
-        )}
       </div>
     </div>
   )
@@ -199,47 +178,64 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
                 onClick={() => router.push(`/work/${p.slug}`)}
                 style={{
                   borderBottom: '2px solid var(--color-ink)',
-                  padding: isActive ? '36px 8px' : '24px 8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: '24px',
+                  padding: isActive ? '36px 8px 28px' : '24px 8px',
                   cursor: 'pointer',
                   opacity: dim ? 0.4 : 1,
                   transition: 'padding 0.45s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 'clamp(16px, 3vw, 40px)' }}>
-                  <span className="mono-label" style={{ color: 'var(--color-accent)' }}>
-                    [0{i + 1}]
-                  </span>
-                  <h3 style={{
-                    fontFamily: 'var(--font-syne), ui-sans-serif',
-                    fontSize: 'clamp(26px, 4vw, 52px)',
-                    fontWeight: 700, lineHeight: 1.05, letterSpacing: '-0.02em',
-                    margin: 0, textTransform: 'uppercase',
-                    color: isActive ? 'var(--color-accent)' : 'var(--color-text-primary)',
-                    transform: isActive ? 'translateX(12px)' : 'translateX(0)',
-                    transition: 'color 0.3s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1)',
-                  }}>
-                    {p.title}
-                  </h3>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px' }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 'clamp(16px, 3vw, 40px)' }}>
+                    <span className="mono-label" style={{ color: 'var(--color-accent)' }}>
+                      [0{i + 1}]
+                    </span>
+                    <h3 style={{
+                      fontFamily: 'var(--font-syne), ui-sans-serif',
+                      fontSize: 'clamp(26px, 4vw, 52px)',
+                      fontWeight: 700, lineHeight: 1.05, letterSpacing: '-0.02em',
+                      margin: 0, textTransform: 'uppercase',
+                      color: isActive ? 'var(--color-accent)' : 'var(--color-text-primary)',
+                      transform: isActive ? 'translateX(12px)' : 'translateX(0)',
+                      transition: 'color 0.3s ease, transform 0.4s cubic-bezier(0.22,1,0.36,1)',
+                    }}>
+                      {p.title}
+                    </h3>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexShrink: 0 }}>
+                    <span style={{ fontSize: '14px', color: 'var(--color-text-muted)' }}>{p.year}</span>
+                    <svg
+                      width="22" height="22" viewBox="0 0 24 24" fill="none"
+                      stroke={isActive ? 'var(--color-accent)' : 'var(--color-text-muted)'}
+                      strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"
+                      style={{
+                        transform: isActive ? 'translateX(4px)' : 'translateX(0)',
+                        transition: 'transform 0.3s ease, stroke 0.3s ease',
+                      }}
+                    >
+                      <path d="M7 17L17 7M17 7H8M17 7v9"/>
+                    </svg>
+                  </div>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexShrink: 0 }}>
-                  <span style={{ fontSize: '14px', color: 'var(--color-text-muted)' }}>{p.year}</span>
-                  <svg
-                    width="22" height="22" viewBox="0 0 24 24" fill="none"
-                    stroke={isActive ? 'var(--color-accent)' : 'var(--color-text-muted)'}
-                    strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"
-                    style={{
-                      transform: isActive ? 'translateX(4px)' : 'translateX(0)',
-                      transition: 'transform 0.3s ease, stroke 0.3s ease',
-                    }}
-                  >
-                    <path d="M7 17L17 7M17 7H8M17 7v9"/>
-                  </svg>
-                </div>
+                {/* Intro — expands in place when this row activates, on
+                    both desktop hover and mobile scroll-progress. */}
+                {p.description && (
+                  <div style={{
+                    maxHeight: isActive ? '100px' : '0px',
+                    opacity: isActive ? 1 : 0,
+                    overflow: 'hidden',
+                    transition: 'max-height 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease',
+                  }}>
+                    <p style={{
+                      fontSize: '14px', lineHeight: 1.6, color: 'var(--color-text-secondary)',
+                      maxWidth: '620px', margin: '14px 0 0',
+                      paddingLeft: 'clamp(32px, 5vw, 56px)',
+                    }}>
+                      {p.description}
+                    </p>
+                  </div>
+                )}
               </div>
             )
           })}

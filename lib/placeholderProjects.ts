@@ -68,7 +68,7 @@ export const PLACEHOLDER_PROJECTS: PlaceholderProject[] = [
   {
     id: 'streetdance-learning-platform',
     slug: 'streetdance-learning-platform',
-    title: '街舞學習平台 — 沉浸式學習研究',
+    title: '街舞學習平台',
     description: '碩士論文研究：開發一個支援動作分析與鏡像切換的網頁版街舞教學平台，比較它與傳統鏡像學習對學習投入的影響。',
     tags: ['UX 研究', '學術論文', '互動設計'],
     year: 2026,
