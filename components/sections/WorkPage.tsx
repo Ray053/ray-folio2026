@@ -11,24 +11,23 @@ import { PLACEHOLDER_PROJECTS as SHARED_PLACEHOLDER_PROJECTS } from '@/lib/place
 
 gsap.registerPlugin(ScrollTrigger)
 
-// Bento grid positions (3-col, 3-row alternating layout), cycled by index.
-// Row 1: [wide ×2] [normal]
-// Row 2: [normal]  [wide ×2]
-// Row 3: [wide ×2] [normal]
-const BENTO_POSITIONS: React.CSSProperties[] = [
-  { gridColumn: '1 / span 2', gridRow: '1' },
-  { gridColumn: '3',          gridRow: '1' },
-  { gridColumn: '1',          gridRow: '2' },
-  { gridColumn: '2 / span 2', gridRow: '2' },
-  { gridColumn: '1 / span 2', gridRow: '3' },
-  { gridColumn: '3',          gridRow: '3' },
-]
+// Card shapes allowed per media orientation — landscape media only ever gets
+// wide/normal (short) cells, portrait only ever gets tall cells, so a video
+// never gets stretched or cropped into the wrong aspect. Cycling through a
+// couple of variants per orientation keeps the bento feel instead of every
+// card being identical, and `grid-auto-flow: dense` (set on the grid below)
+// packs them without gaps regardless of how many projects there are.
+const SHAPES: Record<NonNullable<WorkProject['orientation']>, { col: number; row: number }[]> = {
+  landscape: [{ col: 2, row: 1 }, { col: 1, row: 1 }],
+  portrait: [{ col: 1, row: 2 }],
+  square: [{ col: 1, row: 1 }],
+}
 
 export type WorkItem = Omit<WorkProject, 'gridStyle'>
 
 const PLACEHOLDER_PROJECTS: WorkItem[] = SHARED_PLACEHOLDER_PROJECTS.map(
-  ({ id, slug, title, description, tags, year, coverColor, coverSrc, videoSrc }) => ({
-    id, slug, title, description, tags, year, coverColor, coverSrc, videoSrc,
+  ({ id, slug, title, description, tags, year, coverColor, coverSrc, videoSrc, orientation }) => ({
+    id, slug, title, description, tags, year, coverColor, coverSrc, videoSrc, orientation,
   })
 )
 
@@ -37,10 +36,19 @@ export function WorkPage({ projects }: { projects?: WorkItem[] }) {
   const wrapRef = useRef<HTMLDivElement>(null)
 
   const source = projects && projects.length ? projects : PLACEHOLDER_PROJECTS
-  const ALL_PROJECTS: WorkProject[] = source.map((p, i) => ({
-    ...p,
-    gridStyle: BENTO_POSITIONS[i % BENTO_POSITIONS.length],
-  }))
+  const orientationCounts: Partial<Record<string, number>> = {}
+  const ALL_PROJECTS: WorkProject[] = source.map((p) => {
+    const orientation = p.orientation ?? 'landscape'
+    const count = orientationCounts[orientation] ?? 0
+    orientationCounts[orientation] = count + 1
+    const shapes = SHAPES[orientation]
+    const { col, row } = shapes[count % shapes.length]
+    return {
+      ...p,
+      orientation,
+      gridStyle: { gridColumn: `span ${col}`, gridRow: `span ${row}` },
+    }
+  })
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -100,7 +108,8 @@ export function WorkPage({ projects }: { projects?: WorkItem[] }) {
           padding: 'clamp(40px, 5vw, 64px) 24px clamp(48px, 6vw, 80px)',
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
-          gridTemplateRows: '300px 220px 300px',
+          gridAutoRows: '260px',
+          gridAutoFlow: 'dense',
           gap: '22px',
         }}
       >

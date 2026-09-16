@@ -45,6 +45,19 @@ export const Projects: CollectionConfig = {
       relationTo: 'media',
     },
     {
+      name: 'orientation',
+      type: 'select',
+      defaultValue: 'landscape',
+      options: [
+        { label: 'Landscape (wide screen recording)', value: 'landscape' },
+        { label: 'Portrait (phone/vertical video)', value: 'portrait' },
+        { label: 'Square', value: 'square' },
+      ],
+      admin: {
+        description: 'Shape of the cover image/video, used to size this project\'s card on the /work bento grid so it matches the media instead of stretching or cropping it.',
+      },
+    },
+    {
       name: 'gallery',
       type: 'array',
       labels: { singular: 'Image', plural: 'Gallery' },

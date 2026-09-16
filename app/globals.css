@@ -263,6 +263,25 @@ html.lenis body { height: auto; }
   }
 }
 
+/* ─── Work bento grid responsive ────────────────────────
+   Desktop keeps the 3-col dense-packed bento (spans set inline per
+   project orientation). Below 768px there's no room for spans, so
+   collapse to a single column and size each card by its own media
+   orientation instead of a shared grid unit. */
+@media (max-width: 768px) {
+  .work-bento-grid {
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: auto !important;
+  }
+  .work-bento-card {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+  }
+  .work-bento-card.bento-landscape { aspect-ratio: 16 / 9; }
+  .work-bento-card.bento-portrait  { aspect-ratio: 3 / 4; }
+  .work-bento-card.bento-square    { aspect-ratio: 1 / 1; }
+}
+
 /* Logo name fades away when scrolled (condensed) */
 .nav-logo-name {
   overflow: hidden;

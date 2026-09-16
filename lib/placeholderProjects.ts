@@ -12,6 +12,8 @@ export type PlaceholderProject = {
   coverColor: string
   coverSrc?: string
   videoSrc?: string
+  /** Shape of the cover media — drives the /work bento card's grid span. */
+  orientation?: 'landscape' | 'portrait' | 'square'
   liveUrl?: string
   role?: string
   duration?: string
@@ -34,6 +36,7 @@ export const PLACEHOLDER_PROJECTS: PlaceholderProject[] = [
     coverColor: '#0033FF',
     coverSrc: '/case-studies/group-buy/cover.jpg',
     videoSrc: '/case-studies/group-buy/prototype-order-flow.mp4',
+    orientation: 'landscape',
     role: '獨立全端開發者',
     duration: '2026 年 8 月 — 進行中',
     outcome: '完成 8 大後台模組（儀表板、團務、訂單、成本／收款記帳、員工結算、庫存、月報）與獨立客戶前台的正式上線版本；後端補上原本只靠前端隱藏、實際上沒擋住的權限檢查，並用記憶體快取解決 Google Sheets 直接讀寫造成的效能瓶頸。',
@@ -71,6 +74,7 @@ export const PLACEHOLDER_PROJECTS: PlaceholderProject[] = [
     year: 2026,
     coverColor: '#00C2FF',
     coverSrc: '/case-studies/dance/course-platform.png',
+    orientation: 'landscape',
     role: '研究者 ／ UX 設計師 ／ 前端開發者',
     duration: '碩士論文研究專案',
     outcome: '完成一套可運作的網頁版動作分析教學平台，並執行正式對照實驗（鏡像學習組 vs. 街舞平台組）搭配問卷與訪談蒐集資料。原規劃用 Unity 做的 3D 化身鏡像模組因時間因素沒有完成，最終研究載體是網頁版平台，而不是當初設想的 3D／VR 版本。',

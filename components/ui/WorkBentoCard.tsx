@@ -13,6 +13,7 @@ export type WorkProject = {
   coverColor: string
   coverSrc?: string
   videoSrc?: string
+  orientation?: 'landscape' | 'portrait' | 'square'
   gridStyle?: React.CSSProperties
 }
 
@@ -60,7 +61,7 @@ export function WorkBentoCard({ project, index = 0 }: { project: WorkProject; in
 
   return (
     <div
-      className="work-bento-card"
+      className={`work-bento-card bento-${project.orientation ?? 'landscape'}`}
       style={{
         ...project.gridStyle,
         position: 'relative',

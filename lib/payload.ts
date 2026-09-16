@@ -34,6 +34,9 @@ export type CMSProject = {
   coverColor: string
   coverSrc: string
   videoSrc: string
+  /** Shape of the cover media — drives the /work bento card's grid span so
+   *  it matches the media instead of stretching/cropping it. */
+  orientation: 'landscape' | 'portrait' | 'square'
   liveUrl: string
   role?: string
   duration?: string
@@ -63,6 +66,9 @@ function mapProject(d: any, i = 0): CMSProject {
     coverColor: COLORS[i % COLORS.length],
     coverSrc: urlOf(d.coverImage) || fallback?.coverSrc || '',
     videoSrc: urlOf(d.video) || fallback?.videoSrc || '',
+    orientation: d.orientation === 'portrait' || d.orientation === 'square'
+      ? d.orientation
+      : fallback?.orientation ?? 'landscape',
     liveUrl: typeof d.liveUrl === 'string' ? d.liveUrl : '',
     role: typeof d.role === 'string' && d.role ? d.role : undefined,
     duration: typeof d.duration === 'string' && d.duration ? d.duration : undefined,
