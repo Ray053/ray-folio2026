@@ -39,8 +39,12 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
   const [active, setActive]   = useState<number | null>(null)
   const [current, setCurrent] = useState(0)
   const [mounted, setMounted] = useState(false)
+  const [isCoarsePointer, setIsCoarsePointer] = useState(false)
 
-  useEffect(() => setMounted(true), [])
+  useEffect(() => {
+    setMounted(true)
+    setIsCoarsePointer(window.matchMedia('(hover: none)').matches)
+  }, [])
 
   // Cursor follow — set transform imperatively (no re-render per move).
   useEffect(() => {
@@ -68,6 +72,22 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
     }, sectionRef)
     return () => ctx.revert()
   }, [])
+
+  // No hover on touch devices, so there's no way to trigger the preview —
+  // instead, whichever row is scrolled to the vertical center "activates"
+  // itself, reusing the same active/current state hover already drives.
+  useEffect(() => {
+    if (!mounted || !isCoarsePointer) return
+    const rows = sectionRef.current?.querySelectorAll<HTMLDivElement>('.acc-row')
+    if (!rows?.length) return
+    const triggers = Array.from(rows).map((row, i) => ScrollTrigger.create({
+      trigger: row,
+      start: 'top center',
+      end: 'bottom center',
+      onToggle: (self) => { if (self.isActive) { setActive(i); setCurrent(i) } },
+    }))
+    return () => triggers.forEach((tr) => tr.kill())
+  }, [mounted, isCoarsePointer, PROJECTS.length])
 
   const proj = PROJECTS[current]
 
@@ -101,6 +121,44 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
             {t('heading')}
           </h2>
         </div>
+
+        {/* Touch-device preview — no hover to trigger the cursor-following
+            card below, so instead show a sticky preview that swaps to
+            whichever project you've scrolled to (driven by `current`,
+            set by the ScrollTrigger effect above). */}
+        {mounted && isCoarsePointer && (
+          <div
+            aria-hidden
+            style={{
+              position: 'sticky',
+              top: 'clamp(72px, 12vw, 96px)',
+              width: '100%',
+              maxWidth: '420px',
+              height: '220px',
+              margin: '0 auto clamp(24px, 5vw, 40px)',
+              overflow: 'hidden',
+              border: '2px solid var(--color-ink)',
+              boxShadow: '6px 6px 0 var(--color-ink)',
+              zIndex: 2,
+            }}
+          >
+            <div style={{ position: 'absolute', inset: 0, background: proj.coverColor }} />
+            <ProjectPreviewMedia key={proj.id} slug={proj.slug}
+              coverSrc={proj.coverSrc} videoSrc={proj.videoSrc} active />
+            <div style={{
+              position: 'absolute', bottom: 0, left: 0, right: 0,
+              padding: '12px 14px',
+              background: 'var(--color-ink)',
+            }}>
+              <p style={{
+                fontFamily: 'var(--font-syne), ui-sans-serif',
+                fontSize: '13px', fontWeight: 600, color: '#fff', margin: 0,
+              }}>
+                {proj.title}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Accordion list */}
         <div
@@ -167,8 +225,9 @@ export function ProjectsSection({ projects }: { projects?: ProjectItem[] }) {
       </div>
 
       {/* Cursor-following preview card — portaled to body to escape any
-          transformed ancestor (PageTransition / trajectory) */}
-      {mounted && createPortal(
+          transformed ancestor (PageTransition / trajectory). Desktop only:
+          touch devices get the sticky scroll-driven preview above instead. */}
+      {mounted && !isCoarsePointer && createPortal(
         <div
           ref={previewRef}
           aria-hidden
