@@ -104,7 +104,7 @@ export function Navbar() {
           transition: 'padding 0.35s ease, margin 0.35s ease',
         }}>
           {/* Logo */}
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
+          <Link href="/" className="nav-logo-link" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', padding: '4px' }}>
             <LogoIcon size={28} />
             <span className="nav-logo-name" style={{
               fontFamily: 'var(--font-syne), ui-sans-serif',
@@ -119,7 +119,7 @@ export function Navbar() {
           <div className="nav-links-desktop" style={{ alignItems: 'center', gap: '4px' }}>
             <NavLink href="/work"  active={pathname === '/work'}>  {t('work')}  </NavLink>
             <NavLink href="/about" active={pathname === '/about'}> {t('about')} </NavLink>
-            <a ref={ctaRef} href="/cv.pdf" download style={{
+            <a ref={ctaRef} href="/cv.pdf" download className="nav-cta-btn" style={{
               padding: '8px 16px', marginLeft: '6px', borderRadius: 0,
               border: '2px solid var(--color-ink)',
               background: 'var(--color-accent)', boxShadow: '4px 4px 0 var(--color-ink)',
@@ -135,7 +135,7 @@ export function Navbar() {
 
           {/* Hamburger (mobile only) */}
           <button
-            className="nav-hamburger"
+            className="nav-hamburger nav-hamburger-btn"
             aria-label={open ? 'Close menu' : 'Open menu'}
             onClick={() => setOpen(v => !v)}
             style={{
@@ -204,7 +204,7 @@ export function Navbar() {
 /* ── NavLink (desktop active indicator) ─────────────────── */
 function NavLink({ href, active, children }: { href: string; active: boolean; children: React.ReactNode }) {
   return (
-    <Link href={href} style={{
+    <Link href={href} className="nav-link-item" style={{
       padding: '7px 12px', borderRadius: '6px',
       fontSize: '14px', fontWeight: active ? 600 : 500,
       color: active ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',

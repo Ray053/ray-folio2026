@@ -40,22 +40,61 @@ const DIAGRAMS: Record<string, Record<string, React.ReactNode>> = {
         ]}
         components={[
           {
-            name: 'Buttons',
-            preview: (
-              <>
-                <button style={{ padding: '10px 20px', backgroundColor: '#87394B', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 500, cursor: 'pointer' }}>Primary</button>
-                <button style={{ padding: '10px 20px', backgroundColor: 'transparent', color: '#26262A', border: '1px solid #E5E5E5', borderRadius: '6px', fontWeight: 500, cursor: 'pointer' }}>Secondary</button>
-              </>
-            ),
+            name: 'Button — Primary',
+            states: [
+              { label: 'Default', node: (
+                <button style={{ padding: '10px 20px', backgroundColor: '#87394B', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 500, cursor: 'pointer' }}>送出訂單</button>
+              ) },
+              { label: 'Hover', node: (
+                <button style={{ padding: '10px 20px', backgroundColor: '#6B2C3A', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 500, cursor: 'pointer', boxShadow: '0 4px 10px rgba(135,57,75,0.35)' }}>送出訂單</button>
+              ) },
+              { label: 'Focus', node: (
+                <button style={{ padding: '10px 20px', backgroundColor: '#87394B', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 500, cursor: 'pointer', outline: '2px solid #26262A', outlineOffset: '2px' }}>送出訂單</button>
+              ) },
+              { label: 'Active', node: (
+                <button style={{ padding: '10px 20px', backgroundColor: '#5A2430', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 500, cursor: 'pointer', transform: 'scale(0.97)' }}>送出訂單</button>
+              ) },
+              { label: 'Disabled', node: (
+                <button disabled style={{ padding: '10px 20px', backgroundColor: '#87394B', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 500, cursor: 'not-allowed', opacity: 0.4 }}>送出訂單</button>
+              ) },
+            ],
           },
           {
-            name: 'Tags',
-            preview: (
-              <>
+            name: 'Button — Secondary',
+            states: [
+              { label: 'Default', node: (
+                <button style={{ padding: '10px 20px', backgroundColor: 'transparent', color: '#26262A', border: '1px solid #E5E5E5', borderRadius: '6px', fontWeight: 500, cursor: 'pointer' }}>取消</button>
+              ) },
+              { label: 'Hover', node: (
+                <button style={{ padding: '10px 20px', backgroundColor: '#F5F5F5', color: '#26262A', border: '1px solid #E5E5E5', borderRadius: '6px', fontWeight: 500, cursor: 'pointer' }}>取消</button>
+              ) },
+              { label: 'Focus', node: (
+                <button style={{ padding: '10px 20px', backgroundColor: 'transparent', color: '#26262A', border: '1px solid #E5E5E5', borderRadius: '6px', fontWeight: 500, cursor: 'pointer', outline: '2px solid #26262A', outlineOffset: '2px' }}>取消</button>
+              ) },
+              { label: 'Active', node: (
+                <button style={{ padding: '10px 20px', backgroundColor: '#E5E5E5', color: '#26262A', border: '1px solid #E5E5E5', borderRadius: '6px', fontWeight: 500, cursor: 'pointer', transform: 'scale(0.97)' }}>取消</button>
+              ) },
+              { label: 'Disabled', node: (
+                <button disabled style={{ padding: '10px 20px', backgroundColor: 'transparent', color: '#26262A', border: '1px solid #E5E5E5', borderRadius: '6px', fontWeight: 500, cursor: 'not-allowed', opacity: 0.4 }}>取消</button>
+              ) },
+            ],
+          },
+          {
+            name: 'Status Tag',
+            states: [
+              { label: '預購中', node: (
                 <span style={{ padding: '4px 10px', backgroundColor: '#F5F5F5', color: '#26262A', borderRadius: '4px', fontSize: '12px', fontWeight: 500 }}>預購中</span>
+              ) },
+              { label: '已結單', node: (
                 <span style={{ padding: '4px 10px', backgroundColor: '#87394B', color: '#fff', borderRadius: '4px', fontSize: '12px', fontWeight: 500 }}>已結單</span>
-              </>
-            ),
+              ) },
+              { label: '已出貨', node: (
+                <span style={{ padding: '4px 10px', backgroundColor: '#2F7A4D', color: '#fff', borderRadius: '4px', fontSize: '12px', fontWeight: 500 }}>已出貨</span>
+              ) },
+              { label: '已逾期', node: (
+                <span style={{ padding: '4px 10px', backgroundColor: '#B0402E', color: '#fff', borderRadius: '4px', fontSize: '12px', fontWeight: 500 }}>已逾期</span>
+              ) },
+            ],
           },
         ]}
       />
@@ -109,21 +148,48 @@ const DIAGRAMS: Record<string, Record<string, React.ReactNode>> = {
         components={[
           {
             name: 'Direction Labels',
-            preview: (
-              <>
+            states: [
+              { label: '← 左', node: (
                 <span style={{ padding: '6px 14px', backgroundColor: '#C1592E', color: '#fff', borderRadius: '4px', fontSize: '13px', fontWeight: 600 }}>← 左</span>
+              ) },
+              { label: '右 →', node: (
                 <span style={{ padding: '6px 14px', backgroundColor: '#2A6BC1', color: '#fff', borderRadius: '4px', fontSize: '13px', fontWeight: 600 }}>右 →</span>
-              </>
-            ),
+              ) },
+            ],
           },
           {
-            name: 'Controls',
-            preview: (
-              <>
+            name: 'Control Button — Play',
+            states: [
+              { label: 'Default', node: (
                 <button style={{ padding: '8px 16px', backgroundColor: '#C1592E', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 500, cursor: 'pointer' }}>播放</button>
+              ) },
+              { label: 'Hover', node: (
+                <button style={{ padding: '8px 16px', backgroundColor: '#A34A26', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 500, cursor: 'pointer', boxShadow: '0 4px 10px rgba(193,89,46,0.4)' }}>播放</button>
+              ) },
+              { label: 'Focus', node: (
+                <button style={{ padding: '8px 16px', backgroundColor: '#C1592E', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 500, cursor: 'pointer', outline: '2px solid #F2F2F2', outlineOffset: '2px' }}>播放</button>
+              ) },
+              { label: 'Active', node: (
+                <button style={{ padding: '8px 16px', backgroundColor: '#8A3D1F', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 500, cursor: 'pointer', transform: 'scale(0.96)' }}>播放</button>
+              ) },
+            ],
+          },
+          {
+            name: 'Control Button — Speed',
+            states: [
+              { label: 'Default', node: (
                 <button style={{ padding: '8px 16px', backgroundColor: '#2A2A2E', color: '#F2F2F2', border: '1px solid #4A4A4E', borderRadius: '4px', fontWeight: 500, cursor: 'pointer' }}>0.5x</button>
-              </>
-            ),
+              ) },
+              { label: 'Selected', node: (
+                <button style={{ padding: '8px 16px', backgroundColor: '#4A4A4E', color: '#fff', border: '1px solid #C1592E', borderRadius: '4px', fontWeight: 600, cursor: 'pointer' }}>0.5x</button>
+              ) },
+              { label: 'Focus', node: (
+                <button style={{ padding: '8px 16px', backgroundColor: '#2A2A2E', color: '#F2F2F2', border: '1px solid #4A4A4E', borderRadius: '4px', fontWeight: 500, cursor: 'pointer', outline: '2px solid #F2F2F2', outlineOffset: '2px' }}>0.5x</button>
+              ) },
+              { label: 'Disabled', node: (
+                <button disabled style={{ padding: '8px 16px', backgroundColor: '#2A2A2E', color: '#F2F2F2', border: '1px solid #4A4A4E', borderRadius: '4px', fontWeight: 500, cursor: 'not-allowed', opacity: 0.35 }}>0.5x</button>
+              ) },
+            ],
           },
         ]}
       />

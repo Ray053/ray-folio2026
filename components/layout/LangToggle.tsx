@@ -89,6 +89,7 @@ export function LangToggle() {
           <button
             ref={(el) => { buttonRefs.current[l] = el }}
             onClick={() => switchLocale(l)}
+            className="nav-lang-btn"
             style={{
               background: 'none',
               border: 'none',

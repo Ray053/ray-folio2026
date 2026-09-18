@@ -1,5 +1,5 @@
 'use client'
-import { Fragment, useId } from 'react'
+import { useId } from 'react'
 import Image from 'next/image'
 
 // Hand-built process/architecture diagrams for specific case studies, drawn
@@ -195,7 +195,12 @@ export function DesignSystemSection({
   colors: { name: string; hex: string; on?: 'light' | 'dark' }[]
   typography?: { name: string; fontFamily: string; weights?: number[] }[]
   icons?: { name: string; svg: React.ReactNode }[]
-  components?: { name: string; preview: React.ReactNode }[]
+  /** Each component shown across its real states (default/hover/focus/
+   *  active/disabled for interactive controls, or its actual status
+   *  variants for something like a non-interactive badge) — a single
+   *  static "Primary button" swatch doesn't say much on a UX portfolio;
+   *  showing the states it was actually designed for does. */
+  components?: { name: string; states: { label: string; node: React.ReactNode }[] }[]
 }) {
   return (
     <div style={{
@@ -278,13 +283,34 @@ export function DesignSystemSection({
         </div>
       )}
 
-      {/* Components */}
+      {/* Components — each shown across its real states, not one static swatch */}
       {components && components.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {components.map((comp) => (
-            <Fragment key={comp.name}>
-              {comp.preview}
-            </Fragment>
+            <div key={comp.name}>
+              <p style={{
+                fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase',
+                color: 'var(--color-text-muted)', margin: '0 0 12px',
+              }}>
+                {comp.name}
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+                {comp.states.map((s) => (
+                  <div key={s.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      {s.node}
+                    </div>
+                    <span style={{
+                      fontSize: '10px', fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase',
+                      color: 'var(--color-text-muted)',
+                      fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
+                    }}>
+                      {s.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       )}

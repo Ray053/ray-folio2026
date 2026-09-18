@@ -48,12 +48,11 @@ export function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="hard-block"
+      className="hard-block nav-icon-btn"
       style={{
         position: 'relative',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         width: '39px', height: '39px', flexShrink: 0,
-        boxShadow: '3px 3px 0 var(--color-ink)',
         color: 'var(--color-text-primary)',
         cursor: 'pointer', padding: 0,
       }}

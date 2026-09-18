@@ -242,6 +242,109 @@ html.lenis body { height: auto; }
   .nav-hamburger     { display: flex !important; }
 }
 
+/* ─── Navbar icon states (default / hover / active / focus-visible) ───
+   Same tactile hard-block language as the rest of the design system:
+   hover lifts the block and grows its shadow, active presses it back
+   down into the shadow, focus-visible (keyboard only) adds a ring —
+   none of these controls had any of that before, so keyboard users in
+   particular had no indication they'd tabbed onto one. */
+.nav-icon-btn {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, background-color 0.15s ease;
+}
+/* Compound selector so this beats .hard-block's own box-shadow regardless
+   of which rule happens to come later in the stylesheet — two classes of
+   equal specificity resolve by source order otherwise, which is fragile. */
+.hard-block.nav-icon-btn {
+  box-shadow: 3px 3px 0 var(--color-ink);
+}
+.nav-icon-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--color-ink);
+  background-color: var(--color-surface-2);
+}
+.nav-icon-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--color-ink);
+}
+.nav-icon-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.nav-hamburger-btn {
+  border-radius: 50%;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+.nav-hamburger-btn:hover {
+  background-color: var(--color-surface-2);
+}
+.nav-hamburger-btn:active {
+  transform: scale(0.92);
+}
+.nav-hamburger-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.nav-lang-btn {
+  border-radius: 2px;
+  transition: color 0.2s, opacity 0.15s ease;
+}
+.nav-lang-btn:hover {
+  opacity: 0.7;
+}
+.nav-lang-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.nav-logo-link {
+  border-radius: 4px;
+  transition: opacity 0.15s ease;
+}
+.nav-logo-link:hover {
+  opacity: 0.75;
+}
+.nav-logo-link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+.nav-link-item {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.nav-link-item:hover {
+  background-color: var(--color-surface-2);
+  color: var(--color-text-primary);
+}
+.nav-link-item:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.nav-cta-btn {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease;
+}
+.nav-cta-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-ink);
+}
+.nav-cta-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--color-ink);
+}
+.nav-cta-btn:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-icon-btn, .nav-hamburger-btn, .nav-lang-btn, .nav-logo-link,
+  .nav-link-item, .nav-cta-btn {
+    transition: none;
+  }
+}
+
 /* ─── Profile section responsive (About photo + intro text) ─── */
 .profile-grid {
   display: grid;
