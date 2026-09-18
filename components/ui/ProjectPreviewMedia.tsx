@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { getPlaceholderProjectBySlug } from '../../lib/placeholderProjects'
 
 const mediaStyle: React.CSSProperties = {
-  position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
+  position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain',
 }
 
 /** Only mount a clip while previewing; keep the cover visible until it plays. */
@@ -37,7 +37,7 @@ export function ProjectPreviewMedia({ slug, coverSrc, videoSrc, active }: {
     <>
       {cover && (
         <Image src={cover} alt="" fill sizes="(max-width: 768px) 100vw, 50vw"
-          style={{ objectFit: 'cover' }} onError={() => setFailedCover(cover)} />
+          style={{ objectFit: 'contain' }} onError={() => setFailedCover(cover)} />
       )}
       {active && video && <PreviewVideo key={video} src={video} poster={cover} />}
     </>
