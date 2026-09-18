@@ -184,6 +184,145 @@ export function DanceUserFlowDiagram() {
   )
 }
 
+/** Full design system showcase with colors, typography (Aa), and components */
+export function DesignSystemSection({
+  colors,
+  typography,
+  components,
+}: {
+  colors: { name: string; hex: string; on?: 'light' | 'dark' }[]
+  typography?: { name: string; fontFamily: string; weights?: number[] }[]
+  components?: { name: string; preview: React.ReactNode }[]
+}) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(48px, 6vw, 72px)' }}>
+      {/* Color System */}
+      <div>
+        <p style={{
+          fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em',
+          textTransform: 'uppercase', color: 'var(--color-accent)', margin: '0 0 24px',
+        }}>
+          Color System
+        </p>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+          gap: '16px'
+        }}>
+          {colors.map((c) => (
+            <div key={c.hex} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{
+                width: '100%', aspectRatio: '1', borderRadius: '8px',
+                backgroundColor: c.hex,
+                border: c.on === 'light' ? `1px solid ${border}` : 'none',
+              }} />
+              <div>
+                <p style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-primary)', margin: 0 }}>
+                  {c.name}
+                </p>
+                <p style={{
+                  fontSize: '11px', color: 'var(--color-text-muted)', margin: '2px 0 0',
+                  fontFamily: 'var(--font-geist-mono), ui-monospace, monospace'
+                }}>
+                  {c.hex}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Typography */}
+      {typography && typography.length > 0 && (
+        <div>
+          <p style={{
+            fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em',
+            textTransform: 'uppercase', color: 'var(--color-accent)', margin: '0 0 24px',
+          }}>
+            Typography
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            {typography.map((t) => (
+              <div key={t.name} style={{
+                padding: '24px',
+                backgroundColor: surface,
+                borderRadius: '8px',
+                border: `1px solid ${border}`,
+              }}>
+                <p style={{
+                  fontSize: '11px', fontWeight: 500, letterSpacing: '0.1em',
+                  textTransform: 'uppercase', color: 'var(--color-text-muted)', margin: '0 0 16px'
+                }}>
+                  {t.name}
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'baseline' }}>
+                  {(t.weights || [400, 500, 600, 700]).map((weight) => (
+                    <div key={weight} style={{ textAlign: 'center' }}>
+                      <p style={{
+                        fontFamily: t.fontFamily,
+                        fontWeight: weight,
+                        fontSize: 'clamp(48px, 8vw, 72px)',
+                        lineHeight: 1,
+                        color: 'var(--color-text-primary)',
+                        margin: 0,
+                      }}>
+                        Aa
+                      </p>
+                      <p style={{
+                        fontSize: '11px', color: 'var(--color-text-muted)',
+                        margin: '8px 0 0',
+                        fontFamily: 'var(--font-geist-mono), ui-monospace, monospace'
+                      }}>
+                        {weight}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Components */}
+      {components && components.length > 0 && (
+        <div>
+          <p style={{
+            fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em',
+            textTransform: 'uppercase', color: 'var(--color-accent)', margin: '0 0 24px',
+          }}>
+            Components
+          </p>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '16px'
+          }}>
+            {components.map((comp) => (
+              <div key={comp.name} style={{
+                padding: '24px',
+                backgroundColor: surface,
+                borderRadius: '8px',
+                border: `1px solid ${border}`,
+              }}>
+                <p style={{
+                  fontSize: '11px', fontWeight: 500, letterSpacing: '0.1em',
+                  textTransform: 'uppercase', color: 'var(--color-text-muted)', margin: '0 0 16px'
+                }}>
+                  {comp.name}
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
+                  {comp.preview}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 /** A small, honestly-scoped snapshot of a shipped product's visual language
  * — not a full design-system spec, just the palette/type actually observed
  * in the live UI, presented as swatches. `approximate` flags colors read off

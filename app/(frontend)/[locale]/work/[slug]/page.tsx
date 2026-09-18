@@ -6,7 +6,7 @@ import { PLACEHOLDER_PROJECTS, getPlaceholderProjectBySlug } from '@/lib/placeho
 import {
   GroupBuyArchitectureDiagram, GroupBuyUserFlowDiagram,
   ResearchFlowDiagram, DanceUserFlowDiagram,
-  DesignSystemSnapshot, MockupGallery, PrototypeVideo, PhotoHighlight,
+  DesignSystemSection, MockupGallery, PrototypeVideo, PhotoHighlight,
 } from '@/components/ui/CaseStudyDiagrams'
 
 // Hand-built diagrams only exist for these two case studies — everything
@@ -18,15 +18,38 @@ const DIAGRAMS: Record<string, Record<string, React.ReactNode>> = {
     architecture: <GroupBuyArchitectureDiagram />,
     userflow: <GroupBuyUserFlowDiagram />,
     designsystem: (
-      <DesignSystemSnapshot
-        title="視覺語言（客戶前台實際上線畫面）"
-        swatches={[
-          { name: '內文', hex: '#26262A', on: 'light' },
-          { name: '輔助文字', hex: '#6B6B72', on: 'light' },
-          { name: '強調色', hex: '#87394B' },
-          { name: '背景', hex: '#FFFFFF', on: 'light' },
+      <DesignSystemSection
+        colors={[
+          { name: 'Primary', hex: '#87394B' },
+          { name: 'Text', hex: '#26262A', on: 'light' },
+          { name: 'Secondary', hex: '#6B6B72', on: 'light' },
+          { name: 'Background', hex: '#FFFFFF', on: 'light' },
+          { name: 'Surface', hex: '#F5F5F5', on: 'light' },
+          { name: 'Border', hex: '#E5E5E5', on: 'light' },
         ]}
-        typeface="系統預設無襯線字體（不額外載入字型，優先壓低行動網路的載入成本）"
+        typography={[
+          { name: 'System Sans', fontFamily: 'system-ui, -apple-system, sans-serif', weights: [400, 500, 600, 700] },
+        ]}
+        components={[
+          {
+            name: 'Buttons',
+            preview: (
+              <>
+                <button style={{ padding: '10px 20px', backgroundColor: '#87394B', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 500, cursor: 'pointer' }}>Primary</button>
+                <button style={{ padding: '10px 20px', backgroundColor: 'transparent', color: '#26262A', border: '1px solid #E5E5E5', borderRadius: '6px', fontWeight: 500, cursor: 'pointer' }}>Secondary</button>
+              </>
+            ),
+          },
+          {
+            name: 'Tags',
+            preview: (
+              <>
+                <span style={{ padding: '4px 10px', backgroundColor: '#F5F5F5', color: '#26262A', borderRadius: '4px', fontSize: '12px', fontWeight: 500 }}>預購中</span>
+                <span style={{ padding: '4px 10px', backgroundColor: '#87394B', color: '#fff', borderRadius: '4px', fontSize: '12px', fontWeight: 500 }}>已結單</span>
+              </>
+            ),
+          },
+        ]}
       />
     ),
     mockups: (
@@ -54,16 +77,39 @@ const DIAGRAMS: Record<string, Record<string, React.ReactNode>> = {
     research: <ResearchFlowDiagram />,
     userflow: <DanceUserFlowDiagram />,
     designsystem: (
-      <DesignSystemSnapshot
-        title="視覺語言（課程平台介面）"
-        approximate
-        swatches={[
-          { name: '介面背景', hex: '#4A4A4E' },
-          { name: '側邊欄', hex: '#1C1C20' },
-          { name: '鏡像方向標示', hex: '#C1592E' },
-          { name: '文字／圖示', hex: '#F2F2F2' },
+      <DesignSystemSection
+        colors={[
+          { name: 'Background', hex: '#4A4A4E' },
+          { name: 'Sidebar', hex: '#1C1C20' },
+          { name: 'Accent', hex: '#C1592E' },
+          { name: 'Text', hex: '#F2F2F2' },
+          { name: 'Muted', hex: '#8A8A8E' },
+          { name: 'Surface', hex: '#2A2A2E' },
         ]}
-        typeface="系統無襯線字體＋等寬數字（時間軸、毫秒延遲數值）"
+        typography={[
+          { name: 'System Sans', fontFamily: 'system-ui, -apple-system, sans-serif', weights: [400, 500, 700] },
+          { name: 'Monospace', fontFamily: 'ui-monospace, monospace', weights: [400, 600] },
+        ]}
+        components={[
+          {
+            name: 'Direction Labels',
+            preview: (
+              <>
+                <span style={{ padding: '6px 14px', backgroundColor: '#C1592E', color: '#fff', borderRadius: '4px', fontSize: '13px', fontWeight: 600 }}>← 左</span>
+                <span style={{ padding: '6px 14px', backgroundColor: '#2A6BC1', color: '#fff', borderRadius: '4px', fontSize: '13px', fontWeight: 600 }}>右 →</span>
+              </>
+            ),
+          },
+          {
+            name: 'Controls',
+            preview: (
+              <>
+                <button style={{ padding: '8px 16px', backgroundColor: '#C1592E', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 500, cursor: 'pointer' }}>播放</button>
+                <button style={{ padding: '8px 16px', backgroundColor: '#2A2A2E', color: '#F2F2F2', border: '1px solid #4A4A4E', borderRadius: '4px', fontWeight: 500, cursor: 'pointer' }}>0.5x</button>
+              </>
+            ),
+          },
+        ]}
       />
     ),
     researchphoto: (
