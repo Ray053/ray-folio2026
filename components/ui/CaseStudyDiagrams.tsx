@@ -422,25 +422,18 @@ export function MockupGallery({
   return (
     <div>
       <p style={{
-        fontSize: '11px', fontWeight: 500, letterSpacing: '0.12em',
-        textTransform: 'uppercase', color: 'var(--color-accent)', margin: '0 0 12px',
+        fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em',
+        textTransform: 'uppercase', color: 'var(--color-accent)', margin: '0 0 24px',
       }}>
         {title}
       </p>
-      <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px',
-      }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(32px, 5vw, 56px)' }}>
         {shots.map((s) => (
           <figure key={s.src} style={{ margin: 0 }}>
-            <div style={{
-              border: `1px solid ${border}`, borderRadius: '8px', overflow: 'hidden',
-              backgroundColor: surface,
-            }}>
-              <Image src={s.src} alt={s.alt} width={1200} height={800}
-                sizes="(max-width: 768px) 100vw, 33vw" style={{ width: '100%', height: 'auto', display: 'block' }} />
-            </div>
+            <Image src={s.src} alt={s.alt} width={1600} height={1000}
+              sizes="100vw" style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '4px' }} />
             <figcaption style={{
-              fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '6px',
+              fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '12px',
               fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
             }}>
               {s.label}
