@@ -1,5 +1,5 @@
 'use client'
-import { useId } from 'react'
+import { Fragment, useId } from 'react'
 import Image from 'next/image'
 
 // Hand-built process/architecture diagrams for specific case studies, drawn
@@ -282,9 +282,9 @@ export function DesignSystemSection({
       {components && components.length > 0 && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
           {components.map((comp) => (
-            <React.Fragment key={comp.name}>
+            <Fragment key={comp.name}>
               {comp.preview}
-            </React.Fragment>
+            </Fragment>
           ))}
         </div>
       )}
