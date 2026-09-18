@@ -25,31 +25,21 @@ type Project = {
 
 function GallerySection({ items }: { items: { src: string; caption?: string }[] }) {
   return (
-    <div>
-      <p style={{
-        fontSize: '11px', fontWeight: 500, letterSpacing: '0.12em',
-        textTransform: 'uppercase', color: 'var(--color-accent)', margin: '0 0 12px',
-      }}>
-        Gallery
-      </p>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
-        {items.map((item, i) => (
-          <figure key={item.src + i} style={{ margin: 0 }}>
-            <div style={{
-              border: '1px solid var(--color-border)', borderRadius: '8px', overflow: 'hidden',
-              backgroundColor: 'var(--color-surface)',
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(24px, 4vw, 48px)' }}>
+      {items.map((item, i) => (
+        <figure key={item.src + i} style={{ margin: 0 }}>
+          <Image src={item.src} alt={item.caption || ''} width={1600} height={1000}
+            sizes="100vw" style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '4px' }} />
+          {item.caption && (
+            <figcaption style={{
+              fontSize: '13px', color: 'var(--color-text-muted)',
+              marginTop: '12px', textAlign: 'center'
             }}>
-              <Image src={item.src} alt={item.caption || ''} width={1200} height={800}
-                sizes="(max-width: 768px) 100vw, 33vw" style={{ width: '100%', height: 'auto', display: 'block' }} />
-            </div>
-            {item.caption && (
-              <figcaption style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '6px' }}>
-                {item.caption}
-              </figcaption>
-            )}
-          </figure>
-        ))}
-      </div>
+              {item.caption}
+            </figcaption>
+          )}
+        </figure>
+      ))}
     </div>
   )
 }
@@ -70,27 +60,27 @@ export function ProjectDetailPage({ project, diagrams }: { project: Project; dia
   return (
     <div ref={wrapRef} style={{ backgroundColor: 'var(--color-background)' }}>
 
-      {/* Hero cover */}
+      {/* Hero cover - full width, clean */}
       <div style={{
         position: 'relative',
-        height: 'clamp(280px, 40vw, 520px)',
-        background: `radial-gradient(ellipse at 65% 35%, ${project.coverColor}, #060d15)`,
-        display: 'flex',
-        alignItems: 'flex-end',
+        backgroundColor: project.coverColor,
         overflow: 'hidden',
       }}>
         {project.coverSrc && (
-          <Image src={project.coverSrc} alt="" fill priority
-            sizes="100vw" style={{ objectFit: 'contain', opacity: 0.9 }} />
+          <Image src={project.coverSrc} alt="" width={1920} height={1080} priority
+            sizes="100vw" style={{ width: '100%', height: 'auto', display: 'block' }} />
         )}
         <div style={{
-          position: 'relative',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
           zIndex: 1,
           maxWidth: '1200px',
           width: '100%',
           margin: '0 auto',
           padding: '0 24px 48px',
-          background: project.coverSrc ? 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)' : 'none',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.3) 50%, transparent)',
         }}>
           <Link href="/work" style={{
             display: 'inline-flex', alignItems: 'center', gap: '6px',
@@ -223,7 +213,6 @@ export function ProjectDetailPage({ project, diagrams }: { project: Project; dia
             return (
               <div style={{
                 marginTop: 'clamp(48px, 6vw, 80px)',
-                maxWidth: '820px',
                 borderTop: '1px solid var(--color-border)',
                 paddingTop: 'clamp(32px, 5vw, 56px)',
               }}>
@@ -302,7 +291,6 @@ export function ProjectDetailPage({ project, diagrams }: { project: Project; dia
             return (
               <div className="detail-line" style={{
                 marginTop: 'clamp(48px, 6vw, 80px)',
-                maxWidth: '820px',
                 borderTop: '1px solid var(--color-border)',
                 paddingTop: 'clamp(32px, 5vw, 56px)',
               }}>
