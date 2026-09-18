@@ -189,11 +189,15 @@ export function DanceUserFlowDiagram() {
 export function DesignSystemSection({
   colors,
   typography,
+  radii,
   icons,
   components,
 }: {
   colors: { name: string; hex: string; on?: 'light' | 'dark' }[]
   typography?: { name: string; fontFamily: string; weights?: number[] }[]
+  /** The actual border-radius values pulled from the shipped CSS, smallest
+   *  to largest — a real scale, not a made-up 4/8/16 progression. */
+  radii?: { name: string; value: string }[]
   icons?: { name: string; svg: React.ReactNode }[]
   /** Each component shown across its real states (default/hover/focus/
    *  active/disabled for interactive controls, or its actual status
@@ -239,30 +243,60 @@ export function DesignSystemSection({
 
       {/* Typography */}
       {typography && typography.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'flex-end' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {typography.map((t) => (
-            <div key={t.name} style={{ display: 'flex', gap: '16px', alignItems: 'baseline' }}>
-              {(t.weights || [400, 500, 600, 700]).map((weight) => (
-                <div key={weight} style={{ textAlign: 'center' }}>
-                  <p style={{
-                    fontFamily: t.fontFamily,
-                    fontWeight: weight,
-                    fontSize: 'clamp(36px, 6vw, 56px)',
-                    lineHeight: 1,
-                    color: 'var(--color-text-primary)',
-                    margin: 0,
-                  }}>
-                    Aa
-                  </p>
-                  <p style={{
-                    fontSize: '10px', color: 'var(--color-text-muted)',
-                    margin: '6px 0 0',
-                    fontFamily: 'var(--font-geist-mono), ui-monospace, monospace'
-                  }}>
-                    {weight}
-                  </p>
-                </div>
-              ))}
+            <div key={t.name}>
+              <p style={{
+                fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase',
+                color: 'var(--color-text-muted)', margin: '0 0 10px',
+              }}>
+                {t.name}
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'baseline' }}>
+                {(t.weights || [400, 500, 600, 700]).map((weight) => (
+                  <div key={weight} style={{ textAlign: 'center' }}>
+                    <p style={{
+                      fontFamily: t.fontFamily,
+                      fontWeight: weight,
+                      fontSize: 'clamp(36px, 6vw, 56px)',
+                      lineHeight: 1,
+                      color: 'var(--color-text-primary)',
+                      margin: 0,
+                    }}>
+                      Aa
+                    </p>
+                    <p style={{
+                      fontSize: '10px', color: 'var(--color-text-muted)',
+                      margin: '6px 0 0',
+                      fontFamily: 'var(--font-geist-mono), ui-monospace, monospace'
+                    }}>
+                      {weight}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Radius scale — the actual border-radius values in use, not a
+          made-up progression */}
+      {radii && radii.length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+          {radii.map((r) => (
+            <div key={r.name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+              <div style={{
+                width: '56px', height: '56px', borderRadius: r.value,
+                border: `2px solid var(--color-text-primary)`,
+              }} />
+              <span style={{ fontSize: '11px', fontWeight: 500, color: 'var(--color-text-primary)' }}>{r.name}</span>
+              <span style={{
+                fontSize: '10px', color: 'var(--color-text-muted)',
+                fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
+              }}>
+                {r.value}
+              </span>
             </div>
           ))}
         </div>
