@@ -184,14 +184,16 @@ export function DanceUserFlowDiagram() {
   )
 }
 
-/** Full design system showcase with colors, typography (Aa), and components */
+/** Full design system showcase with colors, typography (Aa), icons, and components */
 export function DesignSystemSection({
   colors,
   typography,
+  icons,
   components,
 }: {
   colors: { name: string; hex: string; on?: 'light' | 'dark' }[]
   typography?: { name: string; fontFamily: string; weights?: number[] }[]
+  icons?: { name: string; svg: React.ReactNode }[]
   components?: { name: string; preview: React.ReactNode }[]
 }) {
   return (
@@ -278,6 +280,47 @@ export function DesignSystemSection({
                     </div>
                   ))}
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Icons */}
+      {icons && icons.length > 0 && (
+        <div>
+          <p style={{
+            fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em',
+            textTransform: 'uppercase', color: 'var(--color-accent)', margin: '0 0 24px',
+          }}>
+            Iconography
+          </p>
+          <div style={{
+            display: 'flex', flexWrap: 'wrap', gap: '16px',
+            padding: '24px',
+            backgroundColor: surface,
+            borderRadius: '8px',
+            border: `1px solid ${border}`,
+          }}>
+            {icons.map((icon) => (
+              <div key={icon.name} style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+                width: '72px',
+              }}>
+                <div style={{
+                  width: '48px', height: '48px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'var(--color-text-primary)',
+                }}>
+                  {icon.svg}
+                </div>
+                <span style={{
+                  fontSize: '10px', color: 'var(--color-text-muted)',
+                  fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
+                  textAlign: 'center',
+                }}>
+                  {icon.name}
+                </span>
               </div>
             ))}
           </div>
