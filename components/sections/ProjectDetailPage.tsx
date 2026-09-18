@@ -81,7 +81,7 @@ export function ProjectDetailPage({ project, diagrams }: { project: Project; dia
       }}>
         {project.coverSrc && (
           <Image src={project.coverSrc} alt="" fill priority
-            sizes="100vw" style={{ objectFit: 'cover', opacity: 0.9 }} />
+            sizes="100vw" style={{ objectFit: 'contain', opacity: 0.9 }} />
         )}
         <div style={{
           position: 'relative',
