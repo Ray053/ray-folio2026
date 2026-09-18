@@ -68,8 +68,8 @@ const DIAGRAMS: Record<string, Record<string, React.ReactNode>> = {
           { src: '/case-studies/group-buy/ops-orders.png', alt: '後台訂單管理', label: 'Ops — 訂單管理' },
           { src: '/case-studies/group-buy/ops-groups.png', alt: '後台團務管理', label: 'Ops — 團務管理' },
           { src: '/case-studies/group-buy/ops-costs.png', alt: '後台成本記帳', label: 'Ops — 成本記帳' },
-          { src: '/case-studies/group-buy/front-home.png', alt: '客戶前台首頁', label: 'Customer — 首頁' },
-          { src: '/case-studies/group-buy/front-groups.png', alt: '客戶前台開團列表', label: 'Customer — 開團列表' },
+          { src: '/case-studies/group-buy/front-home.png', alt: '客戶前台首頁', label: '首頁', group: 'customer-mobile' },
+          { src: '/case-studies/group-buy/front-groups.png', alt: '客戶前台開團列表', label: '開團列表', group: 'customer-mobile' },
         ]}
       />
     ),

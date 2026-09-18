@@ -417,28 +417,50 @@ export function MockupGallery({
   title, shots,
 }: {
   title: string
-  shots: { src: string; alt: string; label: string }[]
+  shots: { src: string; alt: string; label: string; group?: string }[]
 }) {
+  // Group shots by their group key (same group = same row for mobile screens)
+  const grouped = shots.reduce((acc, shot) => {
+    const key = shot.group || shot.src
+    if (!acc[key]) acc[key] = []
+    acc[key].push(shot)
+    return acc
+  }, {} as Record<string, typeof shots>)
+
   return (
-    <div>
+    <div style={{ maxWidth: '900px' }}>
       <p style={{
         fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em',
         textTransform: 'uppercase', color: 'var(--color-accent)', margin: '0 0 24px',
       }}>
         {title}
       </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(32px, 5vw, 56px)' }}>
-        {shots.map((s) => (
-          <figure key={s.src} style={{ margin: 0 }}>
-            <Image src={s.src} alt={s.alt} width={1600} height={1000}
-              sizes="100vw" style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '4px' }} />
-            <figcaption style={{
-              fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '12px',
-              fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
-            }}>
-              {s.label}
-            </figcaption>
-          </figure>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(24px, 4vw, 40px)' }}>
+        {Object.values(grouped).map((group, gi) => (
+          <div key={gi} style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '16px',
+            justifyContent: group.length > 1 ? 'flex-start' : 'flex-start',
+          }}>
+            {group.map((s) => (
+              <figure key={s.src} style={{
+                margin: 0,
+                flex: group.length > 1 ? '0 1 auto' : '1 1 100%',
+                maxWidth: group.length > 1 ? '280px' : '100%',
+              }}>
+                <Image src={s.src} alt={s.alt} width={1200} height={800}
+                  sizes={group.length > 1 ? '280px' : '(max-width: 900px) 100vw, 900px'}
+                  style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '4px' }} />
+                <figcaption style={{
+                  fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '8px',
+                  fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
+                }}>
+                  {s.label}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
         ))}
       </div>
     </div>
@@ -448,9 +470,9 @@ export function MockupGallery({
 /** An embedded prototype walkthrough recording, with native controls. */
 export function PrototypeVideo({ title, src, note }: { title: string; src: string; note?: string }) {
   return (
-    <div>
+    <div style={{ maxWidth: '640px' }}>
       <p style={{
-        fontSize: '11px', fontWeight: 500, letterSpacing: '0.12em',
+        fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em',
         textTransform: 'uppercase', color: 'var(--color-accent)', margin: '0 0 12px',
       }}>
         {title}
@@ -460,12 +482,12 @@ export function PrototypeVideo({ title, src, note }: { title: string; src: strin
         controls
         playsInline
         style={{
-          width: '100%', borderRadius: '8px', border: `1px solid ${border}`,
+          width: '100%', borderRadius: '4px',
           backgroundColor: '#000', display: 'block',
         }}
       />
       {note && (
-        <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '8px' }}>{note}</p>
+        <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '8px' }}>{note}</p>
       )}
     </div>
   )
