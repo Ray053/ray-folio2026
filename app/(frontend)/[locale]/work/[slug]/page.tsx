@@ -6,7 +6,7 @@ import { PLACEHOLDER_PROJECTS, getPlaceholderProjectBySlug } from '@/lib/placeho
 import {
   GroupBuyArchitectureDiagram, GroupBuyUserFlowDiagram,
   ResearchFlowDiagram, DanceUserFlowDiagram,
-  DesignSystemSnapshot, MockupGallery, PrototypeVideo, PhotoHighlight,
+  DesignSystemSection, MockupGallery, PrototypeVideo, PhotoHighlight,
 } from '@/components/ui/CaseStudyDiagrams'
 
 // Hand-built diagrams only exist for these two case studies — everything
@@ -18,15 +18,46 @@ const DIAGRAMS: Record<string, Record<string, React.ReactNode>> = {
     architecture: <GroupBuyArchitectureDiagram />,
     userflow: <GroupBuyUserFlowDiagram />,
     designsystem: (
-      <DesignSystemSnapshot
-        title="視覺語言（客戶前台實際上線畫面）"
-        swatches={[
-          { name: '內文', hex: '#26262A', on: 'light' },
-          { name: '輔助文字', hex: '#6B6B72', on: 'light' },
-          { name: '強調色', hex: '#87394B' },
-          { name: '背景', hex: '#FFFFFF', on: 'light' },
+      <DesignSystemSection
+        colors={[
+          { name: 'Primary', hex: '#87394B' },
+          { name: 'Text', hex: '#26262A', on: 'light' },
+          { name: 'Secondary', hex: '#6B6B72', on: 'light' },
+          { name: 'Background', hex: '#FFFFFF', on: 'light' },
+          { name: 'Surface', hex: '#F5F5F5', on: 'light' },
+          { name: 'Border', hex: '#E5E5E5', on: 'light' },
         ]}
-        typeface="系統預設無襯線字體（不額外載入字型，優先壓低行動網路的載入成本）"
+        typography={[
+          { name: 'System Sans', fontFamily: 'system-ui, -apple-system, sans-serif', weights: [400, 500, 600, 700] },
+        ]}
+        icons={[
+          { name: 'Cart', svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> },
+          { name: 'Package', svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/></svg> },
+          { name: 'User', svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
+          { name: 'Bell', svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg> },
+          { name: 'Search', svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> },
+          { name: 'Check', svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> },
+        ]}
+        components={[
+          {
+            name: 'Buttons',
+            preview: (
+              <>
+                <button style={{ padding: '10px 20px', backgroundColor: '#87394B', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 500, cursor: 'pointer' }}>Primary</button>
+                <button style={{ padding: '10px 20px', backgroundColor: 'transparent', color: '#26262A', border: '1px solid #E5E5E5', borderRadius: '6px', fontWeight: 500, cursor: 'pointer' }}>Secondary</button>
+              </>
+            ),
+          },
+          {
+            name: 'Tags',
+            preview: (
+              <>
+                <span style={{ padding: '4px 10px', backgroundColor: '#F5F5F5', color: '#26262A', borderRadius: '4px', fontSize: '12px', fontWeight: 500 }}>預購中</span>
+                <span style={{ padding: '4px 10px', backgroundColor: '#87394B', color: '#fff', borderRadius: '4px', fontSize: '12px', fontWeight: 500 }}>已結單</span>
+              </>
+            ),
+          },
+        ]}
       />
     ),
     mockups: (
@@ -37,8 +68,8 @@ const DIAGRAMS: Record<string, Record<string, React.ReactNode>> = {
           { src: '/case-studies/group-buy/ops-orders.png', alt: '後台訂單管理', label: 'Ops — 訂單管理' },
           { src: '/case-studies/group-buy/ops-groups.png', alt: '後台團務管理', label: 'Ops — 團務管理' },
           { src: '/case-studies/group-buy/ops-costs.png', alt: '後台成本記帳', label: 'Ops — 成本記帳' },
-          { src: '/case-studies/group-buy/front-home.png', alt: '客戶前台首頁', label: 'Customer — 首頁' },
-          { src: '/case-studies/group-buy/front-groups.png', alt: '客戶前台開團列表', label: 'Customer — 開團列表' },
+          { src: '/case-studies/group-buy/front-home.png', alt: '客戶前台首頁', label: '首頁', group: 'customer-mobile' },
+          { src: '/case-studies/group-buy/front-groups.png', alt: '客戶前台開團列表', label: '開團列表', group: 'customer-mobile' },
         ]}
       />
     ),
@@ -54,16 +85,47 @@ const DIAGRAMS: Record<string, Record<string, React.ReactNode>> = {
     research: <ResearchFlowDiagram />,
     userflow: <DanceUserFlowDiagram />,
     designsystem: (
-      <DesignSystemSnapshot
-        title="視覺語言（課程平台介面）"
-        approximate
-        swatches={[
-          { name: '介面背景', hex: '#4A4A4E' },
-          { name: '側邊欄', hex: '#1C1C20' },
-          { name: '鏡像方向標示', hex: '#C1592E' },
-          { name: '文字／圖示', hex: '#F2F2F2' },
+      <DesignSystemSection
+        colors={[
+          { name: 'Background', hex: '#4A4A4E' },
+          { name: 'Sidebar', hex: '#1C1C20' },
+          { name: 'Accent', hex: '#C1592E' },
+          { name: 'Text', hex: '#F2F2F2' },
+          { name: 'Muted', hex: '#8A8A8E' },
+          { name: 'Surface', hex: '#2A2A2E' },
         ]}
-        typeface="系統無襯線字體＋等寬數字（時間軸、毫秒延遲數值）"
+        typography={[
+          { name: 'System Sans', fontFamily: 'system-ui, -apple-system, sans-serif', weights: [400, 500, 700] },
+          { name: 'Monospace', fontFamily: 'ui-monospace, monospace', weights: [400, 600] },
+        ]}
+        icons={[
+          { name: 'Play', svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> },
+          { name: 'Pause', svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> },
+          { name: 'Rewind', svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/></svg> },
+          { name: 'Mirror', svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v18"/><path d="m8 6-4 6 4 6"/><path d="m16 6 4 6-4 6"/></svg> },
+          { name: 'Frame', svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/></svg> },
+          { name: 'Layers', svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg> },
+        ]}
+        components={[
+          {
+            name: 'Direction Labels',
+            preview: (
+              <>
+                <span style={{ padding: '6px 14px', backgroundColor: '#C1592E', color: '#fff', borderRadius: '4px', fontSize: '13px', fontWeight: 600 }}>← 左</span>
+                <span style={{ padding: '6px 14px', backgroundColor: '#2A6BC1', color: '#fff', borderRadius: '4px', fontSize: '13px', fontWeight: 600 }}>右 →</span>
+              </>
+            ),
+          },
+          {
+            name: 'Controls',
+            preview: (
+              <>
+                <button style={{ padding: '8px 16px', backgroundColor: '#C1592E', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 500, cursor: 'pointer' }}>播放</button>
+                <button style={{ padding: '8px 16px', backgroundColor: '#2A2A2E', color: '#F2F2F2', border: '1px solid #4A4A4E', borderRadius: '4px', fontWeight: 500, cursor: 'pointer' }}>0.5x</button>
+              </>
+            ),
+          },
+        ]}
       />
     ),
     researchphoto: (

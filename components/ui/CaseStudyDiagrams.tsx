@@ -185,6 +185,113 @@ export function DanceUserFlowDiagram() {
   )
 }
 
+/** Full design system showcase - all in one unified block */
+export function DesignSystemSection({
+  colors,
+  typography,
+  icons,
+  components,
+}: {
+  colors: { name: string; hex: string; on?: 'light' | 'dark' }[]
+  typography?: { name: string; fontFamily: string; weights?: number[] }[]
+  icons?: { name: string; svg: React.ReactNode }[]
+  components?: { name: string; preview: React.ReactNode }[]
+}) {
+  return (
+    <div style={{
+      padding: 'clamp(24px, 4vw, 40px)',
+      backgroundColor: surface,
+      borderRadius: '8px',
+      border: `1px solid ${border}`,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 'clamp(32px, 4vw, 48px)',
+    }}>
+      {/* Colors */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+        {colors.map((c) => (
+          <div key={c.hex} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{
+              width: '48px', height: '48px', borderRadius: '6px',
+              backgroundColor: c.hex,
+              border: c.on === 'light' ? `1px solid ${border}` : 'none',
+              flexShrink: 0,
+            }} />
+            <div>
+              <p style={{ fontSize: '12px', fontWeight: 500, color: 'var(--color-text-primary)', margin: 0 }}>
+                {c.name}
+              </p>
+              <p style={{
+                fontSize: '10px', color: 'var(--color-text-muted)', margin: '2px 0 0',
+                fontFamily: 'var(--font-geist-mono), ui-monospace, monospace'
+              }}>
+                {c.hex}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Typography */}
+      {typography && typography.length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'flex-end' }}>
+          {typography.map((t) => (
+            <div key={t.name} style={{ display: 'flex', gap: '16px', alignItems: 'baseline' }}>
+              {(t.weights || [400, 500, 600, 700]).map((weight) => (
+                <div key={weight} style={{ textAlign: 'center' }}>
+                  <p style={{
+                    fontFamily: t.fontFamily,
+                    fontWeight: weight,
+                    fontSize: 'clamp(36px, 6vw, 56px)',
+                    lineHeight: 1,
+                    color: 'var(--color-text-primary)',
+                    margin: 0,
+                  }}>
+                    Aa
+                  </p>
+                  <p style={{
+                    fontSize: '10px', color: 'var(--color-text-muted)',
+                    margin: '6px 0 0',
+                    fontFamily: 'var(--font-geist-mono), ui-monospace, monospace'
+                  }}>
+                    {weight}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Icons */}
+      {icons && icons.length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+          {icons.map((icon) => (
+            <div key={icon.name} style={{
+              width: '40px', height: '40px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'var(--color-text-primary)',
+            }}>
+              {icon.svg}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Components */}
+      {components && components.length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
+          {components.map((comp) => (
+            <React.Fragment key={comp.name}>
+              {comp.preview}
+            </React.Fragment>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 /** A small, honestly-scoped snapshot of a shipped product's visual language
  * — not a full design-system spec, just the palette/type actually observed
  * in the live UI, presented as swatches. `approximate` flags colors read off
@@ -236,35 +343,50 @@ export function MockupGallery({
   title, shots,
 }: {
   title: string
-  shots: { src: string; alt: string; label: string }[]
+  shots: { src: string; alt: string; label: string; group?: string }[]
 }) {
+  // Group shots by their group key (same group = same row for mobile screens)
+  const grouped = shots.reduce((acc, shot) => {
+    const key = shot.group || shot.src
+    if (!acc[key]) acc[key] = []
+    acc[key].push(shot)
+    return acc
+  }, {} as Record<string, typeof shots>)
+
   return (
-    <div>
+    <div style={{ maxWidth: '900px' }}>
       <p style={{
-        fontSize: '11px', fontWeight: 500, letterSpacing: '0.12em',
-        textTransform: 'uppercase', color: 'var(--color-accent)', margin: '0 0 12px',
+        fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em',
+        textTransform: 'uppercase', color: 'var(--color-accent)', margin: '0 0 24px',
       }}>
         {title}
       </p>
-      <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px',
-      }}>
-        {shots.map((s) => (
-          <figure key={s.src} style={{ margin: 0 }}>
-            <div style={{
-              border: `1px solid ${border}`, borderRadius: '8px', overflow: 'hidden',
-              backgroundColor: surface,
-            }}>
-              <Image src={s.src} alt={s.alt} width={1200} height={800}
-                sizes="(max-width: 768px) 100vw, 33vw" style={{ width: '100%', height: 'auto', display: 'block' }} />
-            </div>
-            <figcaption style={{
-              fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '6px',
-              fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
-            }}>
-              {s.label}
-            </figcaption>
-          </figure>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(24px, 4vw, 40px)' }}>
+        {Object.values(grouped).map((group, gi) => (
+          <div key={gi} style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '16px',
+            justifyContent: group.length > 1 ? 'flex-start' : 'flex-start',
+          }}>
+            {group.map((s) => (
+              <figure key={s.src} style={{
+                margin: 0,
+                flex: group.length > 1 ? '0 1 auto' : '1 1 100%',
+                maxWidth: group.length > 1 ? '280px' : '100%',
+              }}>
+                <Image src={s.src} alt={s.alt} width={1200} height={800}
+                  sizes={group.length > 1 ? '280px' : '(max-width: 900px) 100vw, 900px'}
+                  style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '4px' }} />
+                <figcaption style={{
+                  fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '8px',
+                  fontFamily: 'var(--font-geist-mono), ui-monospace, monospace',
+                }}>
+                  {s.label}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
         ))}
       </div>
     </div>
@@ -274,9 +396,9 @@ export function MockupGallery({
 /** An embedded prototype walkthrough recording, with native controls. */
 export function PrototypeVideo({ title, src, note }: { title: string; src: string; note?: string }) {
   return (
-    <div>
+    <div style={{ maxWidth: '640px' }}>
       <p style={{
-        fontSize: '11px', fontWeight: 500, letterSpacing: '0.12em',
+        fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em',
         textTransform: 'uppercase', color: 'var(--color-accent)', margin: '0 0 12px',
       }}>
         {title}
@@ -286,12 +408,12 @@ export function PrototypeVideo({ title, src, note }: { title: string; src: strin
         controls
         playsInline
         style={{
-          width: '100%', borderRadius: '8px', border: `1px solid ${border}`,
+          width: '100%', borderRadius: '4px',
           backgroundColor: '#000', display: 'block',
         }}
       />
       {note && (
-        <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '8px' }}>{note}</p>
+        <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '8px' }}>{note}</p>
       )}
     </div>
   )
