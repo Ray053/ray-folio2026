@@ -107,7 +107,7 @@ export function GroupBuyArchitectureDiagram() {
   return (
     <svg viewBox="0 0 720 300" style={{ width: '100%', height: 'auto', overflow: 'visible' }}
       role="img"
-      aria-label="架構圖：Google Sheet 作為唯一資料源，同時餵給有記憶體快取的代購後台 Ops App，以及獨立部署的客戶前台 App；兩者透過一組公開 API 溝通，客戶端完全拿不到後台憑證；後台另外整合 LINE 官方帳號做身分綁定與推播通知給客戶。"
+      aria-label="架構圖：Google Sheet 作為唯一資料源，同時餵給用 RPC 派發、有記憶體快取的代購後台 Ops App，以及獨立部署的客戶前台 App；兩者透過一組有 CORS 白名單與頻率限制的公開 API 溝通，客戶端完全拿不到後台憑證；後台另外整合 LINE 官方帳號做身分綁定、推播通知，並用簽章驗證的 Webhook 接收客戶在 LINE 對話裡的確認。"
       focusable="false">
       <defs>
         <marker id={markerId} markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
@@ -121,15 +121,16 @@ export function GroupBuyArchitectureDiagram() {
         <Arrow markerId={markerId} x1={170} y1={150} x2={230} y2={110} />
         <Arrow markerId={markerId} x1={170} y1={160} x2={230} y2={210} />
 
-        <Box x={235} y={70} w={190} h={80} fill={FIXED_BLUE.fill} textColor={FIXED_BLUE.text} label="代購後台 Ops App" sublabel="Next.js + 記憶體快取" />
+        <Box x={235} y={70} w={190} h={80} fill={FIXED_BLUE.fill} textColor={FIXED_BLUE.text} label="代購後台 Ops App" sublabel={'Next.js／RPC 派發\n記憶體快取'} />
         <Box x={235} y={190} w={190} h={80} fill={FIXED_DEEP_BLUE.fill} textColor={FIXED_DEEP_BLUE.text} label="客戶前台 App" sublabel="Next.js（獨立部署）" />
 
         <Arrow markerId={markerId} x1={425} y1={230} x2={480} y2={230} />
-        <Box x={485} y={195} w={110} h={70} fill={bg} textColor={ink} label="Public API" sublabel="唯一溝通管道" />
+        <Box x={485} y={195} w={110} h={70} fill={bg} textColor={ink} label="Public API" sublabel={'CORS 白名單\n頻率限制'} />
 
         <Arrow markerId={markerId} x1={595} y1={215} x2={650} y2={215} />
-        <Box x={480} y={40} w={130} h={60} fill={FIXED_ACID.fill} textColor={FIXED_ACID.text} label="LINE OA" sublabel="LIFF ＋ 推播" />
+        <Box x={480} y={40} w={130} h={60} fill={FIXED_ACID.fill} textColor={FIXED_ACID.text} label="LINE OA" sublabel="LIFF＋推播＋Webhook" />
         <Arrow markerId={markerId} x1={425} y1={100} x2={480} y2={70} />
+        <Arrow markerId={markerId} x1={480} y1={85} x2={425} y2={115} />
 
         <text x={670} y={225} textAnchor="middle" style={{ fill: muted, fontSize: 22 }}>👤</text>
         <text x={670} y={250} textAnchor="middle" style={{ fill: muted, fontSize: 10, fontFamily: 'var(--font-geist-mono), ui-monospace, monospace' }}>客戶</text>
